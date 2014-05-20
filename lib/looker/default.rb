@@ -6,8 +6,8 @@ module Looker
   # Default configuration options for {Client}
   module Default
 
-    # Default API endpoint
-    API_ENDPOINT = "https://api.looker.com".freeze
+    # Default API endpoint look TODO update this as needed
+    API_ENDPOINT = "http://localhost:19999/api/3.0/".freeze
 
     # Default User Agent header string
     USER_AGENT   = "Looker Ruby Gem #{Looker::VERSION}".freeze

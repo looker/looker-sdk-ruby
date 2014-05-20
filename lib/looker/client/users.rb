@@ -15,7 +15,7 @@ module Looker
       # @option options [Integer] :since The integer ID of the last User that
       #   you’ve seen.
       #
-      # @see https://developer.looker.com/3.0/users/#get-all-users
+      # @see look TODO docs link
       #
       # @return [Array<Sawyer::Resource>] List of Looker users.
       def all_users(options = {})
@@ -26,8 +26,7 @@ module Looker
       #
       # @param user [String] A Looker user id.
       # @return [Sawyer::Resource]
-      # @see https://developer.looker.com/3.0/users/#get-a-single-user
-      # @see https://developer.looker.com/3.0/users/#get-the-authenticated-user
+      # @see look TODO docs link
       # @example
       #   Looker.user(1)
       def user(user=nil, options = {})
