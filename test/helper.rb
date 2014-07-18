@@ -5,7 +5,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 SimpleCov.start
 
 require 'json'
-require 'looker'
+require 'looker-sdk'
 require 'minitest/autorun'
 require 'minitest/spec'
 require "webmock"

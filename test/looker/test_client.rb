@@ -91,13 +91,6 @@ describe Looker::Client do
           client.login.must_equal("netrc_looker")
           client.instance_variable_get(:"@password").must_equal("netrc_looker1")
         end
-
-        it "can read non-standard API endpoint creds from .netrc" do
-          Looker.reset!
-          client = Looker::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'), :api_endpoint => 'http://api.github.dev')
-          client.login.must_equal("netrc_looker")
-          client.instance_variable_get(:"@password").must_equal("netrc_looker1")
-        end
       end
     end
   end
