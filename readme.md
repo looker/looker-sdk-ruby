@@ -1,16 +1,19 @@
 # [Looker](http://looker.com/) SDK for Ruby
 
+### Installation
+```bash
+$ git clone git@github.com:looker/looker-sdk-ruby.git looker-sdk
+$ cd looker-sdk
+$ bundle install
+$ rake install
+```
+
 ### Development
 
 ```bash
 $ bundle install
 $ rake test # run the test suite
 $ rake test:all # run the test suite on all supported Rubies
-```
-
-### Installation
-```bash
-$ rake install
 ```
 
 ### Basic Usage
