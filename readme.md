@@ -16,6 +16,10 @@ $ rake test # run the test suite
 $ rake test:all # run the test suite on all supported Rubies
 ```
 
+### TODO
+Things that we think are important to do will be marked with `look TODO`
+
+
 ### Basic Usage
 
 ```ruby

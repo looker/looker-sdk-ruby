@@ -108,7 +108,7 @@ describe Looker::Client::Users do
       Looker.last_response.status.must_equal 204
     end
 
-    # TODO: When we allow for actually logging in we need this to pass.
+    # look TODO: When we allow for actually logging in we need this to pass.
     # it "will not delete self" do
     #   user = Looker.user
     #   assert_raises Looker::Forbidden do
