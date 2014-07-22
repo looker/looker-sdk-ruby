@@ -92,7 +92,7 @@ module Looker
       # @see look TODO docs link
       # @example
       #   Looker.create_user([1, 2], {:first_name => "Jonathan", :last_name => "Swenson"})
-      def add_credentials_email(user, email, options = {})
+      def create_credentials_email(user, email, options = {})
         post "users/#{user}/credentials_email", options.merge(:email => email)
       end
 
@@ -100,7 +100,7 @@ module Looker
         patch "users/#{user}/credentials_email", options
       end
 
-      def remove_credentials_email(user, options = {})
+      def delete_credentials_email(user, options = {})
         boolean_from_response :delete, "users/#{user}/credentials_email", options
       end
 

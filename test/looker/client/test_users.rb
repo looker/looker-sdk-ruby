@@ -48,15 +48,15 @@ describe Looker::Client::Users do
   describe ".create_credentials_email", :vcr do
     it "create user and add credentials email" do
       user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      credentials_email = Looker.add_credentials_email(user[:id], "jonathan+9@looker.com")
+      credentials_email = Looker.create_credentials_email(user[:id], "jonathan+9@looker.com")
       credentials_email.must_be_kind_of Sawyer::Resource
     end
 
     it "will not create two credentials emails for same user", :vcr do
       user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      Looker.add_credentials_email(user[:id], "jonathan+10@looker.com")
+      Looker.create_credentials_email(user[:id], "jonathan+10@looker.com")
       assert_raises Looker::Conflict do
-        credentials_email2 = Looker.add_credentials_email(user[:id], "jonathan+11@looker.com")
+        credentials_email2 = Looker.create_credentials_email(user[:id], "jonathan+11@looker.com")
       end
     end
   end
@@ -64,7 +64,7 @@ describe Looker::Client::Users do
   describe ".update_credentials_email", :vcr do
     it "update credentials_email email address" do
       user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      Looker.add_credentials_email(user[:id], "jonathan+12@looker.com")
+      Looker.create_credentials_email(user[:id], "jonathan+12@looker.com")
       Looker.update_credentials_email(user[:id], {:email => "jonathan+13@looker.com"})
       Looker.get_credentials_email(user[:id])[:email].must_equal "jonathan+13@looker.com"
     end
@@ -73,8 +73,8 @@ describe Looker::Client::Users do
   describe ".remove_credentials_email", :vcr do
     it "removes credentials email" do
       user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      Looker.add_credentials_email(user[:id], "jonathan+16@looker.com")
-      Looker.remove_credentials_email(user[:id]).must_equal true
+      Looker.create_credentials_email(user[:id], "jonathan+16@looker.com")
+      Looker.delete_credentials_email(user[:id]).must_equal true
       assert_raises Looker::NotFound do
         Looker.get_credentials_email(user[:id])
       end
@@ -82,14 +82,14 @@ describe Looker::Client::Users do
 
     it "will not remove credentials_email if it doesn't exist" do
       user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      Looker.remove_credentials_email(user[:id]).must_equal false
+      Looker.delete_credentials_email(user[:id]).must_equal false
     end
   end
 
   describe ".get_credentials_email", :vcr do
     it "gets corresponding credentials email" do
       user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      Looker.add_credentials_email(user[:id], "jonathan+14@looker.com")
+      Looker.create_credentials_email(user[:id], "jonathan+14@looker.com")
       Looker.get_credentials_email(user[:id])[:email].must_equal "jonathan+14@looker.com"
     end
 

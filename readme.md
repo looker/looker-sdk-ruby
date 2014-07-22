@@ -18,10 +18,10 @@ $ rake test:all # run the test suite on all supported Rubies
 
 ### Basic Usage
 
-```ruby 
+```ruby
 require 'looker-sdk'
 
-# For the time being, log in using dummy credentials. 
+# For the time being, log in using dummy credentials.
 client = Looker::Client.new(
   :login => "nope",
   :password => "nopepass"
@@ -38,19 +38,39 @@ client = Looker::Client.new(
 )
 
 
-# right now very little is supported.
-# Basic user getters have been implemented
-users = client.all_users
+# Supports user creation, modification, deletion
+# Supports credentials_user creation, modification, and deletion.
+first_user = Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+Looker.create_credentials_email(first_user[:id], "jonathan@looker.com")
+second_user = Looker.create_user({:first_name => "John F", :last_name => "Kennedy"})
+Looker.create_credentials_email(first_user[:id], "john@looker.com")
+third_user = Looker.create_user({:first_name => "Frank", :last_name => "Sinatra"})
+Looker.create_credentials_email(first_user[:id], "frank@looker.com")
 
-first_user = users[0]
+user = Looker.user(first_user[:id])
+user.first_name # Jonathan
+user.last_name  # Swenson
 
-first_user.id          # 1
-first_user.first_name  # "Jonathan"
-first_user.last_name   # "Swenson"
-first_user.models_dir  # "models-user-1"
-                       # etc 
+Looker.update_user(first_user[:id], {:first_name => "Jonathan is awesome"}
+user = Looker.user(first_user[:id])
+user.first_name # "Jonathan is awesome"
 
-user_id = 2
-second_user = client.user(user_id)
+credentials_email = Looker.get_credentials_email(user[:id])
+credentials_email[:email] # jonathan@looker.com
+Looker.update_credentials_email(user[:id], {:email => "jonathan+1@looker.com"})
+credentials_email = Looker.get_credentials_email(user[:id])
+credentials_email[:email] # jonathan+1@looker.com
+
+users = Looker.all_users()
+users.length # 3
+users[0]     # first_user
+
+
+Looker.delete_credentials_email(second_user[:id])
+Looker.delete_user(second_user[:id])
+
+users = Looker.all_user()
+users.length # 2
+users[1]     # third_user
 
 ```
