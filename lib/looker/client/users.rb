@@ -36,6 +36,77 @@ module Looker
           get 'user', options
         end
       end
+
+      # Delete a single user
+      #
+      # @param user [String] A looker user id.
+      # @return TODO what does a delete return
+      # @see look TODO docs link
+      # @example
+      #   Looker.delete_user(1)
+      def delete_user(user=nil, options = {})
+        boolean_from_response :delete, "users/#{user}", options
+      end
+
+      # Update a single user.
+      #
+      # @option user [String] id of user to update.
+      # @param options [Hash] A customizable set of options.
+      # @option options [String] :first_name
+      # @option options [String] :last_name
+      # @option options [String] :email Publically visible email address.
+      # @option options [String] :todo TODO: Other options for user.
+      #
+      # @return [Sawyer::Resource]
+      # @see look TODO docs link
+      # @example
+      #   Looker.update_user(1, {:first_name => "Jonathan", :last_name => "Swenson", :email => "jonathan@looker.com"})
+      def update_user(user, options = {})
+        patch "users/#{user}", options
+      end
+
+      # Creates a credentials email for user
+      #
+      # @option options [Hash] A customizable set of options.
+      # @option options [String] :first_name new user's first name
+      # @option options [String] :last_name new user's last name
+      # @option options [Boolean] :is_disabled whether or not a user is disabled
+      # @option options [String] :todo TODO: Other options for user.
+      #
+      # @return [Sawyer::Resource]
+      # @see look TODO docs link
+      # @example
+      #   Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+      def create_user(options = {})
+        post 'users', options
+      end
+
+      # Creates a credentials email for user
+      #
+      # @param user [String] user id to create credentials email for.
+      # @param email [String] email address for new user.
+      # @option options [Hash] A customizable set of options.
+      # @option options [String] :todo TODO: Other options for credentials email.
+      #
+      # @return [Sawyer::Resource]
+      # @see look TODO docs link
+      # @example
+      #   Looker.create_user([1, 2], {:first_name => "Jonathan", :last_name => "Swenson"})
+      def add_credentials_email(user, email, options = {})
+        post "users/#{user}/credentials_email", options.merge(:email => email)
+      end
+
+      def update_credentials_email(user, options = {})
+        patch "users/#{user}/credentials_email", options
+      end
+
+      def remove_credentials_email(user, options = {})
+        boolean_from_response :delete, "users/#{user}/credentials_email", options
+      end
+
+      def get_credentials_email(user, options = {})
+        get "users/#{user}/credentials_email", options
+      end
     end
 
     private

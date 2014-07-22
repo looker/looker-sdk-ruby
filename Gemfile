@@ -13,7 +13,7 @@ group :test do
   # gem 'json', '~> 1.7', :platforms => [:jruby] look TODO needed?
   gem 'minitest'
   gem 'webmock'
-  gem 'vcr', '~> 2.4'
+  gem 'vcr', '~> 2.9'
   gem 'minitest-vcr'
   gem 'netrc', '~> 0.7.7'
   gem 'simplecov', '~> 0.7.1', :require => false
