@@ -122,6 +122,7 @@ module Looker
       end
 
       # gets credentials email associated with a user
+      #
       # @param user [String] user id associated with the credentials email to retrieve
       # @option options [Hash] A customizable set of options.
       # @option options [String] :todo look TODO: Other options for credentials email. Do we need options?
@@ -131,6 +132,46 @@ module Looker
       #   Looker.get_credentials_email(1)
       def get_credentials_email(user, options = {})
         get "users/#{user}/credentials_email", options
+      end
+
+      # List all roles associated with a user
+      #
+      # This provides a list of the roles that a user has.
+      #
+      # @param user [Integer] User id.
+      # @param options [Hash] Optional options. look TODO do we need options here?
+      #
+      # @see look TODO docs link
+      #
+      # @return [Array<Sawyer::Resource>] List of Looker Roles associated with a user.
+      # @example
+      #   Looker.roles(1)
+      def roles(user, options = {})
+        paginate "users/#{user_id}/roles", options
+      end
+
+      # Add role to user
+      #
+      # @param user [Integer] User id.
+      # @param role_id [Integer] Id of new role.
+      # @return [Boolean] True on successful addition, false otherwise.
+      # @see look TODO docs link
+      # @example
+      #   Looker.add_role(1, 1)
+      def add_role(user, role_id, options = {})
+        boolean_from_response :put "users/#{user}/roles/#{role_id}", options
+      end
+
+      # Remove role from user.
+      #
+      # @param user [Integer] User id.
+      # @param role_id [Integer] Id of role to remove
+      # @return [Boolean] True if user removed, false otherwise.
+      # @see look TODO docs link
+      # @example
+      #   Looker.remove_role(1, 1)
+      def remove_role(user, role_id, options = {})
+        boolean_from_response :delete "users/#{user}/roles/#{role_id}", options
       end
     end
 
