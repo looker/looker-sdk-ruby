@@ -146,8 +146,8 @@ module Looker
       # @return [Array<Sawyer::Resource>] List of Looker Roles associated with a user.
       # @example
       #   Looker.roles(1)
-      def roles(user, options = {})
-        paginate "users/#{user_id}/roles", options
+      def user_roles(user, options = {})
+        paginate "users/#{user}/roles", options
       end
 
       # Add role to user
@@ -158,8 +158,8 @@ module Looker
       # @see look TODO docs link
       # @example
       #   Looker.add_role(1, 1)
-      def add_role(user, role_id, options = {})
-        boolean_from_response :put "users/#{user}/roles/#{role_id}", options
+      def add_user_role(user, role_id, options = {})
+        boolean_from_response :put, "users/#{user}/roles/#{role_id}", options
       end
 
       # Remove role from user.
@@ -170,8 +170,8 @@ module Looker
       # @see look TODO docs link
       # @example
       #   Looker.remove_role(1, 1)
-      def remove_role(user, role_id, options = {})
-        boolean_from_response :delete "users/#{user}/roles/#{role_id}", options
+      def remove_user_role(user, role_id, options = {})
+        boolean_from_response :delete, "users/#{user}/roles/#{role_id}", options
       end
     end
 

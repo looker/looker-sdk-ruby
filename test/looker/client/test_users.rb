@@ -120,5 +120,12 @@ describe Looker::Client::Users do
       Looker.delete_user(9999).must_equal false # doesn't exist
     end
   end
+
+  describe ".roles", :vcr do
+    it "gets roles of user" do
+      user = Looker.user(4)
+      roles = Looker.user_roles(user[:id])
+    end
+  end
 end
 
