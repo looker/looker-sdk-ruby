@@ -49,6 +49,10 @@ describe Looker::Client::Roles do
         Looker.create_role(:name => "test_domain", :domain_id => domain.id)
       end
 
+      assert_raises Looker::UnprocessableEntity do
+        Looker.create_role(:name => "test_domain", :domain_id => domain.id, :role_type_id => 9999)
+      end
+
       Looker.delete_domain(domain.id).must_equal true
     end
 
@@ -56,6 +60,10 @@ describe Looker::Client::Roles do
       role_type = Looker.create_role_type(:name => "test_role_type", :permissions => ["administer"])
       assert_raises Looker::UnprocessableEntity do
         Looker.create_role(:name => "test_domain", :role_type_id => role_type.id)
+      end
+
+      assert_raises Looker::UnprocessableEntity do
+        Looker.create_role(:name => "test_domain", :role_type_id => role_type.id, :domain_id => 9999)
       end
 
       Looker.delete_role_type(role_type.id).must_equal true

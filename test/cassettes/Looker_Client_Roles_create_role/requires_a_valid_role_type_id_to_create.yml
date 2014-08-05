@@ -26,15 +26,15 @@ http_interactions:
       - '119'
     body:
       encoding: US-ASCII
-      string: ! '{"id":24,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/24"}'
+      string: ! '{"id":26,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/26"}'
     http_version: 
-  recorded_at: Tue, 05 Aug 2014 22:39:04 GMT
+  recorded_at: Tue, 05 Aug 2014 22:42:04 GMT
 - request:
     method: post
     uri: http://localhost:19999/api/3.0/roles
     body:
       encoding: UTF-8
-      string: ! '{"name":"test_domain","domain_id":24}'
+      string: ! '{"name":"test_domain","domain_id":26}'
     headers:
       Accept:
       - application/vnd.looker.v3+json
@@ -57,10 +57,39 @@ http_interactions:
       encoding: US-ASCII
       string: ! '{"message":"Validation Failed","errors":[{"field":"role_type","code":"invalid"}],"documentation_url":"http://docs.looker.com/"}'
     http_version: 
-  recorded_at: Tue, 05 Aug 2014 22:39:04 GMT
+  recorded_at: Tue, 05 Aug 2014 22:42:04 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/roles
+    body:
+      encoding: UTF-8
+      string: ! '{"name":"test_domain","domain_id":26,"role_type_id":9999}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '127'
+    body:
+      encoding: US-ASCII
+      string: ! '{"message":"Validation Failed","errors":[{"field":"role_type","code":"invalid"}],"documentation_url":"http://docs.looker.com/"}'
+    http_version: 
+  recorded_at: Tue, 05 Aug 2014 22:42:04 GMT
 - request:
     method: delete
-    uri: http://localhost:19999/api/3.0/domains/24
+    uri: http://localhost:19999/api/3.0/domains/26
     body:
       encoding: UTF-8
       string: ! '{}'
@@ -80,5 +109,5 @@ http_interactions:
       encoding: US-ASCII
       string: ''
     http_version: 
-  recorded_at: Tue, 05 Aug 2014 22:39:04 GMT
+  recorded_at: Tue, 05 Aug 2014 22:42:04 GMT
 recorded_with: VCR 2.9.2
