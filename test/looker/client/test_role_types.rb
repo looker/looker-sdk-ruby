@@ -25,8 +25,8 @@ describe Looker::Client::RoleTypes do
       fetched_role_type = Looker.role_type(role_type.id)
 
       fetched_role_type.name.must_equal role_type.name
-      role_type.permissions.each do |m|
-        fetched_role_type.permissions.must_include m
+      role_type.permissions.each do |p|
+        fetched_role_type.permissions.must_include p.to_s
       end
       fetched_role_type.all_access.must_equal role_type.all_access
 
@@ -43,8 +43,8 @@ describe Looker::Client::RoleTypes do
 
       role_type.name.must_equal "test_role_type"
       role_type.all_access.must_equal false
-      permissions.each do |m|
-        role_type.permissions.must_include m.to_s
+      permissions.each do |p|
+        role_type.permissions.must_include p.to_s
       end
       # clean up role_type
       Looker.delete_role_type(role_type.id).must_equal true
@@ -70,6 +70,13 @@ describe Looker::Client::RoleTypes do
       # clean up role_type
       Looker.delete_role_type(role_type.id).must_equal true
     end
+
+    it "rejects invalid permissions" do
+      permissions = [:see_dashboards, :not_a_permission]
+      assert_raises Looker::UnprocessableEntity do
+        Looker.create_role_type(:name => "test_role_type", :permissions => permissions)
+      end
+    end
   end
 
   describe ".update_role_type", :vcr do
@@ -94,8 +101,8 @@ describe Looker::Client::RoleTypes do
       role_type = Looker.update_role_type(role_type.id, {:permissions => new_permissions})
       role_type.all_access.must_equal false
 
-      new_permissions.each do |m|
-        role_type.permissions.must_include m.to_s
+      new_permissions.each do |p|
+        role_type.permissions.must_include p.to_s
       end
 
       Looker.delete_role_type(role_type.id).must_equal true
@@ -110,6 +117,21 @@ describe Looker::Client::RoleTypes do
       role_type = Looker.update_role_type(role_type.id, {:permissions => new_permissions})
       role_type.all_access.must_equal true
 
+      Looker.delete_role_type(role_type.id).must_equal true
+    end
+
+    it "will not update with permissions that do not exist" do
+      permissions = [:see_dashboards, :access_data]
+      role_type = Looker.create_role_type(:name => "test_role_type", :permissions => permissions)
+      assert_raises Looker::UnprocessableEntity do
+        Looker.update_role_type(role_type.id, {:permissions => [:not_a_permission]})
+      end
+      # make sure it hasn't been updated
+      old_role_type = Looker.role_type(role_type.id)
+      permissions.each do |p|
+        old_role_type.permissions.must_include p.to_s
+      end
+      old_role_type.name.must_equal role_type.name
       Looker.delete_role_type(role_type.id).must_equal true
     end
   end
