@@ -4,6 +4,8 @@ require 'looker/authentication'
 require 'looker/rate_limit'
 require 'looker/client/users'
 require 'looker/client/roles'
+require 'looker/client/domains'
+require 'looker/client/role_types'
 
 module Looker
 
@@ -16,6 +18,8 @@ module Looker
     include Looker::Configurable
     include Looker::Client::Users
     include Looker::Client::Roles
+    include Looker::Client::Domains
+    include Looker::Client::RoleTypes
 
     # Header keys that can be passed in options hash to {#get},{#head}
     CONVENIENCE_HEADERS = Set.new([:accept, :content_type])

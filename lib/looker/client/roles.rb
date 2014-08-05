@@ -110,10 +110,6 @@ module Looker
       def remove_role_user(role_id, user, options = {})
         boolean_from_response :delete, "roles/#{role_id}/users/#{user}", options
       end
-
-      def role_models(role_id, options = {})
-        paginate "roles/#{role_id}/models", options
-      end
     end
 
   end
