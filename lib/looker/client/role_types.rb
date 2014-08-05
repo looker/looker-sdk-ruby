@@ -12,7 +12,7 @@ module Looker
       # for Looker.
       #
       # @param options [Hash] Optional options. look TODO do we need options here?
-      # @option options [Integer] :since The integer ID of the last User that
+      # @option options [Integer] :since The integer ID of the last RoleType that
       #   you’ve seen.
       #
       # @see look TODO docs link
@@ -82,7 +82,7 @@ module Looker
       #
       # This provides a list of the roles that a role_type has.
       #
-      # @param role_type [Integer] User id.
+      # @param role_type [Integer] RoleType id.
       # @param options [Hash] Optional options. look TODO do we need options here?
       #
       # @see look TODO docs link

@@ -47,26 +47,30 @@ module Looker
       #
       # @option role_id [Integer] id of role to update.
       # @param options [Hash] A customizable set of options.
+      # @option name [String] :name for role
+      # @option role_type_id [Integer] :role_type_id for role
+      # @option domain_id [Integer] :domain_id for role
       # @option options [String] :todo look TODO: Other options for role.
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.update_role(1, {:models => "ALL", :permissions => ["see_looks", "access_data"]})
+      #   Looker.update_role(1, :name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
       def update_role(role_id, options = {})
         patch "roles/#{role_id}", options
       end
 
       # Create a role.
       #
-      # @option user [String] id of user to update.
       # @param options [Hash] A customizable set of options.
       # @option options [String] :models
-      # @option options [Array<String>] :permissions
+      # @option name [String] :name for new role
+      # @option role_type_id [Integer] :role_type_id for new role
+      # @option domain_id [Integer] :domain_id for new role
       # @option options [String] :todo look TODO: Other options for role.
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.create_role({:models => "ALL", :permissions => ["see_looks", "access_data"]})
+      #   Looker.create_role(:name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
       def create_role(options = {})
         post 'roles', options
       end

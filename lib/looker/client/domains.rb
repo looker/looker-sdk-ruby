@@ -1,7 +1,7 @@
 module Looker
   class Client
 
-    # Methods for the Users API
+    # Methods for the Domains API
     #
     # @see look TODO docs link
     module Domains
@@ -12,7 +12,7 @@ module Looker
       # for Looker.
       #
       # @param options [Hash] Optional options. look TODO do we need options here?
-      # @option options [Integer] :since The integer ID of the last User that
+      # @option options [Integer] :since The integer ID of the last Domain that
       #   you’ve seen.
       #
       # @see look TODO docs link
@@ -82,7 +82,7 @@ module Looker
       #
       # This provides a list of the roles that a domain has.
       #
-      # @param domain [Integer] User id.
+      # @param domain [Integer] Domain id.
       # @param options [Hash] Optional options. look TODO do we need options here?
       #
       # @see look TODO docs link
