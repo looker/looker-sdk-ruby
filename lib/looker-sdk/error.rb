@@ -1,31 +1,31 @@
-module Looker
+module LookerSDK
   class Error < StandardError
 
-    # Returns the appropriate Looker::Error sublcass based
+    # Returns the appropriate LookerSDK::Error sublcass based
     # on status and response message
     #
     # @param [Hash] response HTTP response
-    # @return [Looker::Error]
+    # @return [LookerSDK::Error]
     def self.from_response(response)
       status  = response[:status].to_i
       body    = response[:body].to_s
       headers = response[:response_headers]
 
       if klass =  case status
-                  when 400      then Looker::BadRequest
+                  when 400      then LookerSDK::BadRequest
                   when 401      then error_for_401(headers)
                   when 403      then error_for_403(body)
-                  when 404      then Looker::NotFound
-                  when 406      then Looker::NotAcceptable
-                  when 409      then Looker::Conflict
-                  when 415      then Looker::UnsupportedMediaType
-                  when 422      then Looker::UnprocessableEntity
-                  when 400..499 then Looker::ClientError
-                  when 500      then Looker::InternalServerError
-                  when 501      then Looker::NotImplemented
-                  when 502      then Looker::BadGateway
-                  when 503      then Looker::ServiceUnavailable
-                  when 500..599 then Looker::ServerError
+                  when 404      then LookerSDK::NotFound
+                  when 406      then LookerSDK::NotAcceptable
+                  when 409      then LookerSDK::Conflict
+                  when 415      then LookerSDK::UnsupportedMediaType
+                  when 422      then LookerSDK::UnprocessableEntity
+                  when 400..499 then LookerSDK::ClientError
+                  when 500      then LookerSDK::InternalServerError
+                  when 501      then LookerSDK::NotImplemented
+                  when 502      then LookerSDK::BadGateway
+                  when 503      then LookerSDK::ServiceUnavailable
+                  when 500..599 then LookerSDK::ServerError
                   end
         klass.new(response)
       end
@@ -46,10 +46,10 @@ module Looker
     # Returns most appropriate error for 401 HTTP status code
     # @private
     def self.error_for_401(headers)
-      if Looker::OneTimePasswordRequired.required_header(headers)
-        Looker::OneTimePasswordRequired
+      if LookerSDK::OneTimePasswordRequired.required_header(headers)
+        LookerSDK::OneTimePasswordRequired
       else
-        Looker::Unauthorized
+        LookerSDK::Unauthorized
       end
     end
 
@@ -57,11 +57,11 @@ module Looker
     # @private
     def self.error_for_403(body)
       if body =~ /rate limit exceeded/i
-        Looker::TooManyRequests
+        LookerSDK::TooManyRequests
       elsif body =~ /login attempts exceeded/i
-        Looker::TooManyLoginAttempts
+        LookerSDK::TooManyLoginAttempts
       else
-        Looker::Forbidden
+        LookerSDK::Forbidden
       end
     end
 

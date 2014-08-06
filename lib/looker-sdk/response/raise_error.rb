@@ -1,7 +1,7 @@
 require 'faraday'
-require 'looker/error'
+require 'looker-sdk/error'
 
-module Looker
+module LookerSDK
   # Faraday response middleware
   module Response
 
@@ -11,7 +11,7 @@ module Looker
       private
 
       def on_complete(response)
-        if error = Looker::Error.from_response(response)
+        if error = LookerSDK::Error.from_response(response)
           raise error
         end
       end

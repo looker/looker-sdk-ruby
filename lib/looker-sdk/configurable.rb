@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
 
   # Configuration options for {Client}, defaulting to values
   # in {Default}
@@ -51,7 +51,7 @@ module Looker
 
     class << self
 
-      # List of configurable keys for {Looker::Client}
+      # List of configurable keys for {LookerSDK::Client}
       # @return [Array] of option keys
       def keys
         @keys ||= [
@@ -82,8 +82,8 @@ module Looker
 
     # Reset configuration options to default values
     def reset!
-      Looker::Configurable.keys.each do |key|
-        instance_variable_set(:"@#{key}", Looker::Default.options[key])
+      LookerSDK::Configurable.keys.each do |key|
+        instance_variable_set(:"@#{key}", LookerSDK::Default.options[key])
       end
       self
     end
@@ -113,7 +113,7 @@ module Looker
     private
 
     def options
-      Hash[Looker::Configurable.keys.map{|key| [key, instance_variable_get(:"@#{key}")]}]
+      Hash[LookerSDK::Configurable.keys.map{|key| [key, instance_variable_get(:"@#{key}")]}]
     end
 
     def fetch_client_id_and_secret(overrides = {})

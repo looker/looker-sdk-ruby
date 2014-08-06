@@ -1,6 +1,6 @@
-module Looker
+module LookerSDK
 
-  # Authentication methods for {Looker::Client}
+  # Authentication methods for {LookerSDK::Client}
   module Authentication
 
     # Indicates if the client was supplied  Basic Auth

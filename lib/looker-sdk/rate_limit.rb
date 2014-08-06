@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
 
   # Class for API Rate Limit info
   #

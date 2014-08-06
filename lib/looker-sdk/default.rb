@@ -1,7 +1,7 @@
-require 'looker/response/raise_error'
-require 'looker/version'
+require 'looker-sdk/response/raise_error'
+require 'looker-sdk/version'
 
-module Looker
+module LookerSDK
 
   # Default configuration options for {Client}
   module Default
@@ -10,7 +10,7 @@ module Looker
     API_ENDPOINT = "http://localhost:19999/api/3.0/".freeze
 
     # Default User Agent header string
-    USER_AGENT   = "Looker Ruby Gem #{Looker::VERSION}".freeze
+    USER_AGENT   = "Looker Ruby Gem #{LookerSDK::VERSION}".freeze
 
     # Default media type
     MEDIA_TYPE   = "application/vnd.looker.v3+json"
@@ -23,7 +23,7 @@ module Looker
 
     # Default Faraday middleware stack
     MIDDLEWARE = RACK_BUILDER_CLASS.new do |builder|
-      builder.use Looker::Response::RaiseError
+      builder.use LookerSDK::Response::RaiseError
       builder.adapter Faraday.default_adapter
     end
 
@@ -32,7 +32,7 @@ module Looker
       # Configuration options
       # @return [Hash]
       def options
-        Hash[Looker::Configurable.keys.map{|key| [key, send(key)]}]
+        Hash[LookerSDK::Configurable.keys.map{|key| [key, send(key)]}]
       end
 
       # Default access token from ENV

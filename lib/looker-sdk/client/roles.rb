@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
   class Client
 
     # Methods for the Roles API
@@ -26,7 +26,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.role(1)
+      #   LookerSDK.role(1)
       def role(role_id, options = {})
         get "roles/#{role_id}", options
       end
@@ -38,7 +38,7 @@ module Looker
       # @option options [Hash] look TODO do we need options here?
       # @see look TODO docs link
       # @example
-      #   Looker.delete_role(1)
+      #   LookerSDK.delete_role(1)
       def delete_role(role_id, options = {})
         boolean_from_response :delete, "roles/#{role_id}", options
       end
@@ -54,7 +54,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.update_role(1, :name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
+      #   LookerSDK.update_role(1, :name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
       def update_role(role_id, options = {})
         patch "roles/#{role_id}", options
       end
@@ -70,7 +70,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.create_role(:name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
+      #   LookerSDK.create_role(:name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
       def create_role(options = {})
         post 'roles', options
       end
@@ -86,7 +86,7 @@ module Looker
       #
       # @return [Array<Sawyer::Resource>] List of Looker Users associated with a role.
       # @example
-      #   Looker.role_users(1)
+      #   LookerSDK.role_users(1)
       def role_users(role_id, options = {})
         paginate "roles/#{role_id}/users", options
       end
@@ -98,7 +98,7 @@ module Looker
       # @return [Boolean] True on successful addition, false otherwise.
       # @see look TODO docs link
       # @example
-      #   Looker.add_role_user(1, 1)
+      #   LookerSDK.add_role_user(1, 1)
       def add_role_user(role_id, user, options = {})
         boolean_from_response :put, "roles/#{role_id}/users/#{user}", options
       end
@@ -110,7 +110,7 @@ module Looker
       # @return [Boolean] True if user removed, false otherwise.
       # @see look TODO docs link
       # @example
-      #   Looker.remove_role_user(1, 1)
+      #   LookerSDK.remove_role_user(1, 1)
       def remove_role_user(role_id, user, options = {})
         boolean_from_response :delete, "roles/#{role_id}/users/#{user}", options
       end

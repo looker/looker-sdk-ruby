@@ -1,33 +1,33 @@
 require 'sawyer'
-require 'looker/configurable'
-require 'looker/authentication'
-require 'looker/rate_limit'
-require 'looker/client/users'
-require 'looker/client/roles'
-require 'looker/client/domains'
-require 'looker/client/role_types'
+require 'looker-sdk/configurable'
+require 'looker-sdk/authentication'
+require 'looker-sdk/rate_limit'
+require 'looker-sdk/client/users'
+require 'looker-sdk/client/roles'
+require 'looker-sdk/client/domains'
+require 'looker-sdk/client/role_types'
 
-module Looker
+module LookerSDK
 
-  # Client for the Looker API
+  # Client for the LookerSDK API
   #
   # @see look TODO docs link
   class Client
 
-    include Looker::Authentication
-    include Looker::Configurable
-    include Looker::Client::Users
-    include Looker::Client::Roles
-    include Looker::Client::Domains
-    include Looker::Client::RoleTypes
+    include LookerSDK::Authentication
+    include LookerSDK::Configurable
+    include LookerSDK::Client::Users
+    include LookerSDK::Client::Roles
+    include LookerSDK::Client::Domains
+    include LookerSDK::Client::RoleTypes
 
     # Header keys that can be passed in options hash to {#get},{#head}
     CONVENIENCE_HEADERS = Set.new([:accept, :content_type])
 
     def initialize(options = {})
       # Use options passed in, but fall back to module defaults
-      Looker::Configurable.keys.each do |key|
-        instance_variable_set(:"@#{key}", options[key] || Looker.instance_variable_get(:"@#{key}"))
+      LookerSDK::Configurable.keys.each do |key|
+        instance_variable_set(:"@#{key}", options[key] || LookerSDK.instance_variable_get(:"@#{key}"))
       end
 
       login_from_netrc unless user_authenticated? || application_authenticated?
@@ -148,7 +148,7 @@ module Looker
       data
     end
 
-    # Hypermedia agent for the Looker API
+    # Hypermedia agent for the LookerSDK API
     #
     # @return [Sawyer::Agent]
     def agent
@@ -182,13 +182,13 @@ module Looker
     # Duplicate client using client_id and client_secret as
     # Basic Authentication credentials.
     # @example
-    #   Looker.client_id = "foo"
-    #   Looker.client_secret = "bar"
+    #   LookerSDK.client_id = "foo"
+    #   LookerSDK.client_secret = "bar"
     #
     #   # GET https://api.looker.com/?client_id=foo&client_secret=bar
-    #   Looker.get "/"
+    #   LookerSDK.get "/"
     #
-    #   Looker.client.as_app do |client|
+    #   LookerSDK.client.as_app do |client|
     #     # GET https://foo:bar@api.looker.com/
     #     client.get "/"
     #   end
@@ -279,7 +279,7 @@ module Looker
     def boolean_from_response(method, path, options = {})
       request(method, path, options)
       @last_response.status == 204
-    rescue Looker::NotFound
+    rescue LookerSDK::NotFound
       false
     end
 

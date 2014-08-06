@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
   class Client
 
     # Methods for the Users API
@@ -29,7 +29,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.user(1)
+      #   LookerSDK.user(1)
       def user(user=nil, options = {})
         if user
           get "users/#{user}", options
@@ -45,7 +45,7 @@ module Looker
       # @option options [Hash] look TODO do we need options here?
       # @see look TODO docs link
       # @example
-      #   Looker.delete_user(1)
+      #   LookerSDK.delete_user(1)
       def delete_user(user=nil, options = {})
         boolean_from_response :delete, "users/#{user}", options
       end
@@ -60,7 +60,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.update_user(1, {:first_name => "Jonathan", :last_name => "Swenson"})
+      #   LookerSDK.update_user(1, {:first_name => "Jonathan", :last_name => "Swenson"})
       def update_user(user, options = {})
         patch "users/#{user}", options
       end
@@ -75,7 +75,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+      #   LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
       def create_user(options = {})
         post 'users', options
       end
@@ -89,7 +89,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.create_credentials_email(1, "jonathan@looker.com")
+      #   LookerSDK.create_credentials_email(1, "jonathan@looker.com")
       def create_credentials_email(user, email, options = {})
         post "users/#{user}/credentials_email", options.merge(:email => email)
       end
@@ -103,7 +103,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.update_credentials_email(1, {:email => "jonathan+1@looker.com"})
+      #   LookerSDK.update_credentials_email(1, {:email => "jonathan+1@looker.com"})
       def update_credentials_email(user, options = {})
         patch "users/#{user}/credentials_email", options
       end
@@ -116,7 +116,7 @@ module Looker
       # @return [Boolean] whether or not the delete succeeded
       # @see look TODO docs link
       # @example
-      #   Looker.delete_credentials_email(9)
+      #   LookerSDK.delete_credentials_email(9)
       def delete_credentials_email(user, options = {})
         boolean_from_response :delete, "users/#{user}/credentials_email", options
       end
@@ -129,7 +129,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.get_credentials_email(1)
+      #   LookerSDK.get_credentials_email(1)
       def get_credentials_email(user, options = {})
         get "users/#{user}/credentials_email", options
       end
@@ -145,7 +145,7 @@ module Looker
       #
       # @return [Array<Sawyer::Resource>] List of Looker Roles associated with a user.
       # @example
-      #   Looker.roles(1)
+      #   LookerSDK.roles(1)
       def user_roles(user, options = {})
         paginate "users/#{user}/roles", options
       end
@@ -157,7 +157,7 @@ module Looker
       # @return [Boolean] True on successful addition, false otherwise.
       # @see look TODO docs link
       # @example
-      #   Looker.add_role(1, 1)
+      #   LookerSDK.add_role(1, 1)
       def add_user_role(user, role_id, options = {})
         boolean_from_response :put, "users/#{user}/roles/#{role_id}", options
       end
@@ -169,7 +169,7 @@ module Looker
       # @return [Boolean] True if user removed, false otherwise.
       # @see look TODO docs link
       # @example
-      #   Looker.remove_role(1, 1)
+      #   LookerSDK.remove_role(1, 1)
       def remove_user_role(user, role_id, options = {})
         boolean_from_response :delete, "users/#{user}/roles/#{role_id}", options
       end

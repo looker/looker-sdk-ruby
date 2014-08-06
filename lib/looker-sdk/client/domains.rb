@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
   class Client
 
     # Methods for the Domains API
@@ -29,7 +29,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.domain(1)
+      #   LookerSDK.domain(1)
       def domain(domain=nil, options = {})
         get "domains/#{domain}", options
       end
@@ -41,7 +41,7 @@ module Looker
       # @option options [Hash] look TODO do we need options here?
       # @see look TODO docs link
       # @example
-      #   Looker.delete_domain(1)
+      #   LookerSDK.delete_domain(1)
       def delete_domain(domain=nil, options = {})
         boolean_from_response :delete, "domains/#{domain}", options
       end
@@ -57,7 +57,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.update_domain(1, {:name => "Marketing", :models => ["business"]})
+      #   LookerSDK.update_domain(1, {:name => "Marketing", :models => ["business"]})
       def update_domain(domain, options = {})
         patch "domains/#{domain}", options
       end
@@ -72,8 +72,8 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.create_domain({:name => "Games", :models => ["zelda", "supersmash"]})
-      #   Looker.create_domain({:name => "every_model", :models => "all"})
+      #   LookerSDK.create_domain({:name => "Games", :models => ["zelda", "supersmash"]})
+      #   LookerSDK.create_domain({:name => "every_model", :models => "all"})
       def create_domain(options = {})
         post 'domains', options
       end
@@ -89,7 +89,7 @@ module Looker
       #
       # @return [Array<Sawyer::Resource>] List of Looker Roles associated with a domain.
       # @example
-      #   Looker.roles(1)
+      #   LookerSDK.roles(1)
       def domain_roles(domain, options = {})
         paginate "domains/#{domain}/roles", options
       end

@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
 
   # Current version
   # @return [String]

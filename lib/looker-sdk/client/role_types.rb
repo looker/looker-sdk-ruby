@@ -1,4 +1,4 @@
-module Looker
+module LookerSDK
   class Client
 
     # Methods for the RoleTypes API
@@ -29,7 +29,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.role_type(1)
+      #   LookerSDK.role_type(1)
       def role_type(role_type=nil, options = {})
         get "role_types/#{role_type}", options
       end
@@ -41,7 +41,7 @@ module Looker
       # @option options [Hash] look TODO do we need options here?
       # @see look TODO docs link
       # @example
-      #   Looker.delete_role_type(1)
+      #   LookerSDK.delete_role_type(1)
       def delete_role_type(role_type=nil, options = {})
         boolean_from_response :delete, "role_types/#{role_type}", options
       end
@@ -57,7 +57,7 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.update_role_type(1, {:name => "Admin Only", :permissions => [":administer"]})
+      #   LookerSDK.update_role_type(1, {:name => "Admin Only", :permissions => [":administer"]})
       def update_role_type(role_type, options = {})
         patch "role_types/#{role_type}", options
       end
@@ -72,8 +72,8 @@ module Looker
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   Looker.create_role_type({:name => "Games", :permissions => ["zelda", "supersmash"]})
-      #   Looker.create_role_type({:name => "every_model", :permissions => "all"})
+      #   LookerSDK.create_role_type({:name => "Games", :permissions => ["zelda", "supersmash"]})
+      #   LookerSDK.create_role_type({:name => "every_model", :permissions => "all"})
       def create_role_type(options = {})
         post 'role_types', options
       end
@@ -89,7 +89,7 @@ module Looker
       #
       # @return [Array<Sawyer::Resource>] List of Looker Roles associated with a role_type.
       # @example
-      #   Looker.roles(1)
+      #   LookerSDK.roles(1)
       def role_type_roles(role_type, options = {})
         paginate "role_types/#{role_type}/roles", options
       end

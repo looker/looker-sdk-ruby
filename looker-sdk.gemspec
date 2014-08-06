@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path('../lib', __FILE__)
-require 'looker/version'
+require 'looker-sdk/version'
 
 Gem::Specification.new do |s|
   s.name        = 'looker-sdk'
-  s.version     = Looker::VERSION
+  s.version     = LookerSDK::VERSION
   s.authors     = ['Looker'] # look TODO is this the right author?
   # s.email       = 'eng@looker.com' look TODO where should folks email about our open source stuff?
   s.homepage    = 'https://github.com/looker/looker-sdk-ruby' # look TODO is this the right url?
