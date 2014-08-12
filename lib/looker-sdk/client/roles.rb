@@ -91,29 +91,41 @@ module LookerSDK
         paginate "roles/#{role_id}/users", options
       end
 
-      # Add user to role
+      # Add set users of role
       #
       # @param role_id [Integer] Role id.
-      # @param user [Integer] Id of new user.
-      # @return [Boolean] True on successful addition, false otherwise.
+      # @param users [Array<Integer>] Ids of new users.
+      # @return [Sawyer::Resource] all users that exist in updated role.
       # @see look TODO docs link
       # @example
-      #   LookerSDK.add_role_user(1, 1)
-      def add_role_user(role_id, user, options = {})
-        boolean_from_response :put, "roles/#{role_id}/users/#{user}", options
+      #   LookerSDK.set_role_users(1, [1, 3, 5])
+      def set_role_users(role_id, users, options = {})
+        patch "roles/#{role_id}/users", options.merge(:users => users)
       end
 
-      # Remove user from role.
-      #
-      # @param role_id [Integer] Role id.
-      # @param user [Integer] Id of user to remove
-      # @return [Boolean] True if user removed, false otherwise.
-      # @see look TODO docs link
-      # @example
-      #   LookerSDK.remove_role_user(1, 1)
-      def remove_role_user(role_id, user, options = {})
-        boolean_from_response :delete, "roles/#{role_id}/users/#{user}", options
-      end
+      # # Add user to role
+      # #
+      # # @param role_id [Integer] Role id.
+      # # @param user [Integer] Id of new user.
+      # # @return [Boolean] True on successful addition, false otherwise.
+      # # @see look TODO docs link
+      # # @example
+      # #   LookerSDK.add_role_user(1, 1)
+      # def add_role_user(role_id, user, options = {})
+      #   boolean_from_response :put, "roles/#{role_id}/users/#{user}", options
+      # end
+
+      # # Remove user from role.
+      # #
+      # # @param role_id [Integer] Role id.
+      # # @param user [Integer] Id of user to remove
+      # # @return [Boolean] True if user removed, false otherwise.
+      # # @see look TODO docs link
+      # # @example
+      # #   LookerSDK.remove_role_user(1, 1)
+      # def remove_role_user(role_id, user, options = {})
+      #   boolean_from_response :delete, "roles/#{role_id}/users/#{user}", options
+      # end
     end
 
   end

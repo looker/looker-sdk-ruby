@@ -7,6 +7,19 @@ describe LookerSDK::Client::Roles do
     @client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
   end
 
+  def with_role(&block)
+    role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
+    domain = LookerSDK.create_domain(:name => "test_domain", :models => "all")
+    role = LookerSDK.create_role(:name => "test_role", :domain_id => domain.id, :role_type_id => role_type.id)
+    begin
+      yield role
+    ensure
+      LookerSDK.delete_role(role.id).must_equal true
+      LookerSDK.delete_role_type(role_type.id).must_equal true
+      LookerSDK.delete_domain(domain.id).must_equal true
+    end
+  end
+
   describe ".all_roles", :vcr do
     it "returns all Looker roles" do
 
@@ -71,19 +84,6 @@ describe LookerSDK::Client::Roles do
   end
 
   describe ".update_role", :vcr do
-
-    def with_role(&block)
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-      domain = LookerSDK.create_domain(:name => "test_domain", :models => "all")
-      role = LookerSDK.create_role(:name => "test_role", :domain_id => domain.id, :role_type_id => role_type.id)
-      begin
-        yield role
-      ensure
-        LookerSDK.delete_role(role.id).must_equal true
-        LookerSDK.delete_role_type(role_type.id).must_equal true
-        LookerSDK.delete_domain(domain.id).must_equal true
-      end
-    end
 
     it "updates a role" do
       with_role do |role|
@@ -156,6 +156,24 @@ describe LookerSDK::Client::Roles do
 
       assert_raises LookerSDK::Forbidden do
         LookerSDK.delete_role(admin_role.id)
+      end
+    end
+  end
+
+  describe ".set_role_users", :vcr do
+    it "sets users of role" do
+      users = (1..5).map {|i| LookerSDK.create_user }
+      with_role do |role|
+        LookerSDK.set_role_users(role.id, users.map {|u| u.id })
+        new_user_ids = LookerSDK.role_users(role.id).map {|user| user.id}
+
+        users.map {|u| u.id}.each do |user_id|
+          new_user_ids.must_include user_id
+        end
+
+      end
+      users.each do |u|
+        LookerSDK.delete_user(u.id)
       end
     end
   end
