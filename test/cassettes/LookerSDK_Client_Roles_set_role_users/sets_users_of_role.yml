@@ -1,0 +1,479 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/users
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '186'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":17,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[17],"credentials_email":null,"models":[],"url":"http://localhost:19999/api/3.0/users/17"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:08 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/users
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '186'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":18,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[18],"credentials_email":null,"models":[],"url":"http://localhost:19999/api/3.0/users/18"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:08 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/users
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '186'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":19,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[19],"credentials_email":null,"models":[],"url":"http://localhost:19999/api/3.0/users/19"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:08 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/users
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '186'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":20,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[20],"credentials_email":null,"models":[],"url":"http://localhost:19999/api/3.0/users/20"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:08 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/users
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '186'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":21,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[21],"credentials_email":null,"models":[],"url":"http://localhost:19999/api/3.0/users/21"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:08 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/role_types
+    body:
+      encoding: UTF-8
+      string: ! '{"name":"test_role_type","permissions":["administer"]}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '134'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":53,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/53"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:08 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/domains
+    body:
+      encoding: UTF-8
+      string: ! '{"name":"test_domain","models":"all"}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '119'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":49,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/49"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: post
+    uri: http://localhost:19999/api/3.0/roles
+    body:
+      encoding: UTF-8
+      string: ! '{"name":"test_role","domain_id":49,"role_type_id":53}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '412'
+    body:
+      encoding: US-ASCII
+      string: ! '{"id":29,"name":"test_role","role_type":{"id":53,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/53"},"domain":{"id":49,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/49"},"url":"http://localhost:19999/api/3.0/roles/29","users_url":"http://localhost:19999/api/3.0/roles/29/users"}'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: put
+    uri: http://localhost:19999/api/3.0/roles/29/users
+    body:
+      encoding: UTF-8
+      string: ! '{"users":[17,18,19,20,21]}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '981'
+    body:
+      encoding: US-ASCII
+      string: ! '[{"id":17,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[17],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/17"},{"id":18,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[18],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/18"},{"id":19,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[19],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/19"},{"id":20,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[20],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/20"},{"id":21,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[21],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/21"}]'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: get
+    uri: http://localhost:19999/api/3.0/roles/29/users
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: ! '[{"id":17,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[17],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/17"},{"id":18,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[18],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/18"},{"id":19,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[19],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/19"},{"id":20,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[20],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/20"},{"id":21,"first_name":null,"last_name":null,"models_dir":null,"is_disabled":false,"look_access":[21],"credentials_email":null,"models":["thelook"],"url":"http://localhost:19999/api/3.0/users/21"}]'
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/roles/29
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/role_types/53
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/domains/49
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/users/17
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/users/18
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/users/19
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/users/20
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/users/21
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: 
+  recorded_at: Tue, 12 Aug 2014 21:01:09 GMT
+recorded_with: VCR 2.9.2
