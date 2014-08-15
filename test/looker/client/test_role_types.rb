@@ -119,21 +119,6 @@ describe LookerSDK::Client::RoleTypes do
 
       LookerSDK.delete_role_type(role_type.id).must_equal true
     end
-
-    it "will not update with permissions that do not exist" do
-      permissions = [:see_dashboards, :access_data]
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
-      assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.update_role_type(role_type.id, {:permissions => [:not_a_permission]})
-      end
-      # make sure it hasn't been updated
-      old_role_type = LookerSDK.role_type(role_type.id)
-      permissions.each do |p|
-        old_role_type.permissions.must_include p.to_s
-      end
-      old_role_type.name.must_equal role_type.name
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-    end
   end
 
   describe ".delete_role_type", :vcr do
