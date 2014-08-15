@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:19999/api/3.0/role_domains
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: ! '[{"id":1,"name":"All","models":["thelook","thelook_netezza","thelook_sf"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_domains/1"},{"id":2,"name":"Domain
+        1","models":[],"all_access":false,"url":"http://localhost:19999/api/3.0/role_domains/2"}]'
+    http_version: 
+  recorded_at: Fri, 15 Aug 2014 00:41:08 GMT
+recorded_with: VCR 2.9.2
