@@ -1,16 +1,16 @@
-require 'looker/client'
-require 'looker/default'
+require 'looker-sdk/client'
+require 'looker-sdk/default'
 
-module Looker
+module LookerSDK
 
   class << self
-    include Looker::Configurable
+    include LookerSDK::Configurable
 
     # API client based on configured options {Configurable}
     #
-    # @return [Looker::Client] API wrapper
+    # @return [LookerSDK::Client] API wrapper
     def client
-      @client = Looker::Client.new(options) unless defined?(@client) && @client.same_options?(options)
+      @client = LookerSDK::Client.new(options) unless defined?(@client) && @client.same_options?(options)
       @client
     end
 
@@ -29,4 +29,4 @@ module Looker
   end
 end
 
-Looker.setup
+LookerSDK.setup

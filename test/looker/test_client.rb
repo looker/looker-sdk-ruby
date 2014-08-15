@@ -1,33 +1,33 @@
 require_relative '../helper'
 
-describe Looker::Client do
+describe LookerSDK::Client do
 
   before do
-    Looker.reset!
+    LookerSDK.reset!
   end
 
   after do
-    Looker.reset!
+    LookerSDK.reset!
   end
 
   describe "module configuration" do
 
     before do
-      Looker.reset!
-      Looker.configure do |config|
-        Looker::Configurable.keys.each do |key|
+      LookerSDK.reset!
+      LookerSDK.configure do |config|
+        LookerSDK::Configurable.keys.each do |key|
           config.send("#{key}=", "Some #{key}")
         end
       end
     end
 
     after do
-      Looker.reset!
+      LookerSDK.reset!
     end
 
     it "inherits the module configuration" do
-      client = Looker::Client.new
-      Looker::Configurable.keys.each do |key|
+      client = LookerSDK::Client.new
+      LookerSDK::Configurable.keys.each do |key|
         client.instance_variable_get(:"@#{key}").must_equal("Some #{key}")
       end
     end
@@ -44,16 +44,16 @@ describe Looker::Client do
       end
 
       it "overrides module configuration" do
-        client = Looker::Client.new(@opts)
+        client = LookerSDK::Client.new(@opts)
         client.per_page.must_equal(40)
         client.login.must_equal("looker_login")
         client.instance_variable_get(:"@password").must_equal("password2")
-        client.auto_paginate.must_equal(Looker.auto_paginate)
-        client.client_id.must_equal(Looker.client_id)
+        client.auto_paginate.must_equal(LookerSDK.auto_paginate)
+        client.client_id.must_equal(LookerSDK.client_id)
       end
 
       it "can set configuration after initialization" do
-        client = Looker::Client.new
+        client = LookerSDK::Client.new
         client.configure do |config|
           @opts.each do |key, value|
             config.send("#{key}=", value)
@@ -62,32 +62,32 @@ describe Looker::Client do
         client.per_page.must_equal(40)
         client.login.must_equal("looker_login")
         client.instance_variable_get(:"@password").must_equal("password2")
-        client.auto_paginate.must_equal(Looker.auto_paginate)
-        client.client_id.must_equal(Looker.client_id)
+        client.auto_paginate.must_equal(LookerSDK.auto_paginate)
+        client.client_id.must_equal(LookerSDK.client_id)
       end
 
       it "masks passwords on inspect" do
-        client = Looker::Client.new(@opts)
+        client = LookerSDK::Client.new(@opts)
         inspected = client.inspect
         inspected.wont_include("password2")
       end
 
       it "masks tokens on inspect" do
-        client = Looker::Client.new(:access_token => '87614b09dd141c22800f96f11737ade5226d7ba8')
+        client = LookerSDK::Client.new(:access_token => '87614b09dd141c22800f96f11737ade5226d7ba8')
         inspected = client.inspect
         inspected.wont_equal("87614b09dd141c22800f96f11737ade5226d7ba8")
       end
 
       it "masks client secrets on inspect" do
-        client = Looker::Client.new(:client_secret => '87614b09dd141c22800f96f11737ade5226d7ba8')
+        client = LookerSDK::Client.new(:client_secret => '87614b09dd141c22800f96f11737ade5226d7ba8')
         inspected = client.inspect
         inspected.wont_equal("87614b09dd141c22800f96f11737ade5226d7ba8")
       end
 
       describe "with .netrc" do
         it "can read .netrc files" do
-          Looker.reset!
-          client = Looker::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
+          LookerSDK.reset!
+          client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
           client.login.must_equal("netrc_looker")
           client.instance_variable_get(:"@password").must_equal("netrc_looker1")
         end
@@ -99,53 +99,53 @@ describe Looker::Client do
   #
   # describe "authentication" do
   #   before do
-  #     Looker.reset!
-  #     @client = Looker.client
+  #     LookerSDK.reset!
+  #     @client = LookerSDK.client
   #   end
   #
   #   describe "with module level config" do
   #     before do
-  #       Looker.reset!
+  #       LookerSDK.reset!
   #     end
   #     it "sets basic auth creds with .configure" do
-  #       Looker.configure do |config|
+  #       LookerSDK.configure do |config|
   #         config.login = 'pengwynn'
   #         config.password = 'il0veruby'
   #       end
-  #       expect(Looker.client).to be_basic_authenticated
+  #       expect(LookerSDK.client).to be_basic_authenticated
   #     end
   #     it "sets basic auth creds with module methods" do
-  #       Looker.login = 'pengwynn'
-  #       Looker.password = 'il0veruby'
-  #       expect(Looker.client).to be_basic_authenticated
+  #       LookerSDK.login = 'pengwynn'
+  #       LookerSDK.password = 'il0veruby'
+  #       expect(LookerSDK.client).to be_basic_authenticated
   #     end
   #     it "sets oauth token with .configure" do
-  #       Looker.configure do |config|
+  #       LookerSDK.configure do |config|
   #         config.access_token = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #       end
-  #       expect(Looker.client).not_to be_basic_authenticated
-  #       expect(Looker.client).to be_token_authenticated
+  #       expect(LookerSDK.client).not_to be_basic_authenticated
+  #       expect(LookerSDK.client).to be_token_authenticated
   #     end
   #     it "sets oauth token with module methods" do
-  #       Looker.access_token = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
-  #       expect(Looker.client).not_to be_basic_authenticated
-  #       expect(Looker.client).to be_token_authenticated
+  #       LookerSDK.access_token = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
+  #       expect(LookerSDK.client).not_to be_basic_authenticated
+  #       expect(LookerSDK.client).to be_token_authenticated
   #     end
   #     it "sets oauth application creds with .configure" do
-  #       Looker.configure do |config|
+  #       LookerSDK.configure do |config|
   #         config.client_id     = '97b4937b385eb63d1f46'
   #         config.client_secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #       end
-  #       expect(Looker.client).not_to be_basic_authenticated
-  #       expect(Looker.client).not_to be_token_authenticated
-  #       expect(Looker.client).to be_application_authenticated
+  #       expect(LookerSDK.client).not_to be_basic_authenticated
+  #       expect(LookerSDK.client).not_to be_token_authenticated
+  #       expect(LookerSDK.client).to be_application_authenticated
   #     end
   #     it "sets oauth token with module methods" do
-  #       Looker.client_id     = '97b4937b385eb63d1f46'
-  #       Looker.client_secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
-  #       expect(Looker.client).not_to be_basic_authenticated
-  #       expect(Looker.client).not_to be_token_authenticated
-  #       expect(Looker.client).to be_application_authenticated
+  #       LookerSDK.client_id     = '97b4937b385eb63d1f46'
+  #       LookerSDK.client_secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
+  #       expect(LookerSDK.client).not_to be_basic_authenticated
+  #       expect(LookerSDK.client).not_to be_token_authenticated
+  #       expect(LookerSDK.client).to be_application_authenticated
   #     end
   #   end
   #
@@ -192,13 +192,13 @@ describe Looker::Client do
   #
   #   describe "when basic authenticated"  do
   #     it "makes authenticated calls" do
-  #       Looker.configure do |config|
+  #       LookerSDK.configure do |config|
   #         config.login = 'pengwynn'
   #         config.password = 'il0veruby'
   #       end
   #
   #       root_request = stub_get("https://pengwynn:il0veruby@api.github.com/")
-  #       Looker.client.get("/")
+  #       LookerSDK.client.get("/")
   #       assert_requested root_request
   #     end
   #   end
@@ -221,7 +221,7 @@ describe Looker::Client do
   #   end
   #   describe "when application authenticated" do
   #     it "makes authenticated calls" do
-  #       client = Looker.client
+  #       client = LookerSDK.client
   #       client.client_id     = '97b4937b385eb63d1f46'
   #       client.client_secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #
@@ -234,29 +234,29 @@ describe Looker::Client do
   #
   # describe ".agent" do
   #   before do
-  #     Looker.reset!
+  #     LookerSDK.reset!
   #   end
   #   it "acts like a Sawyer agent" do
-  #     expect(Looker.client.agent).to respond_to :start
+  #     expect(LookerSDK.client.agent).to respond_to :start
   #   end
   #   it "caches the agent" do
-  #     agent = Looker.client.agent
-  #     expect(agent.object_id).to eq(Looker.client.agent.object_id)
+  #     agent = LookerSDK.client.agent
+  #     expect(agent.object_id).to eq(LookerSDK.client.agent.object_id)
   #   end
   # end
   #
   # describe ".root" do
   #   it "fetches the API root" do
-  #     Looker.reset!
+  #     LookerSDK.reset!
   #     VCR.use_cassette 'root' do
-  #       root = Looker.client.root
+  #       root = LookerSDK.client.root
   #       expect(root.rels[:issues].href).to eq("https://api.github.com/issues")
   #     end
   #   end
   #
   #   it "passes app creds in the query string" do
   #     root_request = stub_get("/?client_id=97b4937b385eb63d1f46&client_secret=d255197b4937b385eb63d1f4677e3ffee61fbaea")
-  #     client = Looker.client
+  #     client = LookerSDK.client
   #     client.client_id     = '97b4937b385eb63d1f46'
   #     client.client_secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #     client.root
@@ -266,8 +266,8 @@ describe Looker::Client do
   #
   # describe ".last_response", :vcr do
   #   it "caches the last agent response" do
-  #     Looker.reset!
-  #     client = Looker.client
+  #     LookerSDK.reset!
+  #     client = LookerSDK.client
   #     expect(client.last_response).to be_nil
   #     client.get "/"
   #     expect(client.last_response.status).to eq(200)
@@ -276,39 +276,39 @@ describe Looker::Client do
   #
   # describe ".get", :vcr do
   #   before(:each) do
-  #     Looker.reset!
+  #     LookerSDK.reset!
   #   end
   #   it "handles query params" do
-  #     Looker.get "/", :foo => "bar"
+  #     LookerSDK.get "/", :foo => "bar"
   #     assert_requested :get, "https://api.github.com?foo=bar"
   #   end
   #   it "handles headers" do
   #     request = stub_get("/zen").
   #         with(:query => {:foo => "bar"}, :headers => {:accept => "text/plain"})
-  #     Looker.get "/zen", :foo => "bar", :accept => "text/plain"
+  #     LookerSDK.get "/zen", :foo => "bar", :accept => "text/plain"
   #     assert_requested request
   #   end
   # end
   #
   # describe ".head", :vcr do
   #   it "handles query params" do
-  #     Looker.reset!
-  #     Looker.head "/", :foo => "bar"
+  #     LookerSDK.reset!
+  #     LookerSDK.head "/", :foo => "bar"
   #     assert_requested :head, "https://api.github.com?foo=bar"
   #   end
   #   it "handles headers" do
-  #     Looker.reset!
+  #     LookerSDK.reset!
   #     request = stub_head("/zen").
   #         with(:query => {:foo => "bar"}, :headers => {:accept => "text/plain"})
-  #     Looker.head "/zen", :foo => "bar", :accept => "text/plain"
+  #     LookerSDK.head "/zen", :foo => "bar", :accept => "text/plain"
   #     assert_requested request
   #   end
   # end
   #
   # describe "when making requests" do
   #   before do
-  #     Looker.reset!
-  #     @client = Looker.client
+  #     LookerSDK.reset!
+  #     @client = LookerSDK.client
   #   end
   #   it "Accepts application/vnd.github.v3+json by default" do
   #     VCR.use_cassette 'root' do
@@ -328,7 +328,7 @@ describe Looker::Client do
   #   end
   #   it "sets a default user agent" do
   #     root_request = stub_get("/").
-  #         with(:headers => {:user_agent => Looker::Default.user_agent})
+  #         with(:headers => {:user_agent => LookerSDK::Default.user_agent})
   #     @client.get "/"
   #     assert_requested root_request
   #     expect(@client.last_response.status).to eq(200)
@@ -337,16 +337,16 @@ describe Looker::Client do
   #     user_agent = "Mozilla/5.0 I am Spartacus!"
   #     root_request = stub_get("/").
   #         with(:headers => {:user_agent => user_agent})
-  #     client = Looker::Client.new(:user_agent => user_agent)
+  #     client = LookerSDK::Client.new(:user_agent => user_agent)
   #     client.get "/"
   #     assert_requested root_request
   #     expect(client.last_response.status).to eq(200)
   #   end
   #   it "sets a proxy server" do
-  #     Looker.configure do |config|
+  #     LookerSDK.configure do |config|
   #       config.proxy = 'http://proxy.example.com:80'
   #     end
-  #     conn = Looker.client.send(:agent).instance_variable_get(:"@conn")
+  #     conn = LookerSDK.client.send(:agent).instance_variable_get(:"@conn")
   #     expect(conn.proxy[:uri].to_s).to eq('http://proxy.example.com')
   #   end
   #   it "passes along request headers for POST" do
@@ -354,13 +354,13 @@ describe Looker::Client do
   #     root_request = stub_post("/").
   #         with(:headers => headers).
   #         to_return(:status => 201)
-  #     client = Looker::Client.new
+  #     client = LookerSDK::Client.new
   #     client.post "/", :headers => headers
   #     assert_requested root_request
   #     expect(client.last_response.status).to eq(201)
   #   end
   #   it "adds app creds in query params to anonymous requests" do
-  #     client = Looker::Client.new
+  #     client = LookerSDK::Client.new
   #     client.client_id     = key = '97b4937b385eb63d1f46'
   #     client.client_secret = secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #     root_request = stub_get "/?client_id=#{key}&client_secret=#{secret}"
@@ -369,7 +369,7 @@ describe Looker::Client do
   #     assert_requested root_request
   #   end
   #   it "omits app creds in query params for basic requests" do
-  #     client = Looker::Client.new :login => "login", :password => "passw0rd"
+  #     client = LookerSDK::Client.new :login => "login", :password => "passw0rd"
   #     client.client_id     = key = '97b4937b385eb63d1f46'
   #     client.client_secret = secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #     root_request = stub_get basic_github_url("/?foo=bar", :login => "login", :password => "passw0rd")
@@ -378,7 +378,7 @@ describe Looker::Client do
   #     assert_requested root_request
   #   end
   #   it "omits app creds in query params for token requests" do
-  #     client = Looker::Client.new(:access_token => '87614b09dd141c22800f96f11737ade5226d7ba8')
+  #     client = LookerSDK::Client.new(:access_token => '87614b09dd141c22800f96f11737ade5226d7ba8')
   #     client.client_id     = key = '97b4937b385eb63d1f46'
   #     client.client_secret = secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #     root_request = stub_get(github_url("/?foo=bar")).with \
@@ -391,20 +391,20 @@ describe Looker::Client do
   #
   # describe "auto pagination", :vcr do
   #   before do
-  #     Looker.reset!
-  #     Looker.configure do |config|
+  #     LookerSDK.reset!
+  #     LookerSDK.configure do |config|
   #       config.auto_paginate = true
   #       config.per_page = 1
   #     end
   #   end
   #
   #   after do
-  #     Looker.reset!
+  #     LookerSDK.reset!
   #   end
   #
   #   it "fetches all the pages" do
   #     url = '/search/users?q=user:joeyw user:pengwynn user:sferik'
-  #     Looker.client.paginate url
+  #     LookerSDK.client.paginate url
   #     assert_requested :get, github_url("#{url}&per_page=1")
   #     (2..3).each do |i|
   #       assert_requested :get, github_url("#{url}&per_page=1&page=#{i}")
@@ -412,7 +412,7 @@ describe Looker::Client do
   #   end
   #
   #   it "accepts a block for custom result concatination" do
-  #     results = Looker.client.paginate("/search/users?per_page=1&q=user:pengwynn+user:defunkt",
+  #     results = LookerSDK.client.paginate("/search/users?per_page=1&q=user:pengwynn+user:defunkt",
   #                                       :per_page => 1) { |data, last_response|
   #       data.items.concat last_response.data.items
   #     }
@@ -427,8 +427,8 @@ describe Looker::Client do
   #     @client_id = '97b4937b385eb63d1f46'
   #     @client_secret = 'd255197b4937b385eb63d1f4677e3ffee61fbaea'
   #
-  #     Looker.reset!
-  #     Looker.configure do |config|
+  #     LookerSDK.reset!
+  #     LookerSDK.configure do |config|
   #       config.access_token  = 'a' * 40
   #       config.client_id     = @client_id
   #       config.client_secret = @client_secret
@@ -440,7 +440,7 @@ describe Looker::Client do
   #   end
   #
   #   it "uses preconfigured client and secret" do
-  #     client = Looker.client
+  #     client = LookerSDK.client
   #     login = client.as_app do |c|
   #       c.login
   #     end
@@ -448,17 +448,17 @@ describe Looker::Client do
   #   end
   #
   #   it "requires a client and secret" do
-  #     Looker.reset!
-  #     client = Looker.client
+  #     LookerSDK.reset!
+  #     client = LookerSDK.client
   #     expect {
   #       client.as_app do |c|
   #         c.get
   #       end
-  #     }.to raise_error Looker::ApplicationCredentialsRequired
+  #     }.to raise_error LookerSDK::ApplicationCredentialsRequired
   #   end
   #
   #   it "duplicates the client" do
-  #     client = Looker.client
+  #     client = LookerSDK.client
   #     page_size = client.as_app do |c|
   #       c.per_page
   #     end
@@ -466,7 +466,7 @@ describe Looker::Client do
   #   end
   #
   #   it "uses client and secret as Basic auth" do
-  #     client = Looker.client
+  #     client = LookerSDK.client
   #     app_client = client.as_app do |c|
   #       c
   #     end
@@ -476,7 +476,7 @@ describe Looker::Client do
   #   it "makes authenticated requests" do
   #     stub_get github_url("/user")
   #
-  #     client = Looker.client
+  #     client = LookerSDK.client
   #     client.get "/user"
   #     client.as_app do |c|
   #       c.get "/"
@@ -488,7 +488,7 @@ describe Looker::Client do
   #
   # context "error handling" do
   #   before do
-  #     Looker.reset!
+  #     LookerSDK.reset!
   #     VCR.turn_off!
   #   end
   #
@@ -498,12 +498,12 @@ describe Looker::Client do
   #
   #   it "raises on 404" do
   #     stub_get('/booya').to_return(:status => 404)
-  #     expect { Looker.get('/booya') }.to raise_error Looker::NotFound
+  #     expect { LookerSDK.get('/booya') }.to raise_error LookerSDK::NotFound
   #   end
   #
   #   it "raises on 500" do
   #     stub_get('/boom').to_return(:status => 500)
-  #     expect { Looker.get('/boom') }.to raise_error Looker::InternalServerError
+  #     expect { LookerSDK.get('/boom') }.to raise_error LookerSDK::InternalServerError
   #   end
   #
   #   it "includes a message" do
@@ -515,8 +515,8 @@ describe Looker::Client do
   #       },
   #       :body => {:message => "No repository found for hubtopic"}.to_json
   #     begin
-  #       Looker.get('/boom')
-  #     rescue Looker::UnprocessableEntity => e
+  #       LookerSDK.get('/boom')
+  #     rescue LookerSDK::UnprocessableEntity => e
   #       expect(e.message).to include("GET https://api.github.com/boom: 422 - No repository found")
   #     end
   #   end
@@ -530,8 +530,8 @@ describe Looker::Client do
   #       },
   #       :body => {:error => "No repository found for hubtopic"}.to_json
   #     begin
-  #       Looker.get('/boom')
-  #     rescue Looker::UnprocessableEntity => e
+  #       LookerSDK.get('/boom')
+  #     rescue LookerSDK::UnprocessableEntity => e
   #       expect(e.message).to include("GET https://api.github.com/boom: 422 - Error: No repository found")
   #     end
   #   end
@@ -552,8 +552,8 @@ describe Looker::Client do
   #           ]
   #       }.to_json
   #     begin
-  #       Looker.get('/boom')
-  #     rescue Looker::UnprocessableEntity => e
+  #       LookerSDK.get('/boom')
+  #     rescue LookerSDK::UnprocessableEntity => e
   #       expect(e.message).to include("GET https://api.github.com/boom: 422 - Validation Failed")
   #       expect(e.message).to include("  resource: Issue")
   #       expect(e.message).to include("  field: title")
@@ -577,8 +577,8 @@ describe Looker::Client do
   #           ]
   #       }.to_json
   #     begin
-  #       Looker.get('/boom')
-  #     rescue Looker::UnprocessableEntity => e
+  #       LookerSDK.get('/boom')
+  #     rescue LookerSDK::UnprocessableEntity => e
   #       expect(e.errors.first[:resource]).to eq("Issue")
   #       expect(e.errors.first[:field]).to eq("title")
   #       expect(e.errors.first[:code]).to eq("missing_field")
@@ -587,7 +587,7 @@ describe Looker::Client do
   #
   #   it "knows the difference between Forbidden and rate limiting" do
   #     stub_get('/some/admin/stuffs').to_return(:status => 403)
-  #     expect { Looker.get('/some/admin/stuffs') }.to raise_error Looker::Forbidden
+  #     expect { LookerSDK.get('/some/admin/stuffs') }.to raise_error LookerSDK::Forbidden
   #
   #     stub_get('/users/mojomobo').to_return \
   #       :status => 403,
@@ -595,7 +595,7 @@ describe Looker::Client do
   #           :content_type => "application/json",
   #       },
   #       :body => {:message => "API rate limit exceeded"}.to_json
-  #     expect { Looker.get('/users/mojomobo') }.to raise_error Looker::TooManyRequests
+  #     expect { LookerSDK.get('/users/mojomobo') }.to raise_error LookerSDK::TooManyRequests
   #
   #     stub_get('/user').to_return \
   #       :status => 403,
@@ -603,7 +603,7 @@ describe Looker::Client do
   #           :content_type => "application/json",
   #       },
   #       :body => {:message => "Maximum number of login attempts exceeded"}.to_json
-  #     expect { Looker.get('/user') }.to raise_error Looker::TooManyLoginAttempts
+  #     expect { LookerSDK.get('/user') }.to raise_error LookerSDK::TooManyLoginAttempts
   #   end
   #
   #   it "raises on unknown client errors" do
@@ -613,7 +613,7 @@ describe Looker::Client do
   #           :content_type => "application/json",
   #       },
   #       :body => {:message => "I'm a teapot"}.to_json
-  #     expect { Looker.get('/user') }.to raise_error Looker::ClientError
+  #     expect { LookerSDK.get('/user') }.to raise_error LookerSDK::ClientError
   #   end
   #
   #   it "raises on unknown server errors" do
@@ -623,7 +623,7 @@ describe Looker::Client do
   #           :content_type => "application/json",
   #       },
   #       :body => {:message => "Bandwidth exceeded"}.to_json
-  #     expect { Looker.get('/user') }.to raise_error Looker::ServerError
+  #     expect { LookerSDK.get('/user') }.to raise_error LookerSDK::ServerError
   #   end
   #
   #   it "handles documentation URLs in error messages" do
@@ -637,8 +637,8 @@ describe Looker::Client do
   #           :documentation_url => "http://developer.github.com/v3"
   #       }.to_json
   #     begin
-  #       Looker.get('/user')
-  #     rescue Looker::UnsupportedMediaType => e
+  #       LookerSDK.get('/user')
+  #     rescue LookerSDK::UnsupportedMediaType => e
   #       msg = "415 - Unsupported Media Type"
   #       expect(e.message).to include(msg)
   #       expect(e.documentation_url).to eq("http://developer.github.com/v3")
@@ -652,13 +652,13 @@ describe Looker::Client do
   #           :content_type => "application/json"
   #       },
   #       :body => [].to_json
-  #     expect { Looker.get('/user') }.to raise_error Looker::ServerError
+  #     expect { LookerSDK.get('/user') }.to raise_error LookerSDK::ServerError
   #   end
   # end
   #
   # it "knows the difference between unauthorized and needs OTP" do
   #   stub_get('/authorizations').to_return(:status => 401)
-  #   expect { Looker.get('/authorizations') }.to raise_error Looker::Unauthorized
+  #   expect { LookerSDK.get('/authorizations') }.to raise_error LookerSDK::Unauthorized
   #
   #   stub_get('/authorizations/1').to_return \
   #       :status => 401,
@@ -667,7 +667,7 @@ describe Looker::Client do
   #           "X-GitHub-OTP" => "required; sms"
   #       },
   #       :body => {:message => "Must specify two-factor authentication OTP code."}.to_json
-  #   expect { Looker.get('/authorizations/1') }.to raise_error Looker::OneTimePasswordRequired
+  #   expect { LookerSDK.get('/authorizations/1') }.to raise_error LookerSDK::OneTimePasswordRequired
   # end
   #
   # it "knows the password delivery mechanism when needs OTP" do
@@ -680,8 +680,8 @@ describe Looker::Client do
   #     :body => {:message => "Must specify two-factor authentication OTP code."}.to_json
   #
   #   begin
-  #     Looker.get('/authorizations/1')
-  #   rescue Looker::OneTimePasswordRequired => otp_error
+  #     LookerSDK.get('/authorizations/1')
+  #   rescue LookerSDK::OneTimePasswordRequired => otp_error
   #     expect(otp_error.password_delivery).to eql 'app'
   #   end
   # end

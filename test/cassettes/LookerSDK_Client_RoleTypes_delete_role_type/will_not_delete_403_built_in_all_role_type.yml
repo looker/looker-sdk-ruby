@@ -1,0 +1,64 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:19999/api/3.0/role_types
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: ! '[{"id":1,"name":"Admin","permissions":["see_dashboards","access_data","see_looks","explore","develop","administer"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_types/1"},{"id":2,"name":"Developer","permissions":["access_data","develop","explore","see_dashboards","see_looks"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/2"},{"id":3,"name":"User","permissions":["access_data","explore","see_dashboards","see_looks"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/3"},{"id":4,"name":"Dashboard
+        Only User","permissions":["access_data","see_dashboards"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/4"}]'
+    http_version: 
+  recorded_at: Tue, 05 Aug 2014 22:06:15 GMT
+- request:
+    method: delete
+    uri: http://localhost:19999/api/3.0/role_types/1
+    body:
+      encoding: UTF-8
+      string: ! '{}'
+    headers:
+      Accept:
+      - application/vnd.looker.v3+json
+      User-Agent:
+      - Looker Ruby Gem 0.0.1
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      Content-Length:
+      - '116'
+    body:
+      encoding: US-ASCII
+      string: ! '{"message":"You do not have access.  Please contact an administrator","documentation_url":"http://docs.looker.com/"}'
+    http_version: 
+  recorded_at: Tue, 05 Aug 2014 22:06:15 GMT
+recorded_with: VCR 2.9.2
