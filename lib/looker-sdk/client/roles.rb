@@ -49,12 +49,12 @@ module LookerSDK
       # @param options [Hash] A customizable set of options.
       # @option name [String] :name for role
       # @option role_type_id [Integer] :role_type_id for role
-      # @option domain_id [Integer] :domain_id for role
+      # @option role_domain_id [Integer] :role_domain_id for role
       # @option options [String] :todo look TODO: Other options for role.
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   LookerSDK.update_role(1, :name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
+      #   LookerSDK.update_role(1, :name => "new_role", :role_domain_id => role_domain.id, :role_type_id => role_type.id)
       def update_role(role_id, options = {})
         patch "roles/#{role_id}", options
       end
@@ -65,12 +65,12 @@ module LookerSDK
       # @option options [String] :models
       # @option name [String] :name for new role
       # @option role_type_id [Integer] :role_type_id for new role
-      # @option domain_id [Integer] :domain_id for new role
+      # @option role_domain_id [Integer] :role_domain_id for new role
       # @option options [String] :todo look TODO: Other options for role.
       # @return [Sawyer::Resource]
       # @see look TODO docs link
       # @example
-      #   LookerSDK.create_role(:name => "new_role", :domain_id => domain.id, :role_type_id => role_type.id)
+      #   LookerSDK.create_role(:name => "new_role", :role_domain_id => role_domain.id, :role_type_id => role_type.id)
       def create_role(options = {})
         post 'roles', options
       end

@@ -4,7 +4,7 @@ require 'looker-sdk/authentication'
 require 'looker-sdk/rate_limit'
 require 'looker-sdk/client/users'
 require 'looker-sdk/client/roles'
-require 'looker-sdk/client/domains'
+require 'looker-sdk/client/role_domains'
 require 'looker-sdk/client/role_types'
 
 module LookerSDK
@@ -18,7 +18,7 @@ module LookerSDK
     include LookerSDK::Configurable
     include LookerSDK::Client::Users
     include LookerSDK::Client::Roles
-    include LookerSDK::Client::Domains
+    include LookerSDK::Client::RoleDomains
     include LookerSDK::Client::RoleTypes
 
     # Header keys that can be passed in options hash to {#get},{#head}

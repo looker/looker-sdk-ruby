@@ -28,9 +28,9 @@ http_interactions:
       - chunked
     body:
       encoding: UTF-8
-      string: ! '[{"id":1,"name":"User","role_type":{"id":3,"name":"User","permissions":["access_data","explore","see_dashboards","see_looks"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/3"},"domain":{"id":2,"name":"Domain
-        1","models":[],"all_access":false,"url":"http://localhost:19999/api/3.0/domains/2"},"url":"http://localhost:19999/api/3.0/roles/1","users_url":"http://localhost:19999/api/3.0/roles/1/users"},{"id":2,"name":"Admin","role_type":{"id":1,"name":"Admin","permissions":["see_dashboards","access_data","see_looks","explore","develop","administer"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_types/1"},"domain":{"id":1,"name":"All","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/1"},"url":"http://localhost:19999/api/3.0/roles/2","users_url":"http://localhost:19999/api/3.0/roles/2/users"}]'
-    http_version: 
+      string: ! '[{"id":1,"name":"User","role_type":{"id":3,"name":"User","permissions":["access_data","explore","see_dashboards","see_looks"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/3"},"role_domain":{"id":2,"name":"RoleDomain
+        1","models":[],"all_access":false,"url":"http://localhost:19999/api/3.0/role_domains/2"},"url":"http://localhost:19999/api/3.0/roles/1","users_url":"http://localhost:19999/api/3.0/roles/1/users"},{"id":2,"name":"Admin","role_type":{"id":1,"name":"Admin","permissions":["see_dashboards","access_data","see_looks","explore","develop","administer"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_types/1"},"role_domain":{"id":1,"name":"All","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_domains/1"},"url":"http://localhost:19999/api/3.0/roles/2","users_url":"http://localhost:19999/api/3.0/roles/2/users"}]'
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:16:24 GMT
 - request:
     method: delete
@@ -59,6 +59,6 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ! '{"message":"You do not have access.  Please contact an administrator","documentation_url":"http://docs.looker.com/"}'
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:16:24 GMT
 recorded_with: VCR 2.9.2

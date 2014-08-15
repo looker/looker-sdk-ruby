@@ -27,14 +27,14 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ! '{"id":47,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/47"}'
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: post
-    uri: http://localhost:19999/api/3.0/domains
+    uri: http://localhost:19999/api/3.0/role_domains
     body:
       encoding: UTF-8
-      string: ! '{"name":"test_domain","models":"all"}'
+      string: ! '{"name":"test_role_domain","models":"all"}'
     headers:
       Accept:
       - application/vnd.looker.v3+json
@@ -55,15 +55,15 @@ http_interactions:
       - '119'
     body:
       encoding: US-ASCII
-      string: ! '{"id":36,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/36"}'
-    http_version: 
+      string: ! '{"id":36,"name":"test_role_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_domains/36"}'
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: post
     uri: http://localhost:19999/api/3.0/roles
     body:
       encoding: UTF-8
-      string: ! '{"name":"test_role","domain_id":36,"role_type_id":47}'
+      string: ! '{"name":"test_role","role_domain_id":36,"role_type_id":47}'
     headers:
       Accept:
       - application/vnd.looker.v3+json
@@ -84,15 +84,15 @@ http_interactions:
       - '412'
     body:
       encoding: US-ASCII
-      string: ! '{"id":16,"name":"test_role","role_type":{"id":47,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/47"},"domain":{"id":36,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/36"},"url":"http://localhost:19999/api/3.0/roles/16","users_url":"http://localhost:19999/api/3.0/roles/16/users"}'
-    http_version: 
+      string: ! '{"id":16,"name":"test_role","role_type":{"id":47,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/47"},"role_domain":{"id":36,"name":"test_role_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_domains/36"},"url":"http://localhost:19999/api/3.0/roles/16","users_url":"http://localhost:19999/api/3.0/roles/16/users"}'
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: post
     uri: http://localhost:19999/api/3.0/roles
     body:
       encoding: UTF-8
-      string: ! '{"name":"new_name","domain_id":36,"role_type_id":47}'
+      string: ! '{"name":"new_name","role_domain_id":36,"role_type_id":47}'
     headers:
       Accept:
       - application/vnd.looker.v3+json
@@ -113,8 +113,8 @@ http_interactions:
       - '411'
     body:
       encoding: US-ASCII
-      string: ! '{"id":17,"name":"new_name","role_type":{"id":47,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/47"},"domain":{"id":36,"name":"test_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/domains/36"},"url":"http://localhost:19999/api/3.0/roles/17","users_url":"http://localhost:19999/api/3.0/roles/17/users"}'
-    http_version: 
+      string: ! '{"id":17,"name":"new_name","role_type":{"id":47,"name":"test_role_type","permissions":["administer"],"all_access":false,"url":"http://localhost:19999/api/3.0/role_types/47"},"role_domain":{"id":36,"name":"test_role_domain","models":["thelook"],"all_access":true,"url":"http://localhost:19999/api/3.0/role_domains/36"},"url":"http://localhost:19999/api/3.0/roles/17","users_url":"http://localhost:19999/api/3.0/roles/17/users"}'
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: patch
@@ -143,7 +143,7 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ! '{"message":"Validation Failed","errors":[{"field":"name","code":"already_exists"}],"documentation_url":"http://docs.looker.com/"}'
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: delete
@@ -166,7 +166,7 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: delete
@@ -189,7 +189,7 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: delete
@@ -212,11 +212,11 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 - request:
     method: delete
-    uri: http://localhost:19999/api/3.0/domains/36
+    uri: http://localhost:19999/api/3.0/role_domains/36
     body:
       encoding: UTF-8
       string: ! '{}'
@@ -235,6 +235,6 @@ http_interactions:
     body:
       encoding: US-ASCII
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Tue, 05 Aug 2014 23:11:25 GMT
 recorded_with: VCR 2.9.2
