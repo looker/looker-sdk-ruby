@@ -176,6 +176,7 @@ describe LookerSDK::Client::Roles do
         LookerSDK.delete_user(u.id)
       end
     end
+
     it "wont set duplicate roles" do
       users = (1..5).map { |i| LookerSDK.create_user }
       with_role do |role|
