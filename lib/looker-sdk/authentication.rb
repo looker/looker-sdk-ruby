@@ -3,6 +3,39 @@ module LookerSDK
   # Authentication methods for {LookerSDK::Client}
   module Authentication
 
+    attr_accessor :access_token_type, :access_token_expires_at
+
+    # Authenticate to the server and get an access_token for use in future calls.
+
+    # Uses passed in credentials or fallsback to other credentials as appropriate.
+    # This allows for using the .netrc to manage the login credentials
+    def authenticate(client_id=nil, secret=nil)
+      unless client_id && secret
+        if basic_authenticated?
+          client_id = @login
+          secret = @password
+        elsif application_authenticated?
+          client_id = @client_id
+          secret = @client_secret
+        else
+          raise "client_id and secret required"
+        end
+      end
+
+      # clear any other credentials
+      @login = @client_id = nil
+      @password = @client_secret = nil
+      reset_agent
+
+      data = post '/login', {:query => {:client_id => client_id, :secret => secret}}
+      raise "login failure #{last_response.status}" unless last_response.status == 200
+
+      reset_agent
+      @access_token = data[:access_token]
+      @access_token_type = data[:token_type]
+      @access_token_expires_at = Time.now + data[:expires_in]
+    end
+
     # Indicates if the client was supplied  Basic Auth
     # username and password
     #

@@ -101,9 +101,10 @@ module LookerSDK
     end
 
     def login
-      @login ||= begin
-        user.login if token_authenticated?
-      end
+      @login
+      # @login ||= begin
+      #   user.login if token_authenticated?
+      # end
     end
 
     def netrc?

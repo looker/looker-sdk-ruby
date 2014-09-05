@@ -169,7 +169,15 @@ module LookerSDK
     #
     # @return [Sawyer::Resource]
     def root
-      get "/"
+      get URI(api_endpoint).path.sub(/\/$/,'')
+    end
+
+    # Is the server alive (this can be called w/o authentication)
+    #
+    # @return http status code
+    def alive
+      get '/alive'
+      last_response.status
     end
 
     # Response for last HTTP request
