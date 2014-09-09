@@ -16,10 +16,12 @@ module LookerSDK
 
     include LookerSDK::Authentication
     include LookerSDK::Configurable
+
     include LookerSDK::Client::Users
     include LookerSDK::Client::Roles
     include LookerSDK::Client::RoleDomains
     include LookerSDK::Client::RoleTypes
+
 
     # Header keys that can be passed in options hash to {#get},{#head}
     CONVENIENCE_HEADERS = Set.new([:accept, :content_type])
@@ -30,7 +32,7 @@ module LookerSDK
         instance_variable_set(:"@#{key}", options[key] || LookerSDK.instance_variable_get(:"@#{key}"))
       end
 
-      login_from_netrc unless user_authenticated? || application_authenticated?
+      load_credentials_from_netrc unless application_authenticated?
     end
 
     # Compares client options to a Hash of requested options
@@ -47,14 +49,14 @@ module LookerSDK
     def inspect
       inspected = super
 
-      # mask password
-      inspected = inspected.gsub! @password, "*******" if @password
       # Only show last 4 of token, secret
       if @access_token
-        inspected = inspected.gsub! @access_token, "#{'*'*36}#{@access_token[36..-1]}"
+        len = [@access_token.size - 4, 0].max
+        inspected = inspected.gsub! @access_token, "#{'*'*len}#{@access_token[len..-1]}"
       end
       if @client_secret
-        inspected = inspected.gsub! @client_secret, "#{'*'*36}#{@client_secret[36..-1]}"
+        len = [@client_secret.size - 4, 0].max
+        inspected = inspected.gsub! @client_secret, "#{'*'*len}#{@client_secret[len..-1]}"
       end
 
       inspected
@@ -155,9 +157,7 @@ module LookerSDK
       @agent ||= Sawyer::Agent.new(api_endpoint, sawyer_options) do |http|
         http.headers[:accept] = default_media_type
         http.headers[:user_agent] = user_agent
-        if basic_authenticated?
-          http.basic_auth(@login, @password)
-        elsif token_authenticated?
+        if token_authenticated?
           http.authorization 'token', @access_token
         elsif application_authenticated?
           http.params = http.params.merge application_authentication
@@ -187,50 +187,9 @@ module LookerSDK
       @last_response if defined? @last_response
     end
 
-    # Duplicate client using client_id and client_secret as
-    # Basic Authentication credentials.
-    # @example
-    #   LookerSDK.client_id = "foo"
-    #   LookerSDK.client_secret = "bar"
-    #
-    #   # GET https://api.looker.com/?client_id=foo&client_secret=bar
-    #   LookerSDK.get "/"
-    #
-    #   LookerSDK.client.as_app do |client|
-    #     # GET https://foo:bar@api.looker.com/
-    #     client.get "/"
-    #   end
-    def as_app(key = client_id, secret = client_secret, &block)
-      if key.to_s.empty? || secret.to_s.empty?
-        raise ApplicationCredentialsRequired, "client_id and client_secret required"
-      end
-      app_client = self.dup
-      app_client.client_id = app_client.client_secret = nil
-      app_client.login    = key
-      app_client.password = secret
-
-      yield app_client if block_given?
-    end
-
-    # Set username for authentication
-    #
-    # @param value [String] Looker username
-    def login=(value)
-      reset_agent
-      @login = value
-    end
-
-    # Set password for authentication
-    #
-    # @param value [String] Looker password
-    def password=(value)
-      reset_agent
-      @password = value
-    end
-
     # Set OAuth access token for authentication
     #
-    # @param value [String] 40 character Looker OAuth access token
+    # @param value [String] Looker OAuth access token
     def access_token=(value)
       reset_agent
       @access_token = value
@@ -238,7 +197,7 @@ module LookerSDK
 
     # Set OAuth app client_id
     #
-    # @param value [String] 20 character Looker OAuth app client_id
+    # @param value [String] Looker OAuth app client_id
     def client_id=(value)
       reset_agent
       @client_id = value
@@ -246,7 +205,7 @@ module LookerSDK
 
     # Set OAuth app client_secret
     #
-    # @param value [String] 40 character Looker OAuth app client_secret
+    # @param value [String] Looker OAuth app client_secret
     def client_secret=(value)
       reset_agent
       @client_secret = value
@@ -269,6 +228,7 @@ module LookerSDK
     end
 
     def request(method, path, data, options = {})
+      ensure_logged_in
       if data.is_a?(Hash)
         options[:query]   = data.delete(:query) || {}
         options[:headers] = data.delete(:headers) || {}

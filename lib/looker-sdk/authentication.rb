@@ -5,67 +5,46 @@ module LookerSDK
 
     attr_accessor :access_token_type, :access_token_expires_at
 
+    # This is called automatically by 'request'
+    def ensure_logged_in
+      login unless token_authenticated? || @authenticating
+    end
+
     # Authenticate to the server and get an access_token for use in future calls.
 
-    # Uses passed in credentials or fallsback to other credentials as appropriate.
-    # This allows for using the .netrc to manage the login credentials
-    def authenticate(client_id=nil, secret=nil)
-      unless client_id && secret
-        if basic_authenticated?
-          client_id = @login
-          secret = @password
-        elsif application_authenticated?
-          client_id = @client_id
-          secret = @client_secret
-        else
-          raise "client_id and secret required"
-        end
+    def login
+      raise "client_id and client_secret required" unless application_authenticated?
+
+      set_access_token_from_params(nil)
+      begin
+        @authenticating = true
+        data = post '/login'
+        raise "login failure #{last_response.status}" unless last_response.status == 200
+      ensure
+        @authenticating = false
       end
+      set_access_token_from_params(data)
+    end
 
-      # clear any other credentials
-      @login = @client_id = nil
-      @password = @client_secret = nil
+    def set_access_token_from_params(params)
       reset_agent
-
-      data = post '/login', {:query => {:client_id => client_id, :secret => secret}}
-      raise "login failure #{last_response.status}" unless last_response.status == 200
-
-      reset_agent
-      @access_token = data[:access_token]
-      @access_token_type = data[:token_type]
-      @access_token_expires_at = Time.now + data[:expires_in]
+      if params
+        @access_token = params[:access_token]
+        @access_token_type = params[:token_type]
+        @access_token_expires_at = Time.now + params[:expires_in]
+      else
+        @access_token = @access_token_type = @access_token_expires_at = nil
+      end
     end
 
-    # Indicates if the client was supplied  Basic Auth
-    # username and password
-    #
-    # @see look TODO docs link
-    # @return [Boolean]
-    def basic_authenticated?
-      !!(@login && @password)
+    def logout
+      delete '/logout' if @access_token
+      set_access_token_from_params(nil)
     end
 
-    # Indicates if the client was supplied an OAuth
-    # access token
-    #
-    # @see look TODO docs link
-    # @return [Boolean]
-    def token_authenticated?
-      !!@access_token
-    end
-
-    # Indicates if the client was supplied an OAuth
-    # access token or Basic Auth username and password
-    #
-    # @see look TODO docs link
-    # @return [Boolean]
-    def user_authenticated?
-      basic_authenticated? || token_authenticated?
-    end
 
     # Indicates if the client has OAuth Application
-    # client_id and secret credentials to make anonymous
-    # requests at a higher rate limit
+    # client_id and client_secret credentials
     #
     # @see look TODO docs link
     # @return Boolean
@@ -84,7 +63,16 @@ module LookerSDK
       end
     end
 
-    def login_from_netrc
+    # Indicates if the client has an OAuth
+    # access token
+    #
+    # @see look TODO docs link
+    # @return [Boolean]
+    def token_authenticated?
+      !!@access_token && (access_token_expires_at.nil? || @access_token_expires_at > Time.now)
+    end
+
+    def load_credentials_from_netrc
       return unless netrc?
 
       require 'netrc'
@@ -95,8 +83,8 @@ module LookerSDK
         # creds will be nil if there is no netrc for this end point
         looker_warn "Error loading credentials from netrc file for #{api_endpoint}"
       else
-        self.login = creds.shift
-        self.password = creds.shift
+        self.client_id = creds.shift
+        self.client_secret = creds.shift
       end
     rescue LoadError
       looker_warn "Please install netrc gem for .netrc support"

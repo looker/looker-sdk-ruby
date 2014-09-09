@@ -95,14 +95,5 @@ module LookerSDK
       end
     end
 
-    private
-    # convenience method for constructing a role_type specific path, if the role_type is logged in
-    def role_type_path(role_type, path)
-      if role_type == login && role_type_authenticated?
-        "role_type/#{path}"
-      else
-        "role_types/#{role_type}/#{path}"
-      end
-    end
   end
 end

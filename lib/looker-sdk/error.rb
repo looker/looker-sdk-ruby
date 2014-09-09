@@ -16,6 +16,7 @@ module LookerSDK
                   when 401      then error_for_401(headers)
                   when 403      then error_for_403(body)
                   when 404      then LookerSDK::NotFound
+                  when 405      then LookerSDK::MethodNotAllowed
                   when 406      then LookerSDK::NotAcceptable
                   when 409      then LookerSDK::Conflict
                   when 415      then LookerSDK::UnsupportedMediaType
@@ -187,6 +188,9 @@ module LookerSDK
 
   # Raised when Looker returns a 404 HTTP status code
   class NotFound < ClientError; end
+
+  # Raised when Looker returns a 405 HTTP status code
+  class MethodNotAllowed < ClientError; end
 
   # Raised when Looker returns a 406 HTTP status code
   class NotAcceptable < ClientError; end

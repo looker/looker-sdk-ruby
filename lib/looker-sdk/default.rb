@@ -82,23 +82,11 @@ module LookerSDK
         ENV['LOOKER_DEFAULT_MEDIA_TYPE'] || MEDIA_TYPE
       end
 
-      # Default Looker username for Basic Auth from ENV
-      # @return [String]
-      def login
-        ENV['LOOKER_LOGIN']
-      end
-
       # Default middleware stack for Faraday::Connection
       # from {MIDDLEWARE}
       # @return [String]
       def middleware
         MIDDLEWARE
-      end
-
-      # Default Looker password for Basic Auth from ENV
-      # @return [String]
-      def password
-        ENV['LOOKER_PASSWORD']
       end
 
       # Default pagination page size from ENV

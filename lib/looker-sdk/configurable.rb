@@ -22,8 +22,6 @@ module LookerSDK
     # @!attribute connection_options
     #   @see https://github.com/lostisland/faraday
     #   @return [Hash] Configure connection options for Faraday
-    # @!attribute login
-    #   @return [String] Looker username for Basic Authentication
     # @!attribute middleware
     #   @see https://github.com/lostisland/faraday
     #   @return [Faraday::Builder or Faraday::RackBuilder] Configure middleware for Faraday
@@ -31,8 +29,6 @@ module LookerSDK
     #   @return [Boolean] Instruct Looker to get credentials from .netrc file
     # @!attribute netrc_file
     #   @return [String] Path to .netrc file. default: ~/.netrc
-    # @!attribute [w] password
-    #   @return [String] Looker password for Basic Authentication
     # @!attribute per_page
     #   @return [String] Configure page size for paginated results. API default: 30
     # @!attribute proxy
@@ -47,7 +43,7 @@ module LookerSDK
                   :client_secret, :default_media_type, :connection_options,
                   :middleware, :netrc, :netrc_file,
                   :per_page, :proxy, :user_agent
-    attr_writer :password, :web_endpoint, :api_endpoint, :login
+    attr_writer :web_endpoint, :api_endpoint
 
     class << self
 
@@ -62,12 +58,10 @@ module LookerSDK
           :client_secret,
           :connection_options,
           :default_media_type,
-          :login,
           :middleware,
           :netrc,
           :netrc_file,
           :per_page,
-          :password,
           :proxy,
           :user_agent,
           :web_endpoint
@@ -98,13 +92,6 @@ module LookerSDK
     # @return [String] Default: https://<client>.looker.com/ look TODO is this correct?
     def web_endpoint
       File.join(@web_endpoint, "")
-    end
-
-    def login
-      @login
-      # @login ||= begin
-      #   user.login if token_authenticated?
-      # end
     end
 
     def netrc?

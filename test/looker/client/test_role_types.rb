@@ -3,8 +3,7 @@ require_relative '../../helper'
 describe LookerSDK::Client::RoleTypes do
 
   before(:each) do
-    LookerSDK.reset!
-    @client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
+    reset_sdk
   end
 
   describe ".all_role_types", :vcr do
@@ -20,7 +19,7 @@ describe LookerSDK::Client::RoleTypes do
 
   describe ".role_type", :vcr do
     it "retrives single role_type" do
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => "all")
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => "all")
 
       fetched_role_type = LookerSDK.role_type(role_type.id)
 
@@ -35,13 +34,12 @@ describe LookerSDK::Client::RoleTypes do
     end
   end
 
-
   describe ".create_role_type", :vcr do
     it "creates role_type with permissions list" do
       permissions = [:see_dashboards, :access_data, :administer]
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
 
-      role_type.name.must_equal "test_role_type"
+      role_type.name.must_equal mk_name("role_type_1")
       role_type.all_access.must_equal false
       permissions.each do |p|
         role_type.permissions.must_include p.to_s
@@ -52,9 +50,9 @@ describe LookerSDK::Client::RoleTypes do
 
     it "creates role_type with all permissions" do
       permissions = "all"
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
 
-      role_type.name.must_equal "test_role_type"
+      role_type.name.must_equal mk_name("role_type_1")
       role_type.all_access.must_equal true
       # clean up role_type
       LookerSDK.delete_role_type(role_type.id).must_equal true
@@ -62,8 +60,8 @@ describe LookerSDK::Client::RoleTypes do
 
     it "rejects duplicate name" do
       permissions = "all"
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
-      role_type.name.must_equal "test_role_type"
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
+      role_type.name.must_equal mk_name("role_type_1")
       assert_raises LookerSDK::UnprocessableEntity do
         LookerSDK.create_role_type(:name => role_type.name, :permissions => permissions)
       end
@@ -71,30 +69,31 @@ describe LookerSDK::Client::RoleTypes do
       LookerSDK.delete_role_type(role_type.id).must_equal true
     end
 
-    it "rejects invalid permissions" do
-      permissions = [:see_dashboards, :not_a_permission]
-      assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
-      end
-    end
+    # TODO - this constraint does not exist in the API - either add the constraint or whack this test.
+    # it "rejects invalid permissions" do
+    #   permissions = [:see_dashboards, :not_a_permission]
+    #   assert_raises LookerSDK::UnprocessableEntity do
+    #     LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
+    #   end
+    # end
   end
 
   describe ".update_role_type", :vcr do
     it "updates name" do
       permissions = [:see_dashboards, :access_data]
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
 
-      role_type.name.must_equal "test_role_type"
+      role_type.name.must_equal mk_name("role_type_1")
 
-      role_type = LookerSDK.update_role_type(role_type.id, {:name => "new_test_role_type"})
-      role_type.name.must_equal "new_test_role_type"
+      role_type = LookerSDK.update_role_type(role_type.id, {:name => mk_name("role_type_new")})
+      role_type.name.must_equal mk_name("role_type_new")
 
       LookerSDK.delete_role_type(role_type.id).must_equal true
     end
 
     it "updates role_type from all to limited" do
       permissions = "all"
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
       role_type.all_access.must_equal true
 
       new_permissions = [:see_dashboards, :access_data]
@@ -110,7 +109,7 @@ describe LookerSDK::Client::RoleTypes do
 
     it "updates role_type from limited to all" do
       permissions = [:see_dashboards, :access_data]
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => permissions)
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
       role_type.all_access.must_equal false
 
       new_permissions = "all"
@@ -123,8 +122,8 @@ describe LookerSDK::Client::RoleTypes do
 
   describe ".delete_role_type", :vcr do
     it "deletes user created role_type" do
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => "all")
-      role_type.name.must_equal "test_role_type"
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => "all")
+      role_type.name.must_equal mk_name("role_type_1")
 
       LookerSDK.delete_role_type(role_type.id).must_equal true
     end
@@ -135,7 +134,7 @@ describe LookerSDK::Client::RoleTypes do
 
       all_role_type.wont_be_nil
       all_role_type.all_access.must_equal true
-      assert_raises LookerSDK::Forbidden do
+      assert_raises LookerSDK::MethodNotAllowed do
         LookerSDK.delete_role_type(all_role_type.id)
       end
     end
@@ -143,4 +142,5 @@ describe LookerSDK::Client::RoleTypes do
 
   # look TODO : get roles that include given role_type.
   # test role_type_roles(role_type_id)
+
 end

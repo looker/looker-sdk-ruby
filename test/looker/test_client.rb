@@ -38,18 +38,18 @@ describe LookerSDK::Client do
         @opts = {
             :connection_options => {:ssl => {:verify => false}},
             :per_page => 40,
-            :login    => "looker_login",
-            :password => "password2"
+            :client_id    => "looker_client_id",
+            :client_secret => "client_secret2"
         }
       end
 
       it "overrides module configuration" do
         client = LookerSDK::Client.new(@opts)
         client.per_page.must_equal(40)
-        client.login.must_equal("looker_login")
-        client.instance_variable_get(:"@password").must_equal("password2")
+        client.client_id.must_equal("looker_client_id")
+        client.instance_variable_get(:"@client_secret").must_equal("client_secret2")
         client.auto_paginate.must_equal(LookerSDK.auto_paginate)
-        client.client_id.must_equal(LookerSDK.client_id)
+        client.client_id.wont_equal(LookerSDK.client_id)
       end
 
       it "can set configuration after initialization" do
@@ -60,16 +60,16 @@ describe LookerSDK::Client do
           end
         end
         client.per_page.must_equal(40)
-        client.login.must_equal("looker_login")
-        client.instance_variable_get(:"@password").must_equal("password2")
+        client.client_id.must_equal("looker_client_id")
+        client.instance_variable_get(:"@client_secret").must_equal("client_secret2")
         client.auto_paginate.must_equal(LookerSDK.auto_paginate)
-        client.client_id.must_equal(LookerSDK.client_id)
+        client.client_id.wont_equal(LookerSDK.client_id)
       end
 
-      it "masks passwords on inspect" do
+      it "masks client_secrets on inspect" do
         client = LookerSDK::Client.new(@opts)
         inspected = client.inspect
-        inspected.wont_include("password2")
+        inspected.wont_include("client_secret2")
       end
 
       it "masks tokens on inspect" do
@@ -84,14 +84,16 @@ describe LookerSDK::Client do
         inspected.wont_equal("87614b09dd141c22800f96f11737ade5226d7ba8")
       end
 
-      describe "with .netrc" do
+      describe "with .netrc", :vcr  do
         it "can read .netrc files" do
           LookerSDK.reset!
           client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
-          client.login.must_equal("netrc_looker")
-          client.instance_variable_get(:"@password").must_equal("netrc_looker1")
+          client.client_id.wont_be_nil
+          client.client_secret.wont_be_nil
         end
       end
+
+
     end
   end
 
@@ -110,7 +112,7 @@ describe LookerSDK::Client do
   #     it "sets basic auth creds with .configure" do
   #       LookerSDK.configure do |config|
   #         config.login = 'pengwynn'
-  #         config.password = 'il0veruby'
+  #         config.client_secret = 'il0veruby'
   #       end
   #       expect(LookerSDK.client).to be_basic_authenticated
   #     end

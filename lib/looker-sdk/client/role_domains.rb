@@ -95,14 +95,5 @@ module LookerSDK
       end
     end
 
-    private
-    # convenience method for constructing a role_domain specific path, if the role_domain is logged in
-    def role_domain_path(role_domain, path)
-      if role_domain == login && role_domain_authenticated?
-        "role_domain/#{path}"
-      else
-        "role_domains/#{role_domain}/#{path}"
-      end
-    end
   end
 end
