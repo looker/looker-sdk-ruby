@@ -6,8 +6,8 @@ gem 'sawyer', '~> 0.5'
 group :development do
   gem 'awesome_print', :require => 'ap'
   gem 'yard', '~> 0.8.7'
-  gem 'redcarpet', '~> 3.1.2'
-  gem 'rake'
+  gem 'redcarpet', '~> 3.1.2', :platforms => :ruby
+  gem 'rake', :platforms => :jruby
 end
 
 group :test do
