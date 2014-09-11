@@ -26,11 +26,15 @@ module LookerSDK
     # Header keys that can be passed in options hash to {#get},{#head}
     CONVENIENCE_HEADERS = Set.new([:accept, :content_type])
 
-    def initialize(options = {})
+    def initialize(opts = {})
       # Use options passed in, but fall back to module defaults
       LookerSDK::Configurable.keys.each do |key|
-        instance_variable_set(:"@#{key}", options[key] || LookerSDK.instance_variable_get(:"@#{key}"))
+        instance_variable_set(:"@#{key}", opts[key] || LookerSDK.instance_variable_get(:"@#{key}"))
       end
+
+      # Save the original state of the options because live variables received later like access_token and
+      # client_id appear as if they are options and confuse the automatic client generation in LookerSDK#client
+      @original_options = options.dup
 
       load_credentials_from_netrc unless application_authenticated?
     end
@@ -40,7 +44,7 @@ module LookerSDK
     # @param opts [Hash] Options to compare with current client options
     # @return [Boolean]
     def same_options?(opts)
-      opts.hash == options.hash
+      opts.hash == @original_options.hash
     end
 
     # Text representation of the client, masking tokens and passwords
@@ -50,13 +54,9 @@ module LookerSDK
       inspected = super
 
       # Only show last 4 of token, secret
-      if @access_token
-        len = [@access_token.size - 4, 0].max
-        inspected = inspected.gsub! @access_token, "#{'*'*len}#{@access_token[len..-1]}"
-      end
-      if @client_secret
-        len = [@client_secret.size - 4, 0].max
-        inspected = inspected.gsub! @client_secret, "#{'*'*len}#{@client_secret[len..-1]}"
+      [@access_token, @client_secret].compact.each do |str|
+        len = [str.size - 4, 0].max
+        inspected = inspected.gsub! str, "#{'*'*len}#{str[len..-1]}"
       end
 
       inspected

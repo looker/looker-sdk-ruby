@@ -3,7 +3,11 @@ require_relative '../../helper'
 describe LookerSDK::Client::Users do
 
   before(:each) do
-    reset_sdk
+   setup_sdk
+  end
+
+  after(:each) do
+   teardown_sdk
   end
 
   describe ".all_users" do

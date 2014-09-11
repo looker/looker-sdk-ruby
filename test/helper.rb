@@ -19,13 +19,17 @@ def mk_name(name)
   "#{SDK_OBJECT_PREFIX}#{name}"
 end
 
-def reset_sdk
+def setup_sdk
   LookerSDK.reset!
   LookerSDK.configure do |c|
     c.connection_options = {:ssl => {:verify => false}}
     c.netrc = true
     c.netrc_file =  File.join(fixture_path, '.netrc')
   end
+end
+
+def teardown_sdk
+  LookerSDK.logout
 end
 
 

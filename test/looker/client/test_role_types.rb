@@ -3,10 +3,14 @@ require_relative '../../helper'
 describe LookerSDK::Client::RoleTypes do
 
   before(:each) do
-    reset_sdk
+   setup_sdk
   end
 
-  describe ".all_role_types", :vcr do
+  after(:each) do
+   teardown_sdk
+  end
+
+  describe ".all_role_types" do
     it "returns all Looker role_types" do
       role_types = LookerSDK.all_role_types
       role_types.must_be_kind_of Array
@@ -17,7 +21,7 @@ describe LookerSDK::Client::RoleTypes do
     end
   end
 
-  describe ".role_type", :vcr do
+  describe ".role_type" do
     it "retrives single role_type" do
       role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => "all")
 
@@ -34,7 +38,7 @@ describe LookerSDK::Client::RoleTypes do
     end
   end
 
-  describe ".create_role_type", :vcr do
+  describe ".create_role_type" do
     it "creates role_type with permissions list" do
       permissions = [:see_dashboards, :access_data, :administer]
       role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
@@ -78,7 +82,7 @@ describe LookerSDK::Client::RoleTypes do
     # end
   end
 
-  describe ".update_role_type", :vcr do
+  describe ".update_role_type" do
     it "updates name" do
       permissions = [:see_dashboards, :access_data]
       role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => permissions)
@@ -120,7 +124,7 @@ describe LookerSDK::Client::RoleTypes do
     end
   end
 
-  describe ".delete_role_type", :vcr do
+  describe ".delete_role_type" do
     it "deletes user created role_type" do
       role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => "all")
       role_type.name.must_equal mk_name("role_type_1")

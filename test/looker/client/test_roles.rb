@@ -3,7 +3,11 @@ require_relative '../../helper'
 describe LookerSDK::Client::Roles do
 
   before(:each) do
-    reset_sdk
+   setup_sdk
+  end
+
+  after(:each) do
+   teardown_sdk
   end
 
   def with_role(&block)

@@ -7,12 +7,12 @@ module LookerSDK
 
     # This is called automatically by 'request'
     def ensure_logged_in
-      login unless token_authenticated? || @authenticating
+      authenticate unless token_authenticated? || @authenticating
     end
 
     # Authenticate to the server and get an access_token for use in future calls.
 
-    def login
+    def authenticate
       raise "client_id and client_secret required" unless application_authenticated?
 
       set_access_token_from_params(nil)
@@ -69,7 +69,7 @@ module LookerSDK
     # @see look TODO docs link
     # @return [Boolean]
     def token_authenticated?
-      !!@access_token && (access_token_expires_at.nil? || @access_token_expires_at > Time.now)
+      !!(@access_token && (@access_token_expires_at.nil? || @access_token_expires_at > Time.now))
     end
 
     def load_credentials_from_netrc

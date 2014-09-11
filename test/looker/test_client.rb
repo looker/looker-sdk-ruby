@@ -2,12 +2,12 @@ require_relative '../helper'
 
 describe LookerSDK::Client do
 
-  before do
-    LookerSDK.reset!
+  before(:each) do
+   setup_sdk
   end
 
-  after do
-    LookerSDK.reset!
+  after(:each) do
+   teardown_sdk
   end
 
   describe "module configuration" do
@@ -84,7 +84,7 @@ describe LookerSDK::Client do
         inspected.wont_equal("87614b09dd141c22800f96f11737ade5226d7ba8")
       end
 
-      describe "with .netrc", :vcr  do
+      describe "with .netrc"  do
         it "can read .netrc files" do
           LookerSDK.reset!
           client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
@@ -205,7 +205,7 @@ describe LookerSDK::Client do
   #     end
   #   end
   #
-  #   describe "when token authenticated", :vcr do
+  #   describe "when token authenticated" do
   #     it "makes authenticated calls" do
   #       client = oauth_client
   #
@@ -266,7 +266,7 @@ describe LookerSDK::Client do
   #   end
   # end
   #
-  # describe ".last_response", :vcr do
+  # describe ".last_response" do
   #   it "caches the last agent response" do
   #     LookerSDK.reset!
   #     client = LookerSDK.client
@@ -276,7 +276,7 @@ describe LookerSDK::Client do
   #   end
   # end
   #
-  # describe ".get", :vcr do
+  # describe ".get" do
   #   before(:each) do
   #     LookerSDK.reset!
   #   end
@@ -292,7 +292,7 @@ describe LookerSDK::Client do
   #   end
   # end
   #
-  # describe ".head", :vcr do
+  # describe ".head" do
   #   it "handles query params" do
   #     LookerSDK.reset!
   #     LookerSDK.head "/", :foo => "bar"
@@ -391,7 +391,7 @@ describe LookerSDK::Client do
   #   end
   # end
   #
-  # describe "auto pagination", :vcr do
+  # describe "auto pagination" do
   #   before do
   #     LookerSDK.reset!
   #     LookerSDK.configure do |config|

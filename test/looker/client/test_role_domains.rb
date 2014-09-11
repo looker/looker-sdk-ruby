@@ -3,10 +3,14 @@ require_relative '../../helper'
 describe LookerSDK::Client::RoleDomains do
 
   before(:each) do
-    reset_sdk
+   setup_sdk
   end
 
-  describe ".all_role_domains", :vcr do
+  after(:each) do
+   teardown_sdk
+  end
+
+  describe ".all_role_domains" do
     it "returns all Looker role_domains" do
       role_domains = LookerSDK.all_role_domains
       role_domains.must_be_kind_of Array
@@ -17,7 +21,7 @@ describe LookerSDK::Client::RoleDomains do
     end
   end
 
-  describe ".role_domain", :vcr do
+  describe ".role_domain" do
     it "retrives single role_domain" do
       role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain_1"), :models => "all")
 
@@ -35,7 +39,7 @@ describe LookerSDK::Client::RoleDomains do
   end
 
 
-  describe ".create_role_domain", :vcr do
+  describe ".create_role_domain" do
     it "creates role_domain with models list" do
       models = ["abcd", "efgh", "ijkl", "mnop", "qrst", "uvwxyz"]
       role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain_1"), :models => models)
@@ -72,7 +76,7 @@ describe LookerSDK::Client::RoleDomains do
     end
   end
 
-  describe ".update_role_domain", :vcr do
+  describe ".update_role_domain" do
     it "updates name" do
       models = ["abcd", "efgh", "ijkl", "mnop", "qrst", "uvwxyz"]
       role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain_1"), :models => models)
@@ -114,7 +118,7 @@ describe LookerSDK::Client::RoleDomains do
     end
   end
 
-  describe ".delete_role_domain", :vcr do
+  describe ".delete_role_domain" do
     it "deletes user created role_domain" do
       role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain_1"), :models =>  "all")
       role_domain.name.must_equal mk_name("role_domain_1")
