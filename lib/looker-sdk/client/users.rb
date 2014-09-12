@@ -150,28 +150,16 @@ module LookerSDK
         paginate "users/#{user}/roles", options
       end
 
-      # Add role to user
+      # set the roles that a user belongs to.
       #
       # @param user [Integer] User id.
-      # @param role_id [Integer] Id of new role.
-      # @return [Boolean] True on successful addition, false otherwise.
+      # @param role_ids [Array<Integer>] Ids of new roles.
+      # @return [Sawyer::Resource] updated set of roles that the user is now in.
       # @see look TODO docs link
       # @example
-      #   LookerSDK.add_role(1, 1)
-      def add_user_role(user, role_id, options = {})
-        boolean_from_response :put, "users/#{user}/roles/#{role_id}", options
-      end
-
-      # Remove role from user.
-      #
-      # @param user [Integer] User id.
-      # @param role_id [Integer] Id of role to remove
-      # @return [Boolean] True if user removed, false otherwise.
-      # @see look TODO docs link
-      # @example
-      #   LookerSDK.remove_role(1, 1)
-      def remove_user_role(user, role_id, options = {})
-        boolean_from_response :delete, "users/#{user}/roles/#{role_id}", options
+      #   LookerSDK.set_user_roles(1, [role1.id, role2.id])
+      def set_user_roles(user, roles, options = {})
+        put "users/#{user}/roles", options.merge(:roles => roles)
       end
     end
 
