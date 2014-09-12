@@ -13,6 +13,10 @@ def fixture_path
   File.expand_path("../fixtures", __FILE__)
 end
 
+# Using this prefix consistently makes it easier to find any crap that might get left behind
+# in the looker db when tests fail or are written poorly.
+# Note that looker has a rake task to do that cleanup automatically.
+
 SDK_OBJECT_PREFIX = '_SDK_TEST_'.freeze
 
 def mk_name(name)
