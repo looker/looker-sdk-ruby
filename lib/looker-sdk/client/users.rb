@@ -163,14 +163,5 @@ module LookerSDK
       end
     end
 
-    private
-    # convenience method for constructing a user specific path, if the user is logged in
-    def user_path(user, path)
-      if user == login && user_authenticated?
-        "user/#{path}"
-      else
-        "users/#{user}/#{path}"
-      end
-    end
   end
 end

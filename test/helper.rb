@@ -8,34 +8,32 @@ require 'json'
 require 'looker-sdk'
 require 'minitest/autorun'
 require 'minitest/spec'
-require "webmock"
-require 'vcr'
-require "minitest-vcr"
-
-begin
-  require 'zlib'
-  require 'stringio'
-  have_zlib = true
-rescue LoadError
-  have_zlib = false
-end
-
-VCR.configure do |c|
-  c.cassette_library_dir = "#{File.dirname(__FILE__)}/cassettes"
-  c.hook_into :webmock
-
-  # human readable cassettes
-  c.before_record do |i|
-    if have_zlib and enc = i.response.headers['Content-Encoding'] and 'gzip' == Array(enc).first
-      i.response.body = Zlib::GzipReader.new(StringIO.new(i.response.body)).read
-      i.response.update_content_length_header
-      i.response.headers.delete 'Content-Encoding'
-    end
-  end
-end
-
-MinitestVcr::Spec.configure!
 
 def fixture_path
   File.expand_path("../fixtures", __FILE__)
 end
+
+# Using this prefix consistently makes it easier to find any crap that might get left behind
+# in the looker db when tests fail or are written poorly.
+# Note that looker has a rake task to do that cleanup automatically.
+
+SDK_OBJECT_PREFIX = '_SDK_TEST_'.freeze
+
+def mk_name(name)
+  "#{SDK_OBJECT_PREFIX}#{name}"
+end
+
+def setup_sdk
+  LookerSDK.reset!
+  LookerSDK.configure do |c|
+    c.connection_options = {:ssl => {:verify => false}}
+    c.netrc = true
+    c.netrc_file =  File.join(fixture_path, '.netrc')
+  end
+end
+
+def teardown_sdk
+  LookerSDK.logout
+end
+
+

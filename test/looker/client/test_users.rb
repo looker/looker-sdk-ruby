@@ -3,137 +3,162 @@ require_relative '../../helper'
 describe LookerSDK::Client::Users do
 
   before(:each) do
-    LookerSDK.reset!
-    @client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
+   setup_sdk
   end
 
-  describe ".all_users", :vcr do
+  after(:each) do
+   teardown_sdk
+  end
+
+  describe ".all_users" do
     it "returns all Looker users" do
-      u1 = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      u2 = LookerSDK.create_user({:first_name => "Jonathan1", :last_name => "Swenson1"})
+
+      prev_count = LookerSDK.all_users.length
+      prev_count.wont_equal 0
+
+      u1 = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      u2 = LookerSDK.create_user({:first_name => mk_name("user_2_first"), :last_name => mk_name("user_2_last")})
+
       users = LookerSDK.all_users
       users.must_be_kind_of Array
-      users.length.must_equal 2
+      users.length.must_equal prev_count + 2
       users.each do |user|
         user.must_be_kind_of Sawyer::Resource
       end
+
+      LookerSDK.delete_user(u1.id)
+      LookerSDK.delete_user(u2.id)
+      LookerSDK.all_users.length.must_equal prev_count
     end
   end
 
-  describe ".user", :vcr do
+  describe ".user" do
     it "returns single Looker user" do
-      u1 = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      u2 = LookerSDK.create_user({:first_name => "Jonathan1", :last_name => "Swenson1"})
+      u1 = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      u2 = LookerSDK.create_user({:first_name => mk_name("user_2_first"), :last_name => mk_name("user_2_last")})
 
-      user = LookerSDK.user(1)
+      user = LookerSDK.user(u1[:id])
       user.must_be_kind_of Sawyer::Resource
 
-      user = LookerSDK.user(2)
+      user = LookerSDK.user(u2[:id])
       user.must_be_kind_of Sawyer::Resource
+
+      LookerSDK.delete_user(u1.id)
+      LookerSDK.delete_user(u2.id)
     end
 
-    it "gets current user with no user_id", :vcr do
+    it "gets current user with no user_id" do
       user = LookerSDK.user
       user.must_be_kind_of Sawyer::Resource
     end
   end
 
-  describe ".create_user", :vcr do
-    it "creates user with valid email" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+
+  describe ".create_user" do
+    it "creates user without email" do
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
       user.must_be_kind_of Sawyer::Resource
+      LookerSDK.delete_user(user.id)
     end
   end
 
-  describe ".create_credentials_email", :vcr do
+  describe ".create_credentials_email" do
     it "create user and add credentials email" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      credentials_email = LookerSDK.create_credentials_email(user[:id], "jonathan+9@looker.com")
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      credentials_email = LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
       credentials_email.must_be_kind_of Sawyer::Resource
+      LookerSDK.delete_user(user.id)
     end
 
-    it "will not create two credentials emails for same user", :vcr do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      LookerSDK.create_credentials_email(user[:id], "jonathan+10@looker.com")
+    it "will not create two credentials emails for same user" do
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
       assert_raises LookerSDK::Conflict do
-        credentials_email2 = LookerSDK.create_credentials_email(user[:id], "jonathan+11@looker.com")
+        credentials_email2 = LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
       end
+      LookerSDK.delete_user(user.id)
     end
   end
 
-  describe ".update_credentials_email", :vcr do
+
+  describe ".update_credentials_email" do
     it "update credentials_email email address" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      LookerSDK.create_credentials_email(user[:id], "jonathan+12@looker.com")
-      LookerSDK.update_credentials_email(user[:id], {:email => "jonathan+13@looker.com"})
-      LookerSDK.get_credentials_email(user[:id])[:email].must_equal "jonathan+13@looker.com"
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      LookerSDK.update_credentials_email(user[:id], {:email => mk_name("email_2@example.com")})
+      LookerSDK.get_credentials_email(user[:id])[:email].must_equal mk_name("email_2@example.com")
+      LookerSDK.delete_user(user.id)
     end
   end
 
-  describe ".remove_credentials_email", :vcr do
+
+  describe ".remove_credentials_email" do
     it "removes credentials email" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      LookerSDK.create_credentials_email(user[:id], "jonathan+16@looker.com")
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
       LookerSDK.delete_credentials_email(user[:id]).must_equal true
       assert_raises LookerSDK::NotFound do
         LookerSDK.get_credentials_email(user[:id])
       end
+      LookerSDK.delete_user(user.id)
     end
 
     it "will not remove credentials_email if it doesn't exist" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
       LookerSDK.delete_credentials_email(user[:id]).must_equal false
+      LookerSDK.delete_user(user.id)
     end
   end
 
-  describe ".get_credentials_email", :vcr do
+  describe ".get_credentials_email" do
     it "gets corresponding credentials email" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      LookerSDK.create_credentials_email(user[:id], "jonathan+14@looker.com")
-      LookerSDK.get_credentials_email(user[:id])[:email].must_equal "jonathan+14@looker.com"
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      LookerSDK.get_credentials_email(user[:id])[:email].must_equal mk_name("email_1@example.com")
+      LookerSDK.delete_user(user.id)
     end
 
     it "will not find credentials email that does not exist" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
       assert_raises LookerSDK::NotFound do
         LookerSDK.get_credentials_email(user[:id])
       end
+      LookerSDK.delete_user(user.id)
     end
   end
 
-  describe ".delete_user", :vcr do
+
+  describe ".delete_user" do
     it "deletes user" do
-      user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-      LookerSDK.delete_user(user[:id])
-      LookerSDK.last_response.status.must_equal 204
+      user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
+      LookerSDK.delete_user(user[:id]).must_equal true
     end
 
-    # look TODO: When we allow for actually logging in we need this to pass.
-    # it "will not delete self" do
-    #   user = LookerSDK.user
-    #   assert_raises LookerSDK::Forbidden do
-    #     LookerSDK.delete_user(user[:id])
-    #   end
-    # end
+    it "will not delete self" do
+      user = LookerSDK.user
+      assert_raises LookerSDK::Forbidden do
+        LookerSDK.delete_user(user[:id])
+      end
+    end
 
     it "will not delete user that does not exist" do
       LookerSDK.delete_user(9999).must_equal false # doesn't exist
     end
   end
 
-  describe ".roles", :vcr do
+  describe ".roles" do
     it "gets roles of user" do
-      user = LookerSDK.user(4)
+      user = LookerSDK.user
       roles = LookerSDK.user_roles(user[:id])
     end
   end
 
-  describe ".set_user_roles", :vcr do
+  describe ".set_user_roles" do
     it "sets the users roles" do
       user = LookerSDK.create_user
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
-      roles = (1..5).map {|i| LookerSDK.create_role(:name => "test_role#{i}", :role_domain_id => role_domain.id, :role_type_id => role_type.id) }
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type"), :permissions => ["administer"])
+      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
+      roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :role_domain_id => role_domain.id, :role_type_id => role_type.id) }
 
       new_role_ids = LookerSDK.set_user_roles(user.id, roles.map {|role| role.id}).map {|role| role.id}
 
@@ -151,9 +176,9 @@ describe LookerSDK::Client::Users do
 
     it "wont set duplicate roles" do
       user = LookerSDK.create_user
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
-      roles = (1..5).map {|i| LookerSDK.create_role(:name => "test_role#{i}", :role_domain_id => role_domain.id, :role_type_id => role_type.id) }
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type"), :permissions => ["administer"])
+      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
+      roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :role_domain_id => role_domain.id, :role_type_id => role_type.id) }
 
       new_role_ids = LookerSDK.set_user_roles(user.id, roles.map {|role| role.id} << roles.first.id).map {|role| role.id}
       new_role_ids.select {|role_id| role_id == roles.first.id}.length.must_equal 1

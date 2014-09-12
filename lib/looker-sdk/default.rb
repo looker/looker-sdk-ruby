@@ -7,7 +7,7 @@ module LookerSDK
   module Default
 
     # Default API endpoint look TODO update this as needed
-    API_ENDPOINT = "http://localhost:19999/api/3.0/".freeze
+    API_ENDPOINT = "https://localhost:19999/api/3.0/".freeze
 
     # Default User Agent header string
     USER_AGENT   = "Looker Ruby Gem #{LookerSDK::VERSION}".freeze
@@ -82,23 +82,11 @@ module LookerSDK
         ENV['LOOKER_DEFAULT_MEDIA_TYPE'] || MEDIA_TYPE
       end
 
-      # Default Looker username for Basic Auth from ENV
-      # @return [String]
-      def login
-        ENV['LOOKER_LOGIN']
-      end
-
       # Default middleware stack for Faraday::Connection
       # from {MIDDLEWARE}
       # @return [String]
       def middleware
         MIDDLEWARE
-      end
-
-      # Default Looker password for Basic Auth from ENV
-      # @return [String]
-      def password
-        ENV['LOOKER_PASSWORD']
       end
 
       # Default pagination page size from ENV

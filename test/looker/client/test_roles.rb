@@ -3,14 +3,17 @@ require_relative '../../helper'
 describe LookerSDK::Client::Roles do
 
   before(:each) do
-    LookerSDK.reset!
-    @client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
+   setup_sdk
+  end
+
+  after(:each) do
+   teardown_sdk
   end
 
   def with_role(&block)
-    role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-    role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
-    role = LookerSDK.create_role(:name => "test_role", :role_domain_id => role_domain.id, :role_type_id => role_type.id)
+    role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
+    role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
+    role = LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id, :role_type_id => role_type.id)
     begin
       yield role
     ensure
@@ -20,34 +23,36 @@ describe LookerSDK::Client::Roles do
     end
   end
 
-  describe ".all_roles", :vcr do
+  describe ".all_roles" do
     it "returns all Looker roles" do
 
       roles = LookerSDK.all_roles
       roles.must_be_kind_of Array
-      roles.length.must_equal 2
+      (roles.length >= 1).must_equal true
       roles.each do |user|
         user.must_be_kind_of Sawyer::Resource
       end
     end
   end
 
-  describe ".create_role", :vcr do
+  describe ".create_role" do
     it "creates a role" do
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
-      role = LookerSDK.create_role(:name => "test_role", :role_domain_id => role_domain.id, :role_type_id => role_type.id)
-      role.name.must_equal "test_role"
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
+      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
+      role = LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id, :role_type_id => role_type.id)
+
+      role.name.must_equal mk_name("role1")
       role.role_domain.id.must_equal role_domain.id
       role.role_type.id.must_equal role_type.id
+
       LookerSDK.delete_role(role.id).must_equal true
       LookerSDK.delete_role_type(role_type.id).must_equal true
       LookerSDK.delete_role_domain(role_domain.id).must_equal true
     end
 
     it "requires a name to create" do
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
+      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
       assert_raises LookerSDK::UnprocessableEntity do
         LookerSDK.create_role(:role_domain_id => role_domain.id, :role_type_id => role_type.id)
       end
@@ -57,44 +62,47 @@ describe LookerSDK::Client::Roles do
     end
 
     it "requires a valid role_type_id to create" do
-      role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
+      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => "test_role_domain", :role_domain_id => role_domain.id)
+        LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id)
       end
 
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => "test_role_domain", :role_domain_id => role_domain.id, :role_type_id => 9999)
+        LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id, :role_type_id => 9999)
       end
 
       LookerSDK.delete_role_domain(role_domain.id).must_equal true
     end
 
     it "requires a valid role_domain_id to create" do
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
+      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => "test_role_domain", :role_type_id => role_type.id)
+        LookerSDK.create_role(:name => mk_name("role1"), :role_type_id => role_type.id)
       end
 
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => "test_role_domain", :role_type_id => role_type.id, :role_domain_id => 9999)
+        LookerSDK.create_role(:name => mk_name("role1"), :role_type_id => role_type.id, :role_domain_id => 9999)
       end
 
       LookerSDK.delete_role_type(role_type.id).must_equal true
     end
   end
 
-  describe ".update_role", :vcr do
+  describe ".update_role" do
 
     it "updates a role" do
       with_role do |role|
-        role_type = LookerSDK.create_role_type(:name => "new_test_role_type", :permissions => ["administer"])
-        role_domain = LookerSDK.create_role_domain(:name => "new_test_role_domain", :models => "all")
+        user_count = LookerSDK.all_users.count
 
-        new_role = LookerSDK.update_role(role.id, {:name => "new_test_role", :role_domain_id => role_domain.id, :role_type_id => role_type.id})
+        role_type = LookerSDK.create_role_type(:name => mk_name("role_type_new"), :permissions => ["administer"])
+        role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain_new"), :models => "all")
 
-        new_role.name.must_equal "new_test_role"
-        new_role.role_domain.id.must_equal role_domain.id
-        new_role.role_type.id.must_equal role_type.id
+        updated_role = LookerSDK.update_role(role.id, {:name => mk_name("role_new"), :role_domain_id => role_domain.id, :role_type_id => role_type.id})
+
+        updated_role.name.must_equal mk_name("role_new")
+        updated_role.role_domain.id.must_equal role_domain.id
+        updated_role.role_type.id.must_equal role_type.id
+        LookerSDK.all_users.count.must_equal user_count
 
         LookerSDK.delete_role_type(role_type.id).must_equal true
         LookerSDK.delete_role_domain(role_domain.id).must_equal true
@@ -110,7 +118,7 @@ describe LookerSDK::Client::Roles do
 
     it "rejects update with duplicate name" do
       with_role do |role|
-        new_role = LookerSDK.create_role(:name => "new_name", :role_domain_id => role.role_domain.id, :role_type_id => role.role_type.id)
+        new_role = LookerSDK.create_role(:name => mk_name("role_new"), :role_domain_id => role.role_domain.id, :role_type_id => role.role_type.id)
         assert_raises LookerSDK::UnprocessableEntity do
           LookerSDK.update_role(role.id, {:name => new_role.name})
         end
@@ -135,15 +143,9 @@ describe LookerSDK::Client::Roles do
     end
   end
 
-  describe ".delete_role", :vcr do
+  describe ".delete_role" do
     it "deletes user created roles" do
-      role_type = LookerSDK.create_role_type(:name => "test_role_type", :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => "test_role_domain", :models => "all")
-      role = LookerSDK.create_role(:name => "test_role", :role_domain_id => role_domain.id, :role_type_id => role_type.id)
-
-      LookerSDK.delete_role(role.id).must_equal true
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      with_role {}
     end
 
     it "will not delete (403) built in admin role" do
@@ -154,13 +156,13 @@ describe LookerSDK::Client::Roles do
       admin_role.role_domain.name.must_equal "All"
       admin_role.role_type.name.must_equal "Admin"
 
-      assert_raises LookerSDK::Forbidden do
+      assert_raises LookerSDK::MethodNotAllowed do
         LookerSDK.delete_role(admin_role.id)
       end
     end
   end
 
-  describe ".set_role_users", :vcr do
+  describe ".set_role_users" do
     it "sets users of role" do
       users = (1..5).map {|i| LookerSDK.create_user }
       with_role do |role|
