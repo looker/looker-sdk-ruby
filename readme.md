@@ -19,13 +19,13 @@ $ rake test:all # run the test suite on all supported Rubies
 ```
 
 ### TODO
-Things that we think are important to do will be marked with `look TODO`
+Things that we think are important to do will be marked with `look TODO`.
 
 ### Finding API credentials
 
-1. Within the Looker Application go to the /admin/users page (must be an administrator)
-2. Find your user and click edit
-3. Under the heading API 3 Keys click "New API 3 Key"
+1. Within the Looker Application go to the /admin/users page (must be an administrator).
+2. Find your user and click edit.
+3. Under the heading API 3 Keys click "New API 3 Key".
     ![generate key](docs/generate_key.png)
 4. Administrators can add keys and delete keys from this panel.
     ![client_secret.png](docs/client_secret.png)
@@ -111,7 +111,7 @@ users[1]     # third_user
 
 We have subscribed to the WWGD mentality - What Would Github Do? The LookerSDK is roughly based upon [Octokit](https://github.com/octokit/octokit.rb) Github's ruby SDK for github's [API](https://developer.github.com/v3). 
 
-Adding to the SDK should be relatively straightforward. The modules within client correspond to Looker resources (Role, Users, Looks, etc.) Each of these modules implements a set of methods that correspond to simple CRUD actions and their associated [HTTP verbs](https://developer.github.com/v3/#http-verbs)
+Adding to the SDK should be relatively straightforward. The modules within client correspond to Looker resources (Role, Users, Looks, etc.) Each of these modules implements a set of methods that correspond to simple CRUD actions and their associated [HTTP verbs](https://developer.github.com/v3/#http-verbs).
 
 ####For example: 
 Actions on a Resource (users)
