@@ -21,13 +21,21 @@ $ rake test:all # run the test suite on all supported Rubies
 ### TODO
 Things that we think are important to do will be marked with `look TODO`
 
+### Finding API credentials
+
+1. Within the Looker Application go to the /admin/users page (must be an administrator)
+2. Find your user and click edit
+3. Under the heading API 3 Keys click "New API 3 Key"
+    ![generate key](docs/generate_key.png)
+4. Administrators can add keys and delete keys from this panel.
+    ![client_secret.png](docs/client_secret.png)
 
 ### Basic Usage
 
 ```ruby
 require 'looker-sdk'
 
-# For the time being, log in using dummy credentials.
+# Log in using API 3.0 client_id and client_secret
 client = LookerSDK::Client.new(
   :connection_options => {:ssl => {:verify => false}},
   :client_id => "<client-id>",
@@ -44,60 +52,55 @@ client = LookerSDK::Client.new(
   :netrc      => true,
 )
 
-# can use either
-#   client.<method_name_here>
-# or
-#   LookerSDK.<method_name_here>
-
 # Supports user creation, read, modification, deletion
 # Supports credentials_user creation, read, modification, and deletion.
 
 # Create users (and their associated credentials_email)
-first_user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-LookerSDK.create_credentials_email(first_user[:id], "jonathan@looker.com")
+first_user = client.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
+client.create_credentials_email(first_user[:id], "jonathan@looker.com")
 
-second_user = LookerSDK.create_user({:first_name => "John F", :last_name => "Kennedy"})
-LookerSDK.create_credentials_email(first_user[:id], "john@looker.com")
+second_user = client.create_user({:first_name => "John F", :last_name => "Kennedy"})
+client.create_credentials_email(first_user[:id], "john@looker.com")
 
-third_user = LookerSDK.create_user({:first_name => "Frank", :last_name => "Sinatra"})
-LookerSDK.create_credentials_email(first_user[:id], "frank@looker.com")
+third_user = client.create_user({:first_name => "Frank", :last_name => "Sinatra"})
+client.create_credentials_email(first_user[:id], "frank@looker.com")
 
 # Get current logged in user
-user = LookerSDK.user
+user = client.user
 
 # properties can be accessed as methods or hashes
 user.first_name  # "Jonathan"
 user[:last_name] # "Swenson"
 
 # Get user by id
-user = LookerSDK.user(first_user[:id])
+user = client.user(first_user[:id])
 user.first_name # "Jonathan"
 user.last_name  # "Swenson"
 
 # update a user
-LookerSDK.update_user(first_user[:id], {:first_name => "Jonny"}
-user = LookerSDK.user(first_user[:id])
+client.update_user(first_user[:id], {:first_name => "Jonny"}
+user = client.user(first_user[:id])
 user.first_name # "Jonny"
 
 # Get credentials email for user
-credentials_email = LookerSDK.get_credentials_email(user[:id])
+credentials_email = client.get_credentials_email(user[:id])
 credentials_email[:email] # jonathan@looker.com
 
 # Update user's credentials Email
-LookerSDK.update_credentials_email(user[:id], {:email => "jonathan+1@looker.com"})
-credentials_email = LookerSDK.get_credentials_email(user[:id])
+client.update_credentials_email(user[:id], {:email => "jonathan+1@looker.com"})
+credentials_email = client.get_credentials_email(user[:id])
 credentials_email[:email] # jonathan+1@looker.com
 
 # Get all Users
-users = LookerSDK.all_users()
+users = client.all_users()
 users.length # 3
 users[0]     # first_user
 
 # Deleting Users and Credentials Email
-LookerSDK.delete_credentials_email(second_user[:id])
+client.delete_credentials_email(second_user[:id])
 LookerSDK.delete_user(second_user[:id])
 
-users = LookerSDK.all_users()
+users = client.all_users()
 users.length # 2
 users[1]     # third_user
 
