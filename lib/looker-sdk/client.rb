@@ -6,6 +6,7 @@ require 'looker-sdk/client/users'
 require 'looker-sdk/client/roles'
 require 'looker-sdk/client/role_domains'
 require 'looker-sdk/client/role_types'
+require 'looker-sdk/client/stories'
 
 module LookerSDK
 
@@ -21,6 +22,7 @@ module LookerSDK
     include LookerSDK::Client::Roles
     include LookerSDK::Client::RoleDomains
     include LookerSDK::Client::RoleTypes
+    include LookerSDK::Client::Stories
 
 
     # Header keys that can be passed in options hash to {#get},{#head}
