@@ -1,7 +1,7 @@
 ## How to authenticate to Looker's API 3
 
 The preferred way to authenticate is to use the looker SDK to manage the login and the passing of
-access_tokens as needed. This doc explains how to do this in a generic way using curl for illustration.
+access_tokens as needed. This doc, however, explains how to do this authentication in a generic way without the SDK and using curl instead for illustration.
 
 Looker API 3 implements OAuth 2's "Resource Owner Password Credentials Grant" pattern,
 See: http://tools.ietf.org/html/rfc6749#section-4.3
