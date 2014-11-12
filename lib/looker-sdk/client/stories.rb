@@ -6,29 +6,21 @@ module LookerSDK
 
       # List all Looker stories
       #
-      # This provides a dump of every story, in the order that they signed up
-      # for Looker.
-      #
-      # @param options [Hash] Optional options. look TODO do we need options here?
-      # @option options [Integer] :since The integer ID of the last RoleType that
-      #   you’ve seen.
-      #
-      # @see look TODO docs link
+      # This provides a listing of of every story.
       #
       # @return [Array<Sawyer::Resource>] List of Looker stories.
-      def all_stories(options = {})
-        paginate "stories", options
+      def all_stories
+        paginate "stories"
       end
 
       # Get a single story
       #
       # @param story [String] A Looker story id.
       # @return [Sawyer::Resource]
-      # @see look TODO docs link
       # @example
       #   LookerSDK.story(1)
-      def story(story = nil, options = {})
-        get "stories/#{story}", options
+      def story(story)
+        get "stories/#{story}"
       end
 
     end
