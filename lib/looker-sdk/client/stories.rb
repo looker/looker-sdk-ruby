@@ -23,6 +23,15 @@ module LookerSDK
         get "stories/#{story}"
       end
 
+      # Get story assets
+      #
+      # @return [Sawyer::Resource]
+      # @example
+      #   LookerSDK.story_assets
+      def story_assets
+        get "stories/assets"
+      end
+
     end
 
   end
