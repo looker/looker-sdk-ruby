@@ -4,8 +4,8 @@ require 'looker-sdk/authentication'
 require 'looker-sdk/rate_limit'
 require 'looker-sdk/client/users'
 require 'looker-sdk/client/roles'
-require 'looker-sdk/client/role_domains'
-require 'looker-sdk/client/role_types'
+require 'looker-sdk/client/model_sets'
+require 'looker-sdk/client/permission_sets'
 require 'looker-sdk/client/stories'
 
 module LookerSDK
@@ -20,8 +20,8 @@ module LookerSDK
 
     include LookerSDK::Client::Users
     include LookerSDK::Client::Roles
-    include LookerSDK::Client::RoleDomains
-    include LookerSDK::Client::RoleTypes
+    include LookerSDK::Client::ModelSets
+    include LookerSDK::Client::PermissionSets
     include LookerSDK::Client::Stories
 
 

@@ -11,15 +11,15 @@ describe LookerSDK::Client::Roles do
   end
 
   def with_role(&block)
-    role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
-    role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
-    role = LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id, :role_type_id => role_type.id)
+    permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set_1"), :permissions => ["see_looks"])
+    model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => "all")
+    role = LookerSDK.create_role(:name => mk_name("role1"), :model_set_id => model_set.id, :permission_set_id => permission_set.id)
     begin
       yield role
     ensure
       LookerSDK.delete_role(role.id).must_equal true
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      LookerSDK.delete_permission_set(permission_set.id).must_equal true
+      LookerSDK.delete_model_set(model_set.id).must_equal true
     end
   end
 
@@ -37,54 +37,54 @@ describe LookerSDK::Client::Roles do
 
   describe ".create_role" do
     it "creates a role" do
-      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
-      role = LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id, :role_type_id => role_type.id)
+      permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set_1"), :permissions => ["see_looks"])
+      model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => "all")
+      role = LookerSDK.create_role(:name => mk_name("role1"), :model_set_id => model_set.id, :permission_set_id => permission_set.id)
 
       role.name.must_equal mk_name("role1")
-      role.role_domain.id.must_equal role_domain.id
-      role.role_type.id.must_equal role_type.id
+      role.model_set.id.must_equal model_set.id
+      role.permission_set.id.must_equal permission_set.id
 
       LookerSDK.delete_role(role.id).must_equal true
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      LookerSDK.delete_permission_set(permission_set.id).must_equal true
+      LookerSDK.delete_model_set(model_set.id).must_equal true
     end
 
     it "requires a name to create" do
-      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
+      permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set_1"), :permissions => ["see_looks"])
+      model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => "all")
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:role_domain_id => role_domain.id, :role_type_id => role_type.id)
+        LookerSDK.create_role(:model_set_id => model_set.id, :permission_set_id => permission_set.id)
       end
 
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      LookerSDK.delete_permission_set(permission_set.id).must_equal true
+      LookerSDK.delete_model_set(model_set.id).must_equal true
     end
 
-    it "requires a valid role_type_id to create" do
-      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
+    it "requires a valid permission_set_id to create" do
+      model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => "all")
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id)
+        LookerSDK.create_role(:name => mk_name("role1"), :model_set_id => model_set.id)
       end
 
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => mk_name("role1"), :role_domain_id => role_domain.id, :role_type_id => 9999)
+        LookerSDK.create_role(:name => mk_name("role1"), :model_set_id => model_set.id, :permission_set_id => 9999)
       end
 
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      LookerSDK.delete_model_set(model_set.id).must_equal true
     end
 
-    it "requires a valid role_domain_id to create" do
-      role_type = LookerSDK.create_role_type(:name => mk_name("role_type_1"), :permissions => ["administer"])
+    it "requires a valid model_set_id to create" do
+      permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set_1"), :permissions => ["see_looks"])
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => mk_name("role1"), :role_type_id => role_type.id)
+        LookerSDK.create_role(:name => mk_name("role1"), :permission_set_id => permission_set.id)
       end
 
       assert_raises LookerSDK::UnprocessableEntity do
-        LookerSDK.create_role(:name => mk_name("role1"), :role_type_id => role_type.id, :role_domain_id => 9999)
+        LookerSDK.create_role(:name => mk_name("role1"), :permission_set_id => permission_set.id, :model_set_id => 9999)
       end
 
-      LookerSDK.delete_role_type(role_type.id).must_equal true
+      LookerSDK.delete_permission_set(permission_set.id).must_equal true
     end
   end
 
@@ -94,18 +94,18 @@ describe LookerSDK::Client::Roles do
       with_role do |role|
         user_count = LookerSDK.all_users.count
 
-        role_type = LookerSDK.create_role_type(:name => mk_name("role_type_new"), :permissions => ["administer"])
-        role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain_new"), :models => "all")
+        permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set_new"), :permissions => ["see_looks"])
+        model_set = LookerSDK.create_model_set(:name => mk_name("model_set_new"), :models => "all")
 
-        updated_role = LookerSDK.update_role(role.id, {:name => mk_name("role_new"), :role_domain_id => role_domain.id, :role_type_id => role_type.id})
+        updated_role = LookerSDK.update_role(role.id, {:name => mk_name("role_new"), :model_set_id => model_set.id, :permission_set_id => permission_set.id})
 
         updated_role.name.must_equal mk_name("role_new")
-        updated_role.role_domain.id.must_equal role_domain.id
-        updated_role.role_type.id.must_equal role_type.id
+        updated_role.model_set.id.must_equal model_set.id
+        updated_role.permission_set.id.must_equal permission_set.id
         LookerSDK.all_users.count.must_equal user_count
 
-        LookerSDK.delete_role_type(role_type.id).must_equal true
-        LookerSDK.delete_role_domain(role_domain.id).must_equal true
+        LookerSDK.delete_permission_set(permission_set.id).must_equal true
+        LookerSDK.delete_model_set(model_set.id).must_equal true
       end
     end
 
@@ -118,7 +118,7 @@ describe LookerSDK::Client::Roles do
 
     it "rejects update with duplicate name" do
       with_role do |role|
-        new_role = LookerSDK.create_role(:name => mk_name("role_new"), :role_domain_id => role.role_domain.id, :role_type_id => role.role_type.id)
+        new_role = LookerSDK.create_role(:name => mk_name("role_new"), :model_set_id => role.model_set.id, :permission_set_id => role.permission_set.id)
         assert_raises LookerSDK::UnprocessableEntity do
           LookerSDK.update_role(role.id, {:name => new_role.name})
         end
@@ -126,18 +126,18 @@ describe LookerSDK::Client::Roles do
       end
     end
 
-    it "requires a valid role_type_id to update" do
+    it "requires a valid permission_set_id to update" do
       with_role do |role|
         assert_raises LookerSDK::UnprocessableEntity do
-          LookerSDK.update_role(role.id, :role_type_id => 9999)
+          LookerSDK.update_role(role.id, :permission_set_id => 9999)
         end
       end
     end
 
-    it "requires a valid role_domain_id to update" do
+    it "requires a valid model_set_id to update" do
       with_role do |role|
         assert_raises LookerSDK::UnprocessableEntity do
-          LookerSDK.update_role(role.id, :role_domain_id => 9999)
+          LookerSDK.update_role(role.id, :model_set_id => 9999)
         end
       end
     end
@@ -153,8 +153,8 @@ describe LookerSDK::Client::Roles do
       admin_role = roles.select {|d| d.name == "Admin"}.first
 
       admin_role.wont_be_nil
-      admin_role.role_domain.name.must_equal "All"
-      admin_role.role_type.name.must_equal "Admin"
+      admin_role.model_set.name.must_equal "All"
+      admin_role.permission_set.name.must_equal "Admin"
 
       assert_raises LookerSDK::MethodNotAllowed do
         LookerSDK.delete_role(admin_role.id)

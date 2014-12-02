@@ -156,9 +156,9 @@ describe LookerSDK::Client::Users do
   describe ".set_user_roles" do
     it "sets the users roles" do
       user = LookerSDK.create_user
-      role_type = LookerSDK.create_role_type(:name => mk_name("role_type"), :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
-      roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :role_domain_id => role_domain.id, :role_type_id => role_type.id) }
+      permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set"), :permissions => ["see_looks"])
+      model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => ["abcde"])
+      roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :model_set_id => model_set.id, :permission_set_id => permission_set.id) }
 
       new_role_ids = LookerSDK.set_user_roles(user.id, roles.map {|role| role.id}).map {|role| role.id}
 
@@ -169,16 +169,16 @@ describe LookerSDK::Client::Users do
       roles.each do |role|
         LookerSDK.delete_role(role.id).must_equal true
       end
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      LookerSDK.delete_permission_set(permission_set.id).must_equal true
+      LookerSDK.delete_model_set(model_set.id).must_equal true
       LookerSDK.delete_user(user.id)
     end
 
     it "wont set duplicate roles" do
       user = LookerSDK.create_user
-      role_type = LookerSDK.create_role_type(:name => mk_name("role_type"), :permissions => ["administer"])
-      role_domain = LookerSDK.create_role_domain(:name => mk_name("role_domain"), :models => "all")
-      roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :role_domain_id => role_domain.id, :role_type_id => role_type.id) }
+      permission_set = LookerSDK.create_permission_set(:name => mk_name("permission_set"), :permissions => ["see_looks"])
+      model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => ["abcde"])
+      roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :model_set_id => model_set.id, :permission_set_id => permission_set.id) }
 
       new_role_ids = LookerSDK.set_user_roles(user.id, roles.map {|role| role.id} << roles.first.id).map {|role| role.id}
       new_role_ids.select {|role_id| role_id == roles.first.id}.length.must_equal 1
@@ -186,8 +186,8 @@ describe LookerSDK::Client::Users do
       roles.each do |role|
         LookerSDK.delete_role(role.id).must_equal true
       end
-      LookerSDK.delete_role_type(role_type.id).must_equal true
-      LookerSDK.delete_role_domain(role_domain.id).must_equal true
+      LookerSDK.delete_permission_set(permission_set.id).must_equal true
+      LookerSDK.delete_model_set(model_set.id).must_equal true
       LookerSDK.delete_user(user.id)
     end
   end
