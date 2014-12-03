@@ -43,7 +43,7 @@ module LookerSDK
         body_param = (entry[:info][:parameters] || []).select {|param| param[:in] == 'body'}.first
 
         params_passed = args.length
-        params_required = params.length + (body_param ? 1 : 0)
+        params_required = params.length + (body_param && body_param[:required] ? 1 : 0)
         raise ArgumentError.new("wrong number of arguments (#{params_passed} for #{params_required}) in call to '#{method_name}'. See '#{method_link(entry)}'") unless params_passed >= params_required
 
         # substitute the actual params into the route template
