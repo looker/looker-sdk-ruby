@@ -2,11 +2,7 @@ require 'sawyer'
 require 'looker-sdk/configurable'
 require 'looker-sdk/authentication'
 require 'looker-sdk/rate_limit'
-require 'looker-sdk/client/users'
-require 'looker-sdk/client/roles'
-require 'looker-sdk/client/model_sets'
-require 'looker-sdk/client/permission_sets'
-require 'looker-sdk/client/stories'
+require 'looker-sdk/client/dynamic'
 
 module LookerSDK
 
@@ -17,13 +13,7 @@ module LookerSDK
 
     include LookerSDK::Authentication
     include LookerSDK::Configurable
-
-    include LookerSDK::Client::Users
-    include LookerSDK::Client::Roles
-    include LookerSDK::Client::ModelSets
-    include LookerSDK::Client::PermissionSets
-    include LookerSDK::Client::Stories
-
+    include LookerSDK::Client::Dynamic
 
     # Header keys that can be passed in options hash to {#get},{#head}
     CONVENIENCE_HEADERS = Set.new([:accept, :content_type])
