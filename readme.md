@@ -25,10 +25,10 @@ Things that we think are important to do will be marked with `look TODO`
 ```ruby
 require 'looker-sdk'
 
-# For the time being, log in using dummy credentials.
 client = LookerSDK::Client.new(
-  :login => "nope",
-  :password => "nopepass"
+  :client_id => "4CN7jzm7yrkcy2MC4CCG",
+  :client_secret => "Js3rZZ7vHfbc2hBynSj7zqKh"
+  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0"
 )
 
 # if you don't want to provide credentials: (trust me you don't)
