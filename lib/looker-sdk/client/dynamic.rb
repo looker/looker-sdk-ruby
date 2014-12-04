@@ -3,16 +3,23 @@ module LookerSDK
 
     module Dynamic
 
-      def swagger
+      def load_swagger
         @swagger ||= (
-          get 'swagger.json'
+          without_authentication do
+            begin
+              get 'swagger.json'
+            rescue
+              # eat any errors
+            end
+          end
         )
       end
 
       def operations
+        return nil unless @swagger
         @operations ||= (
           ops = {}
-          paths = swagger[:paths].to_h
+          paths = @swagger[:paths].to_h
 
           paths.each do |path_name, path_info|
             path_info.to_h.each do |method, route_info|
@@ -25,7 +32,7 @@ module LookerSDK
       end
 
       def respond_to?(method_name, include_private=false)
-        !!operations[method_name.to_s] || super
+        (operations && !!operations[method_name.to_s]) || super
       end
 
       def method_link(entry)
@@ -34,7 +41,7 @@ module LookerSDK
       end
 
       def method_missing(method_name, *args, &block)
-        entry = operations[method_name.to_s]
+        entry = operations && operations[method_name.to_s]
         return super unless entry
 
         args = (args || []).dup

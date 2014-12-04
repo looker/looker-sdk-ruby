@@ -7,7 +7,17 @@ module LookerSDK
 
     # This is called automatically by 'request'
     def ensure_logged_in
-      authenticate unless token_authenticated? || @authenticating
+      authenticate unless token_authenticated? || @skip_authenticate
+    end
+
+    def without_authentication
+      begin
+        old_skip = @skip_authenticate || false
+        @skip_authenticate = true
+        yield
+      ensure
+        @skip_authenticate = old_skip
+      end
     end
 
     # Authenticate to the server and get an access_token for use in future calls.
@@ -16,14 +26,11 @@ module LookerSDK
       raise "client_id and client_secret required" unless application_authenticated?
 
       set_access_token_from_params(nil)
-      begin
-        @authenticating = true
+      without_authentication do
         data = post '/login'
         raise "login failure #{last_response.status}" unless last_response.status == 200
-      ensure
-        @authenticating = false
+        set_access_token_from_params(data)
       end
-      set_access_token_from_params(data)
     end
 
     def set_access_token_from_params(params)
@@ -38,8 +45,10 @@ module LookerSDK
     end
 
     def logout
-      delete '/logout' if @access_token
-      set_access_token_from_params(nil)
+      without_authentication do
+        delete '/logout' if @access_token
+        set_access_token_from_params(nil)
+      end
     end
 
 

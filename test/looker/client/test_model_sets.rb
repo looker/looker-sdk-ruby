@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-describe LookerSDK::Client::ModelSets do
+describe 'ModelSets' do
 
   before(:each) do
    setup_sdk

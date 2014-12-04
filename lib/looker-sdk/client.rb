@@ -29,6 +29,7 @@ module LookerSDK
       @original_options = options.dup
 
       load_credentials_from_netrc unless application_authenticated?
+      load_swagger
     end
 
     # Compares client options to a Hash of requested options
