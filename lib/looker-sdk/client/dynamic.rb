@@ -31,13 +31,13 @@ module LookerSDK
         )
       end
 
-      def respond_to?(method_name, include_private=false)
-        (operations && !!operations[method_name.to_s]) || super
-      end
-
       def method_link(entry)
         uri = URI.parse(api_endpoint)
         "#{uri.scheme}://#{uri.host}:#{uri.port}/api-docs/index.html#!/#{entry[:info][:tags].first}/#{entry[:info][:operationId]}" rescue "http://docs.looker.com/"
+      end
+
+      def respond_to?(method_name, include_private=false)
+        (operations && !!operations[method_name.to_s]) || super
       end
 
       def method_missing(method_name, *args, &block)
