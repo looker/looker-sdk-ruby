@@ -4,31 +4,19 @@ module LookerSDK
     module Dynamic
 
       def load_swagger
-        @swagger ||= (
-          without_authentication do
-            begin
-              get 'swagger.json'
-            rescue
-              # eat any errors
-            end
-          end
-        )
+        @swagger ||= without_authentication {get 'swagger.json' rescue nil}
       end
 
       def operations
         return nil unless @swagger
-        @operations ||= (
-          ops = {}
-          paths = @swagger[:paths].to_h
-
-          paths.each do |path_name, path_info|
-            path_info.to_h.each do |method, route_info|
-              route_info = route_info.to_h
-              ops[route_info[:operationId]] = {:route => path_name, :method => method, :info => route_info }
+        @operations ||= Hash[
+          @swagger[:paths].to_h.map do |path_name, path_info|
+            path_info.to_h.map do |method, route_info|
+              route = @swagger[:basePath].to_s + path_name.to_s
+              [route_info[:operationId], {:route => route, :method => method, :info => route_info.to_h}]
             end
-          end
-          ops
-        )
+          end.reduce(:+)
+        ]
       end
 
       def method_link(entry)
@@ -45,13 +33,15 @@ module LookerSDK
         return super unless entry
 
         args = (args || []).dup
-        route = entry[:route].to_s
+        route = entry[:route].to_s.dup
         params = (entry[:info][:parameters] || []).select {|param| param[:in] == 'path'}
         body_param = (entry[:info][:parameters] || []).select {|param| param[:in] == 'body'}.first
 
         params_passed = args.length
         params_required = params.length + (body_param && body_param[:required] ? 1 : 0)
-        raise ArgumentError.new("wrong number of arguments (#{params_passed} for #{params_required}) in call to '#{method_name}'. See '#{method_link(entry)}'") unless params_passed >= params_required
+        unless params_passed >= params_required
+          raise ArgumentError.new("wrong number of arguments (#{params_passed} for #{params_required}) in call to '#{method_name}'. See '#{method_link(entry)}'")
+        end
 
         # substitute the actual params into the route template
         params.each {|param| route.sub!("{#{param[:name]}}", args.shift.to_s) }
