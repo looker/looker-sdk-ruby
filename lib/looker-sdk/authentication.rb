@@ -92,8 +92,8 @@ module LookerSDK
         # creds will be nil if there is no netrc for this end point
         looker_warn "Error loading credentials from netrc file for #{api_endpoint}"
       else
-        self.client_id = creds.shift
-        self.client_secret = creds.shift
+        self.client_id = creds[0]
+        self.client_secret = creds[1]
       end
     rescue LoadError
       looker_warn "Please install netrc gem for .netrc support"
