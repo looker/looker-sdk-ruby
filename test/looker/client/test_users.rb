@@ -160,7 +160,7 @@ describe 'Users' do
       model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => ["abcde"])
       roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :model_set_id => model_set.id, :permission_set_id => permission_set.id) }
 
-      new_role_ids = LookerSDK.set_user_roles(user.id, {:roles => roles.map {|role| role.id}}).map {|role| role.id}
+      new_role_ids = LookerSDK.set_user_roles(user.id, roles.map {|role| role.id}).map {|role| role.id}
 
       roles.each do |role|
         new_role_ids.must_include role.id
@@ -180,7 +180,7 @@ describe 'Users' do
       model_set = LookerSDK.create_model_set(:name => mk_name("model_set"), :models => ["abcde"])
       roles = (1..5).map {|i| LookerSDK.create_role(:name => mk_name("test_role#{i}"), :model_set_id => model_set.id, :permission_set_id => permission_set.id) }
 
-      new_role_ids = LookerSDK.set_user_roles(user.id, {:roles => roles.map {|role| role.id} << roles.first.id}).map {|role| role.id}
+      new_role_ids = LookerSDK.set_user_roles(user.id, roles.map {|role| role.id} << roles.first.id).map {|role| role.id}
       new_role_ids.select {|role_id| role_id == roles.first.id}.length.must_equal 1
 
       roles.each do |role|

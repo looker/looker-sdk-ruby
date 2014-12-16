@@ -166,7 +166,7 @@ describe 'Roles' do
     it "sets users of role" do
       users = (1..5).map {|i| LookerSDK.create_user }
       with_role do |role|
-        LookerSDK.set_role_users(role.id, {:users => users.map {|u| u.id }})
+        LookerSDK.set_role_users(role.id, users.map {|u| u.id })
         new_user_ids = LookerSDK.role_users(role.id).map {|user| user.id}
 
         users.map {|u| u.id}.each do |user_id|
@@ -183,7 +183,7 @@ describe 'Roles' do
       users = (1..5).map { |i| LookerSDK.create_user }
       with_role do |role|
         # set the users to be all the user ids plus the first one twice.
-        LookerSDK.set_role_users(role.id, {:users => users.map {|u| u.id } << users.first.id})
+        LookerSDK.set_role_users(role.id, users.map {|u| u.id } << users.first.id)
 
         new_user_ids = LookerSDK.role_users(role.id).map {|user| user.id}
         new_user_ids.select {|user_id| user_id == users.first.id}.length.must_equal 1

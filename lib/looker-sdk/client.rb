@@ -67,28 +67,31 @@ module LookerSDK
     # Make a HTTP POST request
     #
     # @param url [String] The path, relative to {#api_endpoint}
-    # @param options [Hash] Body and header params for request
+    # @param data [String|Array|Hash] Body and optionally header params for request
+    # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
-    def post(url, options = {})
-      request :post, url, options
+    def post(url, data = {}, options = {})
+      request :post, url, data, options
     end
 
     # Make a HTTP PUT request
     #
     # @param url [String] The path, relative to {#api_endpoint}
-    # @param options [Hash] Body and header params for request
+    # @param data [String|Array|Hash] Body and optionally header params for request
+    # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
-    def put(url, options = {})
-      request :put, url, options
+    def put(url, data = {}, options = {})
+      request :put, url, data, options
     end
 
     # Make a HTTP PATCH request
     #
     # @param url [String] The path, relative to {#api_endpoint}
-    # @param options [Hash] Body and header params for request
+    # @param data [String|Array|Hash] Body and optionally header params for request
+    # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
-    def patch(url, options = {})
-      request :patch, url, options
+    def patch(url, data = {}, options = {})
+      request :patch, url, data, options
     end
 
     # Make a HTTP DELETE request
