@@ -23,11 +23,11 @@ module LookerSDK
     # Authenticate to the server and get an access_token for use in future calls.
 
     def authenticate
-      raise "client_id and client_secret required" unless application_authenticated?
+      raise "client_id and client_secret required" unless application_credentials?
 
       set_access_token_from_params(nil)
       without_authentication do
-        data = post '/login'
+        data = post '/login', :query => application_credentials
         raise "login failure #{last_response.status}" unless last_response.status == 200
         set_access_token_from_params(data)
       end
@@ -46,8 +46,9 @@ module LookerSDK
 
     def logout
       without_authentication do
-        delete '/logout' if @access_token
+        result = @access_token ? boolean_from_response(:delete, '/logout') : false
         set_access_token_from_params(nil)
+        result
       end
     end
 
@@ -57,13 +58,13 @@ module LookerSDK
     #
     # @see look TODO docs link
     # @return Boolean
-    def application_authenticated?
-      !!application_authentication
+    def application_credentials?
+      !!application_credentials
     end
 
     private
 
-    def application_authentication
+    def application_credentials
       if @client_id && @client_secret
         {
           :client_id     => @client_id,

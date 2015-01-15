@@ -4,7 +4,7 @@ module LookerSDK
     module Dynamic
 
       def load_swagger
-        @swagger ||= without_authentication {get 'swagger.json' rescue nil}
+        @swagger ||= without_authentication {get('swagger.json') rescue nil} || (get('swagger.json') rescue nil)
       end
 
       def operations

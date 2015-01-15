@@ -28,7 +28,7 @@ module LookerSDK
       # client_id appear as if they are options and confuse the automatic client generation in LookerSDK#client
       @original_options = options.dup
 
-      load_credentials_from_netrc unless application_authenticated?
+      load_credentials_from_netrc unless application_credentials?
       load_swagger
     end
 
@@ -153,11 +153,7 @@ module LookerSDK
       @agent ||= Sawyer::Agent.new(api_endpoint, sawyer_options) do |http|
         http.headers[:accept] = default_media_type
         http.headers[:user_agent] = user_agent
-        if token_authenticated?
-          http.authorization 'token', @access_token
-        elsif application_authenticated?
-          http.params = http.params.merge application_authentication
-        end
+        http.authorization('token', @access_token) if token_authenticated?
       end
     end
 
