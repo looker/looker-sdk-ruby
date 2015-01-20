@@ -16,7 +16,7 @@ module LookerSDK
     MEDIA_TYPE   = "application/vnd.looker.v3+json"
 
     # Default WEB endpoint
-    WEB_ENDPOINT = "https://<client>.looker.com".freeze # look TODO update this
+    WEB_ENDPOINT = "https://localhost:9999".freeze # look TODO update this
 
     # In Faraday 0.9, Faraday::Builder was renamed to Faraday::RackBuilder
     RACK_BUILDER_CLASS = defined?(Faraday::RackBuilder) ? Faraday::RackBuilder : Faraday::Builder

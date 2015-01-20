@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-describe LookerSDK::Client::Users do
+describe 'Users' do
 
   before(:each) do
    setup_sdk
@@ -48,7 +48,7 @@ describe LookerSDK::Client::Users do
     end
 
     it "gets current user with no user_id" do
-      user = LookerSDK.user
+      user = LookerSDK.me
       user.must_be_kind_of Sawyer::Resource
     end
   end
@@ -65,16 +65,16 @@ describe LookerSDK::Client::Users do
   describe ".create_credentials_email" do
     it "create user and add credentials email" do
       user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
-      credentials_email = LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      credentials_email = LookerSDK.create_credentials_email(user[:id], {:email => mk_name("email_1@example.com")})
       credentials_email.must_be_kind_of Sawyer::Resource
       LookerSDK.delete_user(user.id)
     end
 
     it "will not create two credentials emails for same user" do
       user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
-      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      LookerSDK.create_credentials_email(user[:id], {:email => mk_name("email_1@example.com")})
       assert_raises LookerSDK::Conflict do
-        credentials_email2 = LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+        credentials_email2 = LookerSDK.create_credentials_email(user[:id], {:email => mk_name("email_1@example.com")})
       end
       LookerSDK.delete_user(user.id)
     end
@@ -84,7 +84,7 @@ describe LookerSDK::Client::Users do
   describe ".update_credentials_email" do
     it "update credentials_email email address" do
       user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
-      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      LookerSDK.create_credentials_email(user[:id], {:email => mk_name("email_1@example.com")})
       LookerSDK.update_credentials_email(user[:id], {:email => mk_name("email_2@example.com")})
       LookerSDK.get_credentials_email(user[:id])[:email].must_equal mk_name("email_2@example.com")
       LookerSDK.delete_user(user.id)
@@ -95,7 +95,7 @@ describe LookerSDK::Client::Users do
   describe ".remove_credentials_email" do
     it "removes credentials email" do
       user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
-      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      LookerSDK.create_credentials_email(user[:id], {:email => mk_name("email_1@example.com")})
       LookerSDK.delete_credentials_email(user[:id]).must_equal true
       assert_raises LookerSDK::NotFound do
         LookerSDK.get_credentials_email(user[:id])
@@ -113,7 +113,7 @@ describe LookerSDK::Client::Users do
   describe ".get_credentials_email" do
     it "gets corresponding credentials email" do
       user = LookerSDK.create_user({:first_name => mk_name("user_1_first"), :last_name => mk_name("user_1_last")})
-      LookerSDK.create_credentials_email(user[:id], mk_name("email_1@example.com"))
+      LookerSDK.create_credentials_email(user[:id], {:email => mk_name("email_1@example.com")})
       LookerSDK.get_credentials_email(user[:id])[:email].must_equal mk_name("email_1@example.com")
       LookerSDK.delete_user(user.id)
     end
@@ -135,7 +135,7 @@ describe LookerSDK::Client::Users do
     end
 
     it "will not delete self" do
-      user = LookerSDK.user
+      user = LookerSDK.me
       assert_raises LookerSDK::Forbidden do
         LookerSDK.delete_user(user[:id])
       end
@@ -148,7 +148,7 @@ describe LookerSDK::Client::Users do
 
   describe ".roles" do
     it "gets roles of user" do
-      user = LookerSDK.user
+      user = LookerSDK.me
       roles = LookerSDK.user_roles(user[:id])
     end
   end

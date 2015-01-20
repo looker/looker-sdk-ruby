@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-describe LookerSDK::Client::Roles do
+describe 'Roles' do
 
   before(:each) do
    setup_sdk

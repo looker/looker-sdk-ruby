@@ -7,23 +7,30 @@ module LookerSDK
 
     # This is called automatically by 'request'
     def ensure_logged_in
-      authenticate unless token_authenticated? || @authenticating
+      authenticate unless token_authenticated? || @skip_authenticate
+    end
+
+    def without_authentication
+      begin
+        old_skip = @skip_authenticate || false
+        @skip_authenticate = true
+        yield
+      ensure
+        @skip_authenticate = old_skip
+      end
     end
 
     # Authenticate to the server and get an access_token for use in future calls.
 
     def authenticate
-      raise "client_id and client_secret required" unless application_authenticated?
+      raise "client_id and client_secret required" unless application_credentials?
 
       set_access_token_from_params(nil)
-      begin
-        @authenticating = true
-        data = post '/login'
+      without_authentication do
+        data = post '/login', :query => application_credentials
         raise "login failure #{last_response.status}" unless last_response.status == 200
-      ensure
-        @authenticating = false
+        set_access_token_from_params(data)
       end
-      set_access_token_from_params(data)
     end
 
     def set_access_token_from_params(params)
@@ -38,8 +45,11 @@ module LookerSDK
     end
 
     def logout
-      delete '/logout' if @access_token
-      set_access_token_from_params(nil)
+      without_authentication do
+        result = @access_token ? boolean_from_response(:delete, '/logout') : false
+        set_access_token_from_params(nil)
+        result
+      end
     end
 
 
@@ -48,13 +58,13 @@ module LookerSDK
     #
     # @see look TODO docs link
     # @return Boolean
-    def application_authenticated?
-      !!application_authentication
+    def application_credentials?
+      !!application_credentials
     end
 
     private
 
-    def application_authentication
+    def application_credentials
       if @client_id && @client_secret
         {
           :client_id     => @client_id,
@@ -83,8 +93,8 @@ module LookerSDK
         # creds will be nil if there is no netrc for this end point
         looker_warn "Error loading credentials from netrc file for #{api_endpoint}"
       else
-        self.client_id = creds.shift
-        self.client_secret = creds.shift
+        self.client_id = creds[0]
+        self.client_secret = creds[1]
       end
     rescue LoadError
       looker_warn "Please install netrc gem for .netrc support"

@@ -45,11 +45,11 @@ client = LookerSDK::Client.new(
 # Supports user creation, modification, deletion
 # Supports credentials_user creation, modification, and deletion.
 first_user = LookerSDK.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-LookerSDK.create_credentials_email(first_user[:id], "jonathan@looker.com")
+LookerSDK.create_credentials_email(first_user[:id], {:email => "jonathan@looker.com"})
 second_user = LookerSDK.create_user({:first_name => "John F", :last_name => "Kennedy"})
-LookerSDK.create_credentials_email(first_user[:id], "john@looker.com")
+LookerSDK.create_credentials_email(first_user[:id], {:email => "john@looker.com"})
 third_user = LookerSDK.create_user({:first_name => "Frank", :last_name => "Sinatra"})
-LookerSDK.create_credentials_email(first_user[:id], "frank@looker.com")
+LookerSDK.create_credentials_email(first_user[:id], {:email => "frank@looker.com"})
 
 user = LookerSDK.user(first_user[:id])
 user.first_name # Jonathan

@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-describe LookerSDK::Client::PermissionSets do
+describe 'PermissionSets' do
 
   before(:each) do
    setup_sdk

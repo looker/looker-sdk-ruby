@@ -2,11 +2,7 @@ require 'sawyer'
 require 'looker-sdk/configurable'
 require 'looker-sdk/authentication'
 require 'looker-sdk/rate_limit'
-require 'looker-sdk/client/users'
-require 'looker-sdk/client/roles'
-require 'looker-sdk/client/model_sets'
-require 'looker-sdk/client/permission_sets'
-require 'looker-sdk/client/stories'
+require 'looker-sdk/client/dynamic'
 
 module LookerSDK
 
@@ -17,13 +13,7 @@ module LookerSDK
 
     include LookerSDK::Authentication
     include LookerSDK::Configurable
-
-    include LookerSDK::Client::Users
-    include LookerSDK::Client::Roles
-    include LookerSDK::Client::ModelSets
-    include LookerSDK::Client::PermissionSets
-    include LookerSDK::Client::Stories
-
+    include LookerSDK::Client::Dynamic
 
     # Header keys that can be passed in options hash to {#get},{#head}
     CONVENIENCE_HEADERS = Set.new([:accept, :content_type])
@@ -38,7 +28,8 @@ module LookerSDK
       # client_id appear as if they are options and confuse the automatic client generation in LookerSDK#client
       @original_options = options.dup
 
-      load_credentials_from_netrc unless application_authenticated?
+      load_credentials_from_netrc unless application_credentials?
+      load_swagger
     end
 
     # Compares client options to a Hash of requested options
@@ -76,28 +67,31 @@ module LookerSDK
     # Make a HTTP POST request
     #
     # @param url [String] The path, relative to {#api_endpoint}
-    # @param options [Hash] Body and header params for request
+    # @param data [String|Array|Hash] Body and optionally header params for request
+    # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
-    def post(url, options = {})
-      request :post, url, options
+    def post(url, data = {}, options = {})
+      request :post, url, data, options
     end
 
     # Make a HTTP PUT request
     #
     # @param url [String] The path, relative to {#api_endpoint}
-    # @param options [Hash] Body and header params for request
+    # @param data [String|Array|Hash] Body and optionally header params for request
+    # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
-    def put(url, options = {})
-      request :put, url, options
+    def put(url, data = {}, options = {})
+      request :put, url, data, options
     end
 
     # Make a HTTP PATCH request
     #
     # @param url [String] The path, relative to {#api_endpoint}
-    # @param options [Hash] Body and header params for request
+    # @param data [String|Array|Hash] Body and optionally header params for request
+    # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
-    def patch(url, options = {})
-      request :patch, url, options
+    def patch(url, data = {}, options = {})
+      request :patch, url, data, options
     end
 
     # Make a HTTP DELETE request
@@ -159,11 +153,7 @@ module LookerSDK
       @agent ||= Sawyer::Agent.new(api_endpoint, sawyer_options) do |http|
         http.headers[:accept] = default_media_type
         http.headers[:user_agent] = user_agent
-        if token_authenticated?
-          http.authorization 'token', @access_token
-        elsif application_authenticated?
-          http.params = http.params.merge application_authentication
-        end
+        http.authorization('token', @access_token) if token_authenticated?
       end
     end
 
