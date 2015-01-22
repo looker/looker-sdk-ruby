@@ -89,6 +89,10 @@ module LookerSDK
         MIDDLEWARE
       end
 
+      def faraday
+        nil
+      end
+
       # Default pagination page size from ENV
       # @return [Fixnum] Page size
       def per_page

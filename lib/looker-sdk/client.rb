@@ -251,7 +251,7 @@ module LookerSDK
       conn_opts = @connection_options
       conn_opts[:builder] = @middleware if @middleware
       conn_opts[:proxy] = @proxy if @proxy
-      opts[:faraday] = Faraday.new(conn_opts)
+      opts[:faraday] = @faraday || Faraday.new(conn_opts)
 
       opts
     end

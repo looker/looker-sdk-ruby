@@ -3,8 +3,14 @@ module LookerSDK
 
     module Dynamic
 
+      def try_load_swagger
+        body = get('swagger.json') rescue nil
+        last_response && last_response.status == 200 && body
+      end
+
       def load_swagger
-        @swagger ||= without_authentication {get('swagger.json') rescue nil} || (get('swagger.json') rescue nil)
+        # Try to load w/o authenticating. Else, authenticate and try again.
+        @swagger ||= without_authentication {try_load_swagger} || try_load_swagger
       end
 
       def operations
