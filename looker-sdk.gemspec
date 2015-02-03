@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = %w(lib)
   s.add_dependency 'jruby-openssl' if s.platform == :jruby
-  s.add_dependency 'sawyer', '~> 0.5'
+  s.add_dependency 'sawyer', '~> 0.6'
 end
