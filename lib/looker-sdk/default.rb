@@ -93,6 +93,10 @@ module LookerSDK
         nil
       end
 
+      def shared_swagger
+        false
+      end
+
       # Default pagination page size from ENV
       # @return [Fixnum] Page size
       def per_page
