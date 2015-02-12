@@ -8,12 +8,24 @@ module LookerSDK
         last_response && last_response.status == 200 && body
       end
 
+      # If a given client is created with ':shared_swagger => true' then it will try to
+      # use a globally sharable @@operations hash built from one fetch of the swagger.json for the
+      # given api_endpoint. This is an optimization for the cases where many sdk clients get created and
+      # destroyed (perhaps with different access tokens) while all talking to the same endpoints. This cuts
+      # down overhead for such cases considerably.
+
+      @@sharable_operations = Hash.new
+
       def load_swagger
+        # We only need the swagger if we are going to be building our own 'operations' hash
+        return if shared_swagger && @@sharable_operations[api_endpoint]
         # Try to load w/o authenticating. Else, authenticate and try again.
         @swagger ||= without_authentication {try_load_swagger} || try_load_swagger
       end
 
       def operations
+        return @@sharable_operations[api_endpoint] if shared_swagger && @@sharable_operations[api_endpoint]
+
         return nil unless @swagger
         @operations ||= Hash[
           @swagger[:paths].to_h.map do |path_name, path_info|
@@ -22,7 +34,9 @@ module LookerSDK
               [route_info[:operationId], {:route => route, :method => method, :info => route_info.to_h}]
             end
           end.reduce(:+)
-        ]
+        ].freeze
+
+        shared_swagger ? (@@sharable_operations[api_endpoint] = @operations) : @operations
       end
 
       def method_link(entry)
