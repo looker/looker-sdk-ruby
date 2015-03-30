@@ -89,11 +89,8 @@ Content-Length: 502
 
 # Logout to revoke an access_token
 > curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/logout
-HTTP/1.1 200 OK
-Content-Type: application/json;charset=utf-8
-Vary: Accept-Encoding
+HTTP/1.1 204 No Content
 X-Content-Type-Options: nosniff
-Content-Length: 0
 
 # Show that the access_token is no longer valid
 > curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/logout
