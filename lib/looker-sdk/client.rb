@@ -24,12 +24,16 @@ module LookerSDK
         instance_variable_set(:"@#{key}", opts[key] || LookerSDK.instance_variable_get(:"@#{key}"))
       end
 
+      # allow caller to do configuration in a block before we load swagger and become dynamic
+      yield self if block_given?
+
       # Save the original state of the options because live variables received later like access_token and
       # client_id appear as if they are options and confuse the automatic client generation in LookerSDK#client
       @original_options = options.dup
 
       load_credentials_from_netrc unless application_credentials?
       load_swagger
+      self.dynamic = true
     end
 
     # Compares client options to a Hash of requested options
