@@ -24,12 +24,16 @@ module LookerSDK
         instance_variable_set(:"@#{key}", opts[key] || LookerSDK.instance_variable_get(:"@#{key}"))
       end
 
+      # allow caller to do configuration in a block before we load swagger and become dynamic
+      yield self if block_given?
+
       # Save the original state of the options because live variables received later like access_token and
       # client_id appear as if they are options and confuse the automatic client generation in LookerSDK#client
       @original_options = options.dup
 
       load_credentials_from_netrc unless application_credentials?
       load_swagger
+      self.dynamic = true
     end
 
     # Compares client options to a Hash of requested options
@@ -233,16 +237,9 @@ module LookerSDK
       response.data
     end
 
-    # Executes the request, checking if it was successful
-    #
-    # @return [Boolean] True on success, false otherwise
-    def boolean_from_response(method, path, options = {})
-      request(method, path, options)
-      @last_response.status == 204
-    rescue LookerSDK::NotFound
-      false
+    def last_request_succeeded?
+      !!last_response && last_response.status.between?(200, 299)
     end
-
 
     def sawyer_options
       opts = {

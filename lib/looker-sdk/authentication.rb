@@ -46,7 +46,7 @@ module LookerSDK
 
     def logout
       without_authentication do
-        result = @access_token ? boolean_from_response(:delete, '/logout') : false
+        result = !!@access_token && (delete('/logout') rescue false) && last_request_succeeded?
         set_access_token_from_params(nil)
         result
       end
@@ -62,6 +62,15 @@ module LookerSDK
       !!application_credentials
     end
 
+    # Indicates if the client has an OAuth
+    # access token
+    #
+    # @see look TODO docs link
+    # @return [Boolean]
+    def token_authenticated?
+      !!(@access_token && (@access_token_expires_at.nil? || @access_token_expires_at > Time.now))
+    end
+
     private
 
     def application_credentials
@@ -71,15 +80,6 @@ module LookerSDK
           :client_secret => @client_secret
         }
       end
-    end
-
-    # Indicates if the client has an OAuth
-    # access token
-    #
-    # @see look TODO docs link
-    # @return [Boolean]
-    def token_authenticated?
-      !!(@access_token && (@access_token_expires_at.nil? || @access_token_expires_at > Time.now))
     end
 
     def load_credentials_from_netrc

@@ -16,6 +16,10 @@ module LookerSDK
 
       @@sharable_operations = Hash.new
 
+      def clear_swagger
+        @swagger = @operations = nil
+      end
+
       def load_swagger
         # We only need the swagger if we are going to be building our own 'operations' hash
         return if shared_swagger && @@sharable_operations[api_endpoint]
@@ -48,8 +52,10 @@ module LookerSDK
         (operations && !!operations[method_name.to_s]) || super
       end
 
+      attr_accessor :dynamic
+
       def method_missing(method_name, *args, &block)
-        entry = operations && operations[method_name.to_s]
+        entry = operations && operations[method_name.to_s] if dynamic
         return super unless entry
 
         args = (args || []).dup
@@ -74,7 +80,7 @@ module LookerSDK
         when :post    then post(route, opts)
         when :put     then put(route, opts)
         when :patch   then patch(route, opts)
-        when :delete  then boolean_from_response(:delete, route, opts)
+        when :delete  then delete(route, opts) && last_request_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
       end

@@ -1,8 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'jruby-openssl', :platforms => :jruby
-gem 'sawyer', '~> 0.6'
-
 group :development do
   gem 'awesome_print', :require => 'ap'
   gem 'yard', '~> 0.8.7'
