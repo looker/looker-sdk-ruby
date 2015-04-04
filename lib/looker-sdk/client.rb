@@ -237,16 +237,9 @@ module LookerSDK
       response.data
     end
 
-    # Executes the request, checking if it was successful
-    #
-    # @return [Boolean] True on success, false otherwise
-    def boolean_from_response(method, path, options = {})
-      request(method, path, options)
-      @last_response.status == 204
-    rescue LookerSDK::NotFound
-      false
+    def last_request_succeeded?
+      !!last_response && last_response.status.between?(200, 299)
     end
-
 
     def sawyer_options
       opts = {

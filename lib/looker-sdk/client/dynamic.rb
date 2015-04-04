@@ -80,7 +80,7 @@ module LookerSDK
         when :post    then post(route, opts)
         when :put     then put(route, opts)
         when :patch   then patch(route, opts)
-        when :delete  then boolean_from_response(:delete, route, opts)
+        when :delete  then delete(route, opts) && last_request_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
       end
