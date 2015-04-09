@@ -4,7 +4,7 @@ module LookerSDK
     module Dynamic
 
       def try_load_swagger
-        body = get('swagger.json') rescue nil
+        body = get('swagger.json').to_attrs rescue nil
         last_response && last_response.status == 200 && body
       end
 
@@ -32,10 +32,10 @@ module LookerSDK
 
         return nil unless @swagger
         @operations ||= Hash[
-          @swagger[:paths].to_h.map do |path_name, path_info|
-            path_info.to_h.map do |method, route_info|
+          @swagger[:paths].map do |path_name, path_info|
+            path_info.map do |method, route_info|
               route = @swagger[:basePath].to_s + path_name.to_s
-              [route_info[:operationId], {:route => route, :method => method, :info => route_info.to_h}]
+              [route_info[:operationId], {:route => route, :method => method, :info => route_info}]
             end
           end.reduce(:+)
         ].freeze

@@ -4,10 +4,18 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start
 
+require 'rubygems'
+require 'bundler/setup'
+
+require 'ostruct'
 require 'json'
 require 'looker-sdk'
+
 require 'minitest/autorun'
 require 'minitest/spec'
+require 'minitest/mock'
+require 'mocha/mini_test'
+require "rack/test"
 
 def fixture_path
   File.expand_path("../fixtures", __FILE__)

@@ -42,7 +42,7 @@ module LookerSDK
     attr_accessor :access_token, :auto_paginate, :client_id,
                   :client_secret, :default_media_type, :connection_options,
                   :middleware, :netrc, :netrc_file,
-                  :per_page, :proxy, :user_agent, :faraday, :shared_swagger
+                  :per_page, :proxy, :user_agent, :faraday, :swagger, :shared_swagger
     attr_writer :web_endpoint, :api_endpoint
 
     class << self
@@ -66,6 +66,7 @@ module LookerSDK
           :user_agent,
           :faraday,
           :shared_swagger,
+          :swagger,
           :web_endpoint
         ]
       end

@@ -1,0 +1,1998 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "3.0.0",
+    "title": "Looker API",
+    "description": "This document describes the Looker API.",
+    "contact": {
+      "name": "Looker Team <support@looker.com>"
+    },
+    "license": {
+      "name": "EULA",
+      "url": "https://localhost:9999/eula"
+    }
+  },
+  "basePath": "/api/3.0",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "host": "localhost:19999",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Manage Users"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "me",
+        "summary": "Get current user",
+        "description": "Get information about the current user; i.e. the user account currently calling the API.\n",
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Current user.",
+            "schema": {
+              "$ref": "User"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user",
+        "summary": "Get a user",
+        "description": "Get information about the user with a specific id.\n\nIf the caller is an admin or the caller is the user being specified, then full user information will\nbe returned. Otherwise, a minimal 'public' variant of the user information will be returned. This contains\nThe user name and avatar url, but no sensitive information.\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Specified user.",
+            "schema": {
+              "$ref": "User"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user",
+        "summary": "delete a user",
+        "description": "Delete the user with a specific id.\n**DANGER** this will delete the user and all looks and other information owned by the user.\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "User successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "update_user",
+        "summary": "update a user",
+        "description": "Update information about the user with a specific id.\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User",
+            "required": true,
+            "schema": {
+              "$ref": "User"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "New state for specified user.",
+            "schema": {
+              "$ref": "User"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "all_users",
+        "summary": "get all users",
+        "description": "Get information about all users.\n",
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "All users.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "User"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "create_user",
+        "summary": "create a user",
+        "description": "Create a user with the specified information.\n",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User",
+            "required": false,
+            "schema": {
+              "$ref": "User"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "409": {
+            "description": "Resource Already Exists",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "schema": {
+              "$ref": "ValidationError"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Created User",
+            "schema": {
+              "$ref": "User"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_email": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_email",
+        "summary": "get email/password credential",
+        "description": "Email/password login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "email/password credential",
+            "schema": {
+              "$ref": "CredentialsEmail"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "create_user_credentials_email",
+        "summary": "create email/password credential",
+        "description": "Email/password login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "user_credentials_email",
+            "in": "body",
+            "description": "email/password credential",
+            "required": false,
+            "schema": {
+              "$ref": "CredentialsEmail"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "email/password credential",
+            "schema": {
+              "$ref": "CredentialsEmail"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "update_user_credentials_email",
+        "summary": "update email/password credential",
+        "description": "Email/password login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "user_credentials_email",
+            "in": "body",
+            "description": "email/password credential",
+            "required": true,
+            "schema": {
+              "$ref": "CredentialsEmail"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "email/password credential",
+            "schema": {
+              "$ref": "CredentialsEmail"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_email",
+        "summary": "delete email/password credential",
+        "description": "Email/password login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_totp": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_totp",
+        "summary": "get Two-factor credential",
+        "description": "Two-factor login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Two-factor credential",
+            "schema": {
+              "$ref": "CredentialsTotp"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "create_user_credentials_totp",
+        "summary": "create Two-factor credential",
+        "description": "Two-factor login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "user_credentials_totp",
+            "in": "body",
+            "description": "Two-factor credential",
+            "required": false,
+            "schema": {
+              "$ref": "CredentialsTotp"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Two-factor credential",
+            "schema": {
+              "$ref": "CredentialsTotp"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_totp",
+        "summary": "delete Two-factor credential",
+        "description": "Two-factor login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_api": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_api",
+        "summary": "get API credential",
+        "description": "API login information for the specified user. This is for 'API Users' used for the 'old' query API.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "API credential",
+            "schema": {
+              "$ref": "CredentialsApi"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "create_user_credentials_api",
+        "summary": "create API credential",
+        "description": "API login information for the specified user. This is for 'API Users' used for the 'old' query API.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "user_credentials_api",
+            "in": "body",
+            "description": "API credential",
+            "required": false,
+            "schema": {
+              "$ref": "CredentialsApi"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "API credential",
+            "schema": {
+              "$ref": "CredentialsApi"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_api",
+        "summary": "delete API credential",
+        "description": "API login information for the specified user. This is for 'API Users' used for the 'old' query API.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_ldap": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_ldap",
+        "summary": "get LDAP credential",
+        "description": "LDAP login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "LDAP credential",
+            "schema": {
+              "$ref": "CredentialsLDAP"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_ldap",
+        "summary": "delete LDAP credential",
+        "description": "LDAP login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_google": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_google",
+        "summary": "get Google auth credential",
+        "description": "Google authentication login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Google auth credential",
+            "schema": {
+              "$ref": "CredentialsGoogle"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_google",
+        "summary": "delete Google auth credential",
+        "description": "Google authentication login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_api3s": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "all_user_credentials_api3s",
+        "summary": "get all API 3 credentials",
+        "description": "API 3 login information for the specified user. This is for the newer API keys that can be added for any user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "API 3 credential",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "CredentialsApi3"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_api3/{credentials_api3_id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_api3",
+        "summary": "get API 3 credential",
+        "description": "API 3 login information for the specified user. This is for the newer API keys that can be added for any user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "credentials_api3_id",
+            "in": "path",
+            "description": "id of API 3 credential",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "API 3 credential",
+            "schema": {
+              "$ref": "CredentialsApi3"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_api3",
+        "summary": "delete API 3 credential",
+        "description": "API 3 login information for the specified user. This is for the newer API keys that can be added for any user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "credentials_api3_id",
+            "in": "path",
+            "description": "id of API 3 credential",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_api3": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "create_user_credentials_api3",
+        "summary": "create API 3 credential",
+        "description": "API 3 login information for the specified user. This is for the newer API keys that can be added for any user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "user_credentials_api3",
+            "in": "body",
+            "description": "API 3 credential",
+            "required": false,
+            "schema": {
+              "$ref": "CredentialsApi3"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "API 3 credential",
+            "schema": {
+              "$ref": "CredentialsApi3"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_embeds": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "all_user_credentials_embeds",
+        "summary": "get all Embedding credentials",
+        "description": "Embed login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Embedding credential",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "CredentialsEmbed"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_embed/{credentials_embed_id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_embed",
+        "summary": "get Embedding credential",
+        "description": "Embed login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "credentials_embed_id",
+            "in": "path",
+            "description": "id of Embedding credential",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Embedding credential",
+            "schema": {
+              "$ref": "CredentialsEmbed"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_embed",
+        "summary": "delete Embedding credential",
+        "description": "Embed login information for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "credentials_embed_id",
+            "in": "path",
+            "description": "id of Embedding credential",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/credentials_looker_openid": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_credentials_looker_openid",
+        "summary": "get Looker Openid credential",
+        "description": "Looker Openid login information for the specified user. Used by Looker Analysts.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Looker Openid credential",
+            "schema": {
+              "$ref": "CredentialsLookerOpenid"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_credentials_looker_openid",
+        "summary": "delete Looker Openid credential",
+        "description": "Looker Openid login information for the specified user. Used by Looker Analysts.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/sessions": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "all_user_sessions",
+        "summary": "get all Web login sessions",
+        "description": "Web login session for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Web login session",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "Session"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/session/{session_id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_session",
+        "summary": "get Web login session",
+        "description": "Web login session for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "session_id",
+            "in": "path",
+            "description": "id of Web login session",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Web login session",
+            "schema": {
+              "$ref": "Session"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "delete_user_session",
+        "summary": "delete Web login session",
+        "description": "Web login session for the specified user.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "session_id",
+            "in": "path",
+            "description": "id of Web login session",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "204": {
+            "description": "Successfully deleted.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/roles": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_roles",
+        "summary": "Get roles for a user",
+        "description": "Get information about roles of the user with a specific id.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Roles of user.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "Role"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "set_user_roles",
+        "summary": "Set roles for a user",
+        "description": "Set roles of the user with a specific id.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "roles",
+            "in": "body",
+            "description": "array of roles ids for user",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "Error"
+            }
+          },
+          "200": {
+            "description": "Roles of user.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "Role"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "properties": {
+        "message": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Error details"
+        },
+        "documentation_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Documentation link"
+        }
+      },
+      "required": [
+        "message",
+        "documentation_url"
+      ]
+    },
+    "BackupConfiguration": {
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of backup: looker-s3 or custom-s3"
+        },
+        "custom_s3_bucket": {
+          "type": "string",
+          "description": "Name of bucket for custom-s3 backups"
+        },
+        "custom_s3_key": {
+          "type": "string",
+          "description": "AWS S3 key used for custom-s3 backups"
+        },
+        "custom_s3_secret": {
+          "type": "string",
+          "description": "AWS S3 secret used for custom-s3 backups"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "CredentialsApi3": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Unique Id"
+        },
+        "client_id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "API key client_id"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "CredentialsApi": {
+      "properties": {
+        "token": {
+          "type": "string",
+          "readOnly": true,
+          "description": "API key token"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "CredentialsEmail": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "EMail address used for user login"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "logged_in_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for most recent login using credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        },
+        "user_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this user"
+        }
+      }
+    },
+    "CredentialsEmbed": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Unique Id"
+        },
+        "external_user_id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Embedder's unique id for the user"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "logged_in_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for most recent login using credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "CredentialsGoogle": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "readOnly": true,
+          "description": "EMail address"
+        },
+        "google_user_id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Google's Unique ID for this user"
+        },
+        "domain": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Google domain"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "logged_in_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for most recent login using credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "CredentialsLDAP": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "readOnly": true,
+          "description": "EMail address"
+        },
+        "ldap_id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "LDAP Unique ID for this user"
+        },
+        "ldap_dn": {
+          "type": "string",
+          "readOnly": true,
+          "description": "LDAP Distinguished name for this user (as-of the last login)"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "logged_in_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for most recent login using credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "CredentialsLookerOpenid": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "readOnly": true,
+          "description": "EMail address used for user login"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "logged_in_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for most recent login using credential"
+        },
+        "logged_in_ip": {
+          "type": "string",
+          "readOnly": true,
+          "description": "IP address of client for most recent login using credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        },
+        "user_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this user"
+        }
+      }
+    },
+    "CredentialsTotp": {
+      "properties": {
+        "verified": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "User has verified"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Timestamp for the creation of this credential"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Has this credential been disabled?"
+        },
+        "type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Short name for the type of this kind of credential"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "ValidationError": {
+      "properties": {
+        "message": {
+          "type": "string",
+          "readOnly": true
+        },
+        "errors": {
+          "type": "string",
+          "readOnly": true
+        },
+        "documentation_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Documentation link"
+        }
+      },
+      "required": [
+        "message",
+        "documentation_url"
+      ]
+    },
+     "Role": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Unique Id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of Role"
+        },
+        "permission_set": {
+          "$ref": "PermissionSet"
+        },
+        "model_set": {
+          "$ref": "ModelSet"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        },
+        "users_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get list of users with this role"
+        }
+      }
+    },
+    "Session": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Unique Id"
+        },
+        "ip_address": {
+          "type": "string",
+          "readOnly": true,
+          "description": "IP address of user when this session was initiated"
+        },
+        "browser": {
+          "type": "string",
+          "readOnly": true,
+          "description": "User's browser type"
+        },
+        "operating_system": {
+          "type": "string",
+          "readOnly": true,
+          "description": "User's Operating System"
+        },
+        "city": {
+          "type": "string",
+          "readOnly": true,
+          "description": "City component of user location (derived from IP address)"
+        },
+        "state": {
+          "type": "string",
+          "readOnly": true,
+          "description": "State component of user location (derived from IP address)"
+        },
+        "country": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Country component of user location (derived from IP address)"
+        },
+        "credentials_type": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Type of credentials used for logging in this session"
+        },
+        "extended_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Time when this session was last extended by the user"
+        },
+        "extended_count": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Number of times this session was extended"
+        },
+        "sudo_user_id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Actual user in the case when this session represents one user sudo'ing as another"
+        },
+        "created_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Time when this session was initiated"
+        },
+        "expires_at": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Time when this session will expire"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "User": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Unique Id"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "First name"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name"
+        },
+        "display_name": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Full name for display (available only if both first_name and last_name are set)"
+        },
+        "email": {
+          "type": "string",
+          "readOnly": true,
+          "description": "EMail address"
+        },
+        "is_disabled": {
+          "type": "boolean",
+          "description": "Account has been disabled"
+        },
+        "avatar_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "URL for the avatar image (may be generic)"
+        },
+        "home_space_id": {
+          "type": "string",
+          "description": "ID string for user's home space"
+        },
+        "access_filters": {
+          "type": "string",
+          "description": "Model access filters. Of the form: '{model => {key => value}, model2 => {key1 => value1, key2 => value2}}'"
+        },
+        "credentials_email": {
+          "$ref": "CredentialsEmail",
+          "readOnly": true,
+          "description": "Email/Password login credentials"
+        },
+        "credentials_totp": {
+          "$ref": "CredentialsTotp",
+          "readOnly": true,
+          "description": "Two-factor credentials"
+        },
+        "credentials_ldap": {
+          "$ref": "CredentialsLDAP",
+          "readOnly": true,
+          "description": "LDAP credentials"
+        },
+        "credentials_google": {
+          "$ref": "CredentialsGoogle",
+          "readOnly": true,
+          "description": "Google auth credentials"
+        },
+        "credentials_api": {
+          "$ref": "CredentialsApi",
+          "readOnly": true,
+          "description": "API user credentials"
+        },
+        "credentials_api3": {
+          "type": "array",
+          "items": {
+            "$ref": "CredentialsApi3"
+          },
+          "readOnly": true,
+          "description": "API 3 credentials"
+        },
+        "credentials_embed": {
+          "type": "array",
+          "items": {
+            "$ref": "CredentialsEmbed"
+          },
+          "readOnly": true,
+          "description": "Embed credentials"
+        },
+        "credentials_looker_openid": {
+          "$ref": "CredentialsLookerOpenid",
+          "readOnly": true,
+          "description": "LookerOpenID credentials. Used for login by Looker Analysts"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "$ref": "Session"
+          },
+          "readOnly": true,
+          "description": "Active sessions"
+        },
+        "role_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "readOnly": true,
+          "description": "Array of ids of the roles for this user"
+        },
+        "is_looker_employee": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "User is identified as an emplpoyee of Looker"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    },
+    "UserPublic": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "Unique Id"
+        },
+        "first_name": {
+          "type": "string",
+          "readOnly": true,
+          "description": "First Name"
+        },
+        "last_name": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Last Name"
+        },
+        "avatar_url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "URL for the avatar image (may be generic)"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "readOnly": true,
+          "description": "Link to get this item"
+        }
+      }
+    }
+  }
+}
