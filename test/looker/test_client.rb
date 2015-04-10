@@ -156,13 +156,32 @@ describe LookerSDK::Client do
 
   describe "request options" do
 
-    it "parse_query_and_convenience_headers must work right" do
-
-      LookerSDK::Client.new.send(:parse_query_and_convenience_headers, nil).must_equal({})
+    it "parse_query_and_convenience_headers must handle good input" do
 
       [
+        # no need for empty query or headers
+        [{}, {}],
+        [{query: {}}, {}],
+        [{headers: {}}, {}],
+        [{query: {}, headers: {}}, {}],
+
+        # promote raw stuff into query
         [{query:{foo:'bar'}}, {query:{foo:'bar'}}],
         [{foo:'bar'}, {query:{foo:'bar'}}],
+        [{foo:'bar', one:1}, {query:{foo:'bar', one:1}}],
+
+        # promote CONVENIENCE_HEADERS into headers
+        [{accept: 'foo'}, {headers:{accept: 'foo'}}],
+        [{content_type: 'foo'}, {headers:{content_type: 'foo'}}],
+        [{accept: 'foo', content_type: 'bar'}, {headers:{accept: 'foo', content_type: 'bar'}}],
+
+        # merge CONVENIENCE_HEADERS into headers if headers not empty
+        [{accept: 'foo', headers:{content_type: 'bar'}}, {headers:{accept: 'foo', content_type: 'bar'}}],
+
+        # promote CONVENIENCE_HEADERS into headers while also handling query parts
+        [{accept: 'foo', content_type: 'bar', query:{foo:'bar'}}, {query:{foo:'bar'}, headers:{accept: 'foo', content_type: 'bar'}}],
+        [{accept: 'foo', content_type: 'bar', foo:'bar'}, {query:{foo:'bar'}, headers:{accept: 'foo', content_type: 'bar'}}],
+
       ].each do |pair|
         input_original, expected = pair
         input = input_original.dup
@@ -172,7 +191,23 @@ describe LookerSDK::Client do
         input.must_equal input_original
         output.must_equal expected
       end
+
+      # don't make the code above handle the special case of nil input.
+      LookerSDK::Client.new.send(:parse_query_and_convenience_headers, nil).must_equal({})
     end
+
+    it "parse_query_and_convenience_headers must detect bad input" do
+      [
+        1,
+        '',
+        [],
+        {query:1},
+        {query:[]},
+      ].each do |input|
+        proc { LookerSDK::Client.new.send(:parse_query_and_convenience_headers, input) }.must_raise RuntimeError
+      end
+    end
+
   end
 
   # TODO: Convert the old tests that were here to deal with swagger/dynamic way of doing things. Perhaps

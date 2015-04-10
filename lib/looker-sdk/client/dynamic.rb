@@ -3,6 +3,8 @@ module LookerSDK
 
     module Dynamic
 
+      attr_accessor :dynamic
+
       def try_load_swagger
         body = get('swagger.json').to_attrs rescue nil
         last_response && last_response.status == 200 && body
@@ -48,16 +50,30 @@ module LookerSDK
         "#{uri.scheme}://#{uri.host}:#{uri.port}/api-docs/index.html#!/#{entry[:info][:tags].first}/#{entry[:info][:operationId]}" rescue "http://docs.looker.com/"
       end
 
-      def respond_to?(method_name, include_private=false)
-        (operations && !!operations[method_name.to_s]) || super
+      # Callers can explicitly 'invoke' remote methods or let 'method_missing' do the trick.
+      # If nothing else, this gives clients a way to deal with potential conflicts between remote method
+      # names and names of methods on client itself.
+      def invoke(method_name, *args)
+        entry = find_entry(method_name) || raise(NameError, "undefined remote method '#{method_name}'")
+        invoke_remote(entry, method_name, *args)
       end
 
-      attr_accessor :dynamic
-
       def method_missing(method_name, *args, &block)
-        entry = operations && operations[method_name.to_s] if dynamic
-        return super unless entry
+        entry = find_entry(method_name) || (return super)
+        invoke_remote(entry, method_name, *args)
+      end
 
+      def respond_to?(method_name, include_private=false)
+        !!find_entry(method_name) || super
+      end
+
+      private
+
+      def find_entry(method_name)
+        operations && operations[method_name.to_s] if dynamic
+      end
+
+      def invoke_remote(entry, method_name, *args)
         args = (args || []).dup
         route = entry[:route].to_s.dup
         params = (entry[:info][:parameters] || []).select {|param| param[:in] == 'path'}
@@ -72,19 +88,20 @@ module LookerSDK
         # substitute the actual params into the route template
         params.each {|param| route.sub!("{#{param[:name]}}", args.shift.to_s) }
 
-        a = args[0] || {}
-        b = args[1] || {}
+        a = args[0]
+        b = args[1]
 
         method = entry[:method].to_sym
         case method
         when :get     then paginate(route, a)
-        when :post    then post(route, a, merge_content_type_if_body(a, b))
-        when :put     then put(route, a, merge_content_type_if_body(a, b))
-        when :patch   then patch(route, a, merge_content_type_if_body(a, b))
-        when :delete  then delete(route, a) && last_request_succeeded?
+        when :post    then post(route, a, merge_content_type_if_body(a, b||{}))
+        when :put     then put(route, a, merge_content_type_if_body(a, b||{}))
+        when :patch   then patch(route, a, merge_content_type_if_body(a, b||{}))
+        when :delete  then delete(route, a) ; delete_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
       end
+
     end
   end
 end

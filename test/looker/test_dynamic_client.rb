@@ -33,7 +33,7 @@ describe LookerSDK::Client::Dynamic do
 
   def confirm_env(env, method, path, body, query)
     req = Rack::Request.new(env)
-    req_body = req.body.gets
+    req_body = req.body.gets || ''
 
     req.base_url.must_equal 'https://localhost:19999'
     req.request_method.must_equal method.to_s.upcase
@@ -42,7 +42,12 @@ describe LookerSDK::Client::Dynamic do
     env["HTTP_AUTHORIZATION"].must_equal  "token #{access_token}"
 
     JSON.parse(req.params.to_json, :symbolize_names => true).must_equal query
-    JSON.parse(req_body || '{}', :symbolize_names => true).must_equal body
+
+    begin
+      JSON.parse(req_body, :symbolize_names => true).must_equal body
+    rescue JSON::ParserError => e
+      req_body.must_equal body
+    end
 
     # puts env
     # puts req.inspect
@@ -53,7 +58,7 @@ describe LookerSDK::Client::Dynamic do
     true
   end
 
-  def verify(response, method, path, body={}, query={})
+  def verify(response, method, path, body='', query={})
     mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, method, path, body, query)}
     yield sdk_client(default_swagger, mock)
     mock.verify
@@ -62,22 +67,27 @@ describe LookerSDK::Client::Dynamic do
 
   describe "swagger" do
 
-    it "patch" do
-      verify(response, :post, '/api/3.0/users', {first_name:'Jim'}, {foo:'bar', baz:'bla'}) do |sdk|
-        # sdk.post('/api/3.0/users', {first_name:'Jim'}, {:query => {foo:'bar', baz:'bla'}})
-        sdk.create_user({first_name:'Jim'}, {:query => {foo:'bar', baz:'bla'}})
-      end
-    end
-
     it "get" do
-      verify(response, :get, '/api/3.0/user', {}, {bar:"foo"}) do |sdk|
-        sdk.me(:query => {bar:'foo'})
+      verify(response, :get, '/api/3.0/user') do |sdk|
+        sdk.me
       end
     end
 
     it "get with parms" do
       verify(response, :get, '/api/3.0/users/25') do |sdk|
         sdk.user(25)
+      end
+    end
+
+    it "get with query" do
+      verify(response, :get, '/api/3.0/user', '', {bar:"foo"}) do |sdk|
+        sdk.me({bar:'foo'})
+      end
+    end
+
+    it "get with params and query" do
+      verify(response, :get, '/api/3.0/users/25', '', {bar:"foo"}) do |sdk|
+        sdk.user(25, {bar:'foo'})
       end
     end
 
@@ -93,6 +103,12 @@ describe LookerSDK::Client::Dynamic do
       end
     end
 
+    it "patch with query" do
+      verify(response, :post, '/api/3.0/users', {first_name:'Jim'}, {foo:'bar', baz:'bla'}) do |sdk|
+        sdk.create_user({first_name:'Jim'}, {foo:'bar', baz:'bla'})
+      end
+    end
+
     it "put" do
       verify(response, :put, '/api/3.0/users/25/roles', [10, 20]) do |sdk|
         sdk.set_user_roles(25, [10,20])
@@ -104,15 +120,6 @@ describe LookerSDK::Client::Dynamic do
         sdk.delete_user(25)
       end
     end
-
-=begin
-    it "get" do
-      verify(response, :get, '/api/3.0/user', {}, {foo:'bar', baz:'bla',fat:'true'}) do |sdk|
-        sdk.get('/api/3.0/user', {:query => {foo:'bar', baz:'bla', fat:true}})
-        # sdk.me(:query => 'foo')
-      end
-    end
-=end
 
   end
 end

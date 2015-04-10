@@ -30,7 +30,7 @@ describe LookerSDK::Client::Dynamic do
     end
   end
 
-  def normal_response
+  def response
     OpenStruct.new(:data => "foo", :status => 200)
   end
 
@@ -40,7 +40,7 @@ describe LookerSDK::Client::Dynamic do
 
   describe "swagger" do
     it "get" do
-      mock = MiniTest::Mock.new.expect(:call, normal_response, [:get, '/api/3.0/user', {}, {}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:get, '/api/3.0/user', nil, {}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.me
         mock.verify
@@ -48,15 +48,31 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "get with parms" do
-      mock = MiniTest::Mock.new.expect(:call, normal_response, [:get, '/api/3.0/users/25', {}, {}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:get, '/api/3.0/users/25', nil, {}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.user(25)
         mock.verify
       end
     end
 
+    it "get with query" do
+      mock = MiniTest::Mock.new.expect(:call, response, [:get, '/api/3.0/user', nil, {query:{bar:"foo"}}])
+      with_stub(Sawyer::Agent, :new, mock) do
+        sdk.me({bar:'foo'})
+        mock.verify
+      end
+    end
+
+    it "get with params and query" do
+      mock = MiniTest::Mock.new.expect(:call, response, [:get, '/api/3.0/users/25', nil, {query:{bar:"foo"}}])
+      with_stub(Sawyer::Agent, :new, mock) do
+        sdk.user(25, {bar:'foo'})
+        mock.verify
+      end
+    end
+
     it "post" do
-      mock = MiniTest::Mock.new.expect(:call, normal_response, [:post, '/api/3.0/users', {first_name:'Joe'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:post, '/api/3.0/users', {first_name:'Joe'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.create_user({first_name:'Joe'})
         mock.verify
@@ -64,7 +80,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "patch" do
-      mock = MiniTest::Mock.new.expect(:call, normal_response, [:patch, '/api/3.0/users/25', {first_name:'Jim'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:patch, '/api/3.0/users/25', {first_name:'Jim'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.update_user(25, {first_name:'Jim'})
         mock.verify
@@ -72,15 +88,23 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "put" do
-      mock = MiniTest::Mock.new.expect(:call, normal_response, [:put, '/api/3.0/users/25/roles', [10, 20], {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', [10, 20], {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.set_user_roles(25, [10,20])
         mock.verify
       end
     end
 
-    it "put2" do
-      mock = MiniTest::Mock.new.expect(:call, normal_response, [:put, '/api/3.0/users/25/roles', {}, {}])
+    it "put with nil body" do
+      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', nil, {}])
+      with_stub(Sawyer::Agent, :new, mock) do
+        sdk.set_user_roles(25, nil)
+        mock.verify
+      end
+    end
+
+    it "put with empty body" do
+      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', {}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.set_user_roles(25, {})
         mock.verify
@@ -88,7 +112,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "delete" do
-      mock = MiniTest::Mock.new.expect(:call, delete_response, [:delete, '/api/3.0/users/25', {}, {}])
+      mock = MiniTest::Mock.new.expect(:call, delete_response, [:delete, '/api/3.0/users/25', nil, {}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.delete_user(25)
         mock.verify

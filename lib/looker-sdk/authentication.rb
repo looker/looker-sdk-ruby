@@ -46,7 +46,7 @@ module LookerSDK
 
     def logout
       without_authentication do
-        result = !!@access_token && (delete('/logout') rescue false) && last_request_succeeded?
+        result = !!@access_token && ((delete('/logout') ; delete_succeeded?) rescue false)
         set_access_token_from_params(nil)
         result
       end

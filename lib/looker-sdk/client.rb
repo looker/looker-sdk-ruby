@@ -65,7 +65,7 @@ module LookerSDK
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
     def get(url, options = {})
-      request :get, url, {}, parse_query_and_convenience_headers(options)
+      request :get, url, nil, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP POST request
@@ -104,7 +104,7 @@ module LookerSDK
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
     def delete(url, options = {})
-      request :delete, url, {}, parse_query_and_convenience_headers(options)
+      request :delete, url, nil, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP HEAD request
@@ -113,7 +113,7 @@ module LookerSDK
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
     def head(url, options = {})
-      request :head, url, {}, parse_query_and_convenience_headers(options)
+      request :head, url, nil, parse_query_and_convenience_headers(options)
     end
 
     # Make one or more HTTP GET requests, optionally fetching
@@ -133,7 +133,7 @@ module LookerSDK
         opts[:query][:per_page] ||=  @per_page || (@auto_paginate ? 100 : nil)
       end
 
-      data = request(:get, url, {}, opts)
+      data = request(:get, url, nil, opts)
 
       if @auto_paginate
         while @last_response.rels[:next] && rate_limit.remaining > 0
@@ -229,8 +229,8 @@ module LookerSDK
       response.data
     end
 
-    def last_request_succeeded?
-      !!last_response && last_response.status.between?(200, 299)
+    def delete_succeeded?
+      !!last_response && last_response.status == 204
     end
 
     def sawyer_options
@@ -246,7 +246,7 @@ module LookerSDK
     end
 
     def merge_content_type_if_body(body, options)
-      if body && !body.empty?
+      if body
         {:headers => {:content_type => default_media_type}}.merge(options||{})
       else
         options
@@ -254,7 +254,9 @@ module LookerSDK
     end
 
     def parse_query_and_convenience_headers(options)
-      return {} if options.nil? || options.empty?
+      return {} if options.nil?
+      raise "options is not a hash" unless options.is_a?(Hash)
+      return {} if options.empty?
 
       options = options.dup
       headers = options.delete(:headers) || {}
