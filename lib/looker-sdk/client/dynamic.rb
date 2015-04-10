@@ -88,15 +88,15 @@ module LookerSDK
         # substitute the actual params into the route template
         params.each {|param| route.sub!("{#{param[:name]}}", args.shift.to_s) }
 
-        a = args[0]
-        b = args[1]
+        a = args.length > 0 ? args[0] : {}
+        b = args.length > 1 ? args[1] : {}
 
         method = entry[:method].to_sym
         case method
         when :get     then paginate(route, a)
-        when :post    then post(route, a, merge_content_type_if_body(a, b||{}))
-        when :put     then put(route, a, merge_content_type_if_body(a, b||{}))
-        when :patch   then patch(route, a, merge_content_type_if_body(a, b||{}))
+        when :post    then post(route, a, merge_content_type_if_body(a, b))
+        when :put     then put(route, a, merge_content_type_if_body(a, b))
+        when :patch   then patch(route, a, merge_content_type_if_body(a, b))
         when :delete  then delete(route, a) ; delete_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end

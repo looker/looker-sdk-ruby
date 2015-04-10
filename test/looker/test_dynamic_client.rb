@@ -97,6 +97,12 @@ describe LookerSDK::Client::Dynamic do
       end
     end
 
+    it "post with default body" do
+      verify(response, :post, '/api/3.0/users', {}) do |sdk|
+        sdk.create_user()
+      end
+    end
+
     it "patch" do
       verify(response, :patch, '/api/3.0/users/25', {first_name:'Jim'}) do |sdk|
         sdk.update_user(25, {first_name:'Jim'})

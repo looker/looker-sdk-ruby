@@ -79,6 +79,14 @@ describe LookerSDK::Client::Dynamic do
       end
     end
 
+    it "post with default body" do
+      mock = MiniTest::Mock.new.expect(:call, response, [:post, '/api/3.0/users', {}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      with_stub(Sawyer::Agent, :new, mock) do
+        sdk.create_user()
+        mock.verify
+      end
+    end
+
     it "patch" do
       mock = MiniTest::Mock.new.expect(:call, response, [:patch, '/api/3.0/users/25', {first_name:'Jim'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
