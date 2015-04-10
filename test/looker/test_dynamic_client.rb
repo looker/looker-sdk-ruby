@@ -32,20 +32,23 @@ describe LookerSDK::Client::Dynamic do
   end
 
   def confirm_env(env, method, path, body, query)
-    env["SERVER_NAME"].must_equal "localhost"
-    env["SERVER_PORT"].must_equal "19999"
-    env["rack.url_scheme"].must_equal "https"
+    req = Rack::Request.new(env)
+    req_body = req.body.gets
+
+    req.base_url.must_equal 'https://localhost:19999'
+    req.request_method.must_equal method.to_s.upcase
+    req.path_info.must_equal path
 
     env["HTTP_AUTHORIZATION"].must_equal  "token #{access_token}"
-    env["REQUEST_METHOD"].must_equal method.to_s.upcase
-    env["PATH_INFO"].must_equal path
 
-    JSON.parse(env['rack.input'].gets || '{}', :symbolize_names => true).must_equal body
-
-    q = Hash[ CGI.parse(env["QUERY_STRING"]).map {|key,values| [key.to_sym, values[0]]} ]
-    q.must_equal query
+    JSON.parse(req.params.to_json, :symbolize_names => true).must_equal query
+    JSON.parse(req_body || '{}', :symbolize_names => true).must_equal body
 
     # puts env
+    # puts req.inspect
+    # puts req.params.inspect
+    # puts req_body
+    # puts req.content_type
 
     true
   end
@@ -58,9 +61,17 @@ describe LookerSDK::Client::Dynamic do
 
 
   describe "swagger" do
+
+    it "patch" do
+      verify(response, :post, '/api/3.0/users', {first_name:'Jim'}, {foo:'bar', baz:'bla'}) do |sdk|
+        # sdk.post('/api/3.0/users', {first_name:'Jim'}, {:query => {foo:'bar', baz:'bla'}})
+        sdk.create_user({first_name:'Jim'}, {:query => {foo:'bar', baz:'bla'}})
+      end
+    end
+
     it "get" do
-      verify(response, :get, '/api/3.0/user') do |sdk|
-        sdk.me(:query => 'foo')
+      verify(response, :get, '/api/3.0/user', {}, {bar:"foo"}) do |sdk|
+        sdk.me(:query => {bar:'foo'})
       end
     end
 

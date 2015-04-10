@@ -154,21 +154,24 @@ describe LookerSDK::Client do
 
   end
 
-  describe "call looker" do
-    before do
-      @opts = {
-          :connection_options => {:ssl => {:verify => false}},
-          :netrc      => true,
-          :netrc_file => "test/fixtures/.netrc",
-      }
-    end
+  describe "request options" do
 
-    it "can make a simple call to looker using stored credentials" do
-      client = LookerSDK::Client.new(@opts)
-      user = client.me
-      user.wont_be_nil
-      user[:id].wont_be_nil
-      user[:credentials_api3].wont_be_nil
+    it "parse_query_and_convenience_headers must work right" do
+
+      LookerSDK::Client.new.send(:parse_query_and_convenience_headers, nil).must_equal({})
+
+      [
+        [{query:{foo:'bar'}}, {query:{foo:'bar'}}],
+        [{foo:'bar'}, {query:{foo:'bar'}}],
+      ].each do |pair|
+        input_original, expected = pair
+        input = input_original.dup
+
+        output = LookerSDK::Client.new.send(:parse_query_and_convenience_headers, input)
+
+        input.must_equal input_original
+        output.must_equal expected
+      end
     end
   end
 

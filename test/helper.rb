@@ -16,6 +16,7 @@ require 'minitest/spec'
 require 'minitest/mock'
 require 'mocha/mini_test'
 require "rack/test"
+require "rack/request"
 
 def fixture_path
   File.expand_path("../fixtures", __FILE__)

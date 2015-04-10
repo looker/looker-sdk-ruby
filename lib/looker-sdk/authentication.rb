@@ -27,7 +27,7 @@ module LookerSDK
 
       set_access_token_from_params(nil)
       without_authentication do
-        data = post '/login', :query => application_credentials
+        data = post('/login', {}, :query => application_credentials)
         raise "login failure #{last_response.status}" unless last_response.status == 200
         set_access_token_from_params(data)
       end
