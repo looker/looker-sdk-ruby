@@ -10,3 +10,8 @@ rvm:
   - ree
 cache:
   bundler: true
+matrix:
+  fast_finish: true
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
