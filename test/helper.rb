@@ -22,15 +22,13 @@ def fixture_path
   File.expand_path("../fixtures", __FILE__)
 end
 
-# Using this prefix consistently makes it easier to find any crap that might get left behind
-# in the looker db when tests fail or are written poorly.
-# Note that looker has a rake task to do that cleanup automatically.
-
-SDK_OBJECT_PREFIX = '_SDK_TEST_'.freeze
-
-def mk_name(name)
-  "#{SDK_OBJECT_PREFIX}#{name}"
+def fix_netrc_permissions(path)
+  s = File.stat(path)
+  raise "'#{path}'' not a file" unless s.file?
+  File.chmod(0600, path) unless s.mode.to_s(8)[3..5] == "0600"
 end
+
+fix_netrc_permissions(File.join(fixture_path, '.netrc'))
 
 def setup_sdk
   LookerSDK.reset!
