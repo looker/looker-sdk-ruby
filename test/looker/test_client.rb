@@ -84,12 +84,14 @@ describe LookerSDK::Client do
         inspected.wont_equal("87614b09dd141c22800f96f11737ade5226d7ba8")
       end
 
-      describe "with .netrc"  do
-        it "can read .netrc files" do
-          LookerSDK.reset!
-          client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
-          client.client_id.wont_be_nil
-          client.client_secret.wont_be_nil
+      unless ENV["CONTINUOUS_INTEGRATION"] == "true"
+        describe "with .netrc"  do
+          it "can read .netrc files" do
+            LookerSDK.reset!
+            client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
+            client.client_id.wont_be_nil
+            client.client_secret.wont_be_nil
+          end
         end
       end
     end
@@ -154,21 +156,23 @@ describe LookerSDK::Client do
 
   end
 
-  describe "call looker" do
-    before do
-      @opts = {
-          :connection_options => {:ssl => {:verify => false}},
-          :netrc      => true,
-          :netrc_file => "test/fixtures/.netrc",
-      }
-    end
+  unless ENV["CONTINUOUS_INTEGRATION"] == "true"
+    describe "call looker" do
+      before do
+        @opts = {
+            :connection_options => {:ssl => {:verify => false}},
+            :netrc      => true,
+            :netrc_file => "test/fixtures/.netrc",
+        }
+      end
 
-    it "can make a simple call to looker using stored credentials" do
-      client = LookerSDK::Client.new(@opts)
-      user = client.me
-      user.wont_be_nil
-      user[:id].wont_be_nil
-      user[:credentials_api3].wont_be_nil
+      it "can make a simple call to looker using stored credentials" do
+        client = LookerSDK::Client.new(@opts)
+        user = client.me
+        user.wont_be_nil
+        user[:id].wont_be_nil
+        user[:credentials_api3].wont_be_nil
+      end
     end
   end
 
