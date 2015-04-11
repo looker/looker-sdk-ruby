@@ -65,7 +65,7 @@ module LookerSDK
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
     def get(url, options = {})
-      request :get, url, parse_query_and_convenience_headers(options)
+      request :get, url, nil, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP POST request
@@ -75,7 +75,7 @@ module LookerSDK
     # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
     def post(url, data = {}, options = {})
-      request :post, url, data, options
+      request :post, url, data, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP PUT request
@@ -85,7 +85,7 @@ module LookerSDK
     # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
     def put(url, data = {}, options = {})
-      request :put, url, data, options
+      request :put, url, data, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP PATCH request
@@ -95,7 +95,7 @@ module LookerSDK
     # @param options [Hash] Optional header params for request
     # @return [Sawyer::Resource]
     def patch(url, data = {}, options = {})
-      request :patch, url, data, options
+      request :patch, url, data, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP DELETE request
@@ -104,7 +104,7 @@ module LookerSDK
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
     def delete(url, options = {})
-      request :delete, url, options
+      request :delete, url, nil, parse_query_and_convenience_headers(options)
     end
 
     # Make a HTTP HEAD request
@@ -113,7 +113,7 @@ module LookerSDK
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
     def head(url, options = {})
-      request :head, url, parse_query_and_convenience_headers(options)
+      request :head, url, nil, parse_query_and_convenience_headers(options)
     end
 
     # Make one or more HTTP GET requests, optionally fetching
@@ -128,12 +128,12 @@ module LookerSDK
     #   contains the latest response.
     # @return [Sawyer::Resource]
     def paginate(url, options = {}, &block)
-      opts = parse_query_and_convenience_headers(options.dup)
+      opts = parse_query_and_convenience_headers(options)
       if @auto_paginate || @per_page
         opts[:query][:per_page] ||=  @per_page || (@auto_paginate ? 100 : nil)
       end
 
-      data = request(:get, url, opts)
+      data = request(:get, url, nil, opts)
 
       if @auto_paginate
         while @last_response.rels[:next] && rate_limit.remaining > 0
@@ -223,22 +223,14 @@ module LookerSDK
       @agent = nil
     end
 
-    def request(method, path, data, options = {})
+    def request(method, path, data, options)
       ensure_logged_in
-      if data.is_a?(Hash)
-        options[:query]   = data.delete(:query) || {}
-        options[:headers] = data.delete(:headers) || {}
-        if accept = data.delete(:accept)
-          options[:headers][:accept] = accept
-        end
-      end
-
       @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
       response.data
     end
 
-    def last_request_succeeded?
-      !!last_response && last_response.status.between?(200, 299)
+    def delete_succeeded?
+      !!last_response && last_response.status == 204
     end
 
     def sawyer_options
@@ -253,16 +245,32 @@ module LookerSDK
       opts
     end
 
+    def merge_content_type_if_body(body, options)
+      if body
+        {:headers => {:content_type => default_media_type}}.merge(options||{})
+      else
+        options
+      end
+    end
+
     def parse_query_and_convenience_headers(options)
-      headers = options.fetch(:headers, {})
+      return {} if options.nil?
+      raise "options is not a hash" unless options.is_a?(Hash)
+      return {} if options.empty?
+
+      options = options.dup
+      headers = options.delete(:headers) || {}
       CONVENIENCE_HEADERS.each do |h|
         if header = options.delete(h)
           headers[h] = header
         end
       end
-      query = options.delete(:query)
-      opts = {:query => options}
-      opts[:query].merge!(query) if query && query.is_a?(Hash)
+      query = options.delete(:query) || {}
+      raise "query '#{query}' is not a hash" unless query.is_a?(Hash)
+      query = options.merge(query)
+
+      opts = {}
+      opts[:query] = query unless query.empty?
       opts[:headers] = headers unless headers.empty?
 
       opts

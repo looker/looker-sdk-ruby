@@ -3,8 +3,10 @@ module LookerSDK
 
     module Dynamic
 
+      attr_accessor :dynamic
+
       def try_load_swagger
-        body = get('swagger.json') rescue nil
+        body = get('swagger.json').to_attrs rescue nil
         last_response && last_response.status == 200 && body
       end
 
@@ -32,10 +34,10 @@ module LookerSDK
 
         return nil unless @swagger
         @operations ||= Hash[
-          @swagger[:paths].to_h.map do |path_name, path_info|
-            path_info.to_h.map do |method, route_info|
+          @swagger[:paths].map do |path_name, path_info|
+            path_info.map do |method, route_info|
               route = @swagger[:basePath].to_s + path_name.to_s
-              [route_info[:operationId], {:route => route, :method => method, :info => route_info.to_h}]
+              [route_info[:operationId], {:route => route, :method => method, :info => route_info}]
             end
           end.reduce(:+)
         ].freeze
@@ -48,16 +50,30 @@ module LookerSDK
         "#{uri.scheme}://#{uri.host}:#{uri.port}/api-docs/index.html#!/#{entry[:info][:tags].first}/#{entry[:info][:operationId]}" rescue "http://docs.looker.com/"
       end
 
-      def respond_to?(method_name, include_private=false)
-        (operations && !!operations[method_name.to_s]) || super
+      # Callers can explicitly 'invoke' remote methods or let 'method_missing' do the trick.
+      # If nothing else, this gives clients a way to deal with potential conflicts between remote method
+      # names and names of methods on client itself.
+      def invoke(method_name, *args)
+        entry = find_entry(method_name) || raise(NameError, "undefined remote method '#{method_name}'")
+        invoke_remote(entry, method_name, *args)
       end
 
-      attr_accessor :dynamic
-
       def method_missing(method_name, *args, &block)
-        entry = operations && operations[method_name.to_s] if dynamic
-        return super unless entry
+        entry = find_entry(method_name) || (return super)
+        invoke_remote(entry, method_name, *args)
+      end
 
+      def respond_to?(method_name, include_private=false)
+        !!find_entry(method_name) || super
+      end
+
+      private
+
+      def find_entry(method_name)
+        operations && operations[method_name.to_s] if dynamic
+      end
+
+      def invoke_remote(entry, method_name, *args)
         args = (args || []).dup
         route = entry[:route].to_s.dup
         params = (entry[:info][:parameters] || []).select {|param| param[:in] == 'path'}
@@ -72,18 +88,20 @@ module LookerSDK
         # substitute the actual params into the route template
         params.each {|param| route.sub!("{#{param[:name]}}", args.shift.to_s) }
 
-        opts = args[0] || {}
+        a = args.length > 0 ? args[0] : {}
+        b = args.length > 1 ? args[1] : {}
 
         method = entry[:method].to_sym
         case method
-        when :get     then paginate(route, opts)
-        when :post    then post(route, opts)
-        when :put     then put(route, opts)
-        when :patch   then patch(route, opts)
-        when :delete  then delete(route, opts) && last_request_succeeded?
+        when :get     then paginate(route, a)
+        when :post    then post(route, a, merge_content_type_if_body(a, b))
+        when :put     then put(route, a, merge_content_type_if_body(a, b))
+        when :patch   then patch(route, a, merge_content_type_if_body(a, b))
+        when :delete  then delete(route, a) ; delete_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
       end
+
     end
   end
 end

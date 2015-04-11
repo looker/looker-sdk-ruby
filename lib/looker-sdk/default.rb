@@ -93,6 +93,10 @@ module LookerSDK
         nil
       end
 
+      def swagger
+        nil
+      end
+
       def shared_swagger
         false
       end
