@@ -233,6 +233,19 @@ module LookerSDK
       !!last_response && last_response.status == 204
     end
 
+    class Serializer < Sawyer::Serializer
+      def encode(data)
+        data.kind_of?(Faraday::UploadIO) ? data : super
+      end
+    end
+
+    def serializer
+      @serializer ||= (
+        require 'json'
+        Serializer.new(JSON)
+      )
+    end
+
     def sawyer_options
       opts = {
         :links_parser => Sawyer::LinkParsers::Simple.new
@@ -240,14 +253,21 @@ module LookerSDK
       conn_opts = @connection_options
       conn_opts[:builder] = @middleware if @middleware
       conn_opts[:proxy] = @proxy if @proxy
+      opts[:serializer] = serializer
       opts[:faraday] = @faraday || Faraday.new(conn_opts)
 
       opts
     end
 
-    def merge_content_type_if_body(body, options)
+    def merge_content_type_if_body(body, options = {})
       if body
-        {:headers => {:content_type => default_media_type}}.merge(options||{})
+        if body.kind_of?(Faraday::UploadIO)
+          length = File.new(body.local_path).size.to_s
+          headers = {:content_type => body.content_type, :content_length => length}.merge(options[:headers] || {})
+        else
+          headers = {:content_type => default_media_type}.merge(options[:headers] || {})
+        end
+        {:headers => headers}.merge(options)
       else
         options
       end
