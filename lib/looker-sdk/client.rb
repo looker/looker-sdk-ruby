@@ -233,6 +233,17 @@ module LookerSDK
       !!last_response && last_response.status == 204
     end
 
+    class Serializer < Sawyer::Serializer
+      def encode(data)
+        data.kind_of?(Faraday::UploadIO) ? data : super
+      end
+    end
+
+    def serializer
+      require 'json'
+      @serializer ||= Serializer.new(JSON)
+    end
+
     def sawyer_options
       opts = {
         :links_parser => Sawyer::LinkParsers::Simple.new
@@ -240,6 +251,7 @@ module LookerSDK
       conn_opts = @connection_options
       conn_opts[:builder] = @middleware if @middleware
       conn_opts[:proxy] = @proxy if @proxy
+      opts[:serializer] = serializer
       opts[:faraday] = @faraday || Faraday.new(conn_opts)
 
       opts
