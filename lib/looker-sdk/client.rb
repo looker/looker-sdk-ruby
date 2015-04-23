@@ -257,9 +257,15 @@ module LookerSDK
       opts
     end
 
-    def merge_content_type_if_body(body, options)
+    def merge_content_type_if_body(body, options = {})
       if body
-        {:headers => {:content_type => default_media_type}}.merge(options||{})
+        if body.kind_of?(Faraday::UploadIO)
+          length = File.new(body.local_path).size.to_s
+          headers = {:content_type => body.content_type, :content_length => length}.merge(options[:headers] || {})
+        else
+          headers = {:content_type => default_media_type}.merge(options[:headers] || {})
+        end
+        {:headers => headers}.merge(options)
       else
         options
       end
