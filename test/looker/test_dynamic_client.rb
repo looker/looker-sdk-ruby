@@ -31,7 +31,7 @@ describe LookerSDK::Client::Dynamic do
     [204, {}, []]
   end
 
-  def confirm_env(env, method, path, body, query)
+  def confirm_env(env, method, path, body, query, content_type)
     req = Rack::Request.new(env)
     req_body = req.body.gets || ''
 
@@ -49,6 +49,8 @@ describe LookerSDK::Client::Dynamic do
       req_body.must_equal body
     end
 
+    req.content_type.must_equal(content_type) if content_type
+
     # puts env
     # puts req.inspect
     # puts req.params.inspect
@@ -58,8 +60,8 @@ describe LookerSDK::Client::Dynamic do
     true
   end
 
-  def verify(response, method, path, body='', query={})
-    mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, method, path, body, query)}
+  def verify(response, method, path, body='', query={}, content_type = nil)
+    mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, method, path, body, query, content_type)}
     yield sdk_client(default_swagger, mock)
     mock.verify
   end
@@ -100,6 +102,31 @@ describe LookerSDK::Client::Dynamic do
     it "post with default body" do
       verify(response, :post, '/api/3.0/users', {}) do |sdk|
         sdk.create_user()
+      end
+    end
+
+    it "post with default body and default content_type" do
+      verify(response, :post, '/api/3.0/users', {}, {}, "application/vnd.looker.v3+json") do |sdk|
+        sdk.create_user()
+      end
+    end
+
+    it "post with default body and specific content_type at option-level" do
+      verify(response, :post, '/api/3.0/users', {}, {}, "application/vnd.BOGUS1+json") do |sdk|
+        sdk.create_user({}, {:content_type => "application/vnd.BOGUS1+json"})
+      end
+    end
+
+    it "post with default body and specific content_type at in headers" do
+      verify(response, :post, '/api/3.0/users', {}, {}, "application/vnd.BOGUS2+json") do |sdk|
+        sdk.create_user({}, {:headers => {:content_type => "application/vnd.BOGUS2+json"}})
+      end
+    end
+
+    it "post with file upload" do
+      verify(response, :post, '/api/3.0/users', {first_name:'Joe', last_name:'User'}, {}, "application/vnd.BOGUS3+json") do |sdk|
+        name = File.join(File.dirname(__FILE__), 'user.json')
+        sdk.create_user(Faraday::UploadIO.new(name, "application/vnd.BOGUS3+json"))
       end
     end
 
