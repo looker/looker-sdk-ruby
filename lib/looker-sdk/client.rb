@@ -240,8 +240,10 @@ module LookerSDK
     end
 
     def serializer
-      require 'json'
-      @serializer ||= Serializer.new(JSON)
+      @serializer ||= (
+        require 'json'
+        Serializer.new(JSON)
+      )
     end
 
     def sawyer_options
