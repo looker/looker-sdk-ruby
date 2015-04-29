@@ -24,7 +24,7 @@ describe LookerSDK::Client::Dynamic do
   end
 
   def response
-    [200, {'Content-Type' => 'application/vnd.looker.v3+json'}, [{}.to_json]]
+    [200, {'Content-Type' => 'application/json'}, [{}.to_json]]
   end
 
   def delete_response
@@ -106,7 +106,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "post with default body and default content_type" do
-      verify(response, :post, '/api/3.0/users', {}, {}, "application/vnd.looker.v3+json") do |sdk|
+      verify(response, :post, '/api/3.0/users', {}, {}, "application/json") do |sdk|
         sdk.create_user()
       end
     end
