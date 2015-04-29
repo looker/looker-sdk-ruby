@@ -72,7 +72,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "post" do
-      mock = MiniTest::Mock.new.expect(:call, response, [:post, '/api/3.0/users', {first_name:'Joe'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:post, '/api/3.0/users', {first_name:'Joe'}, {:headers=>{:content_type=>"application/json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.create_user({first_name:'Joe'})
         mock.verify
@@ -80,7 +80,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "post with default body" do
-      mock = MiniTest::Mock.new.expect(:call, response, [:post, '/api/3.0/users', {}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:post, '/api/3.0/users', {}, {:headers=>{:content_type=>"application/json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.create_user()
         mock.verify
@@ -88,7 +88,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "patch" do
-      mock = MiniTest::Mock.new.expect(:call, response, [:patch, '/api/3.0/users/25', {first_name:'Jim'}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:patch, '/api/3.0/users/25', {first_name:'Jim'}, {:headers=>{:content_type=>"application/json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.update_user(25, {first_name:'Jim'})
         mock.verify
@@ -96,7 +96,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "put" do
-      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', [10, 20], {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', [10, 20], {:headers=>{:content_type=>"application/json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.set_user_roles(25, [10,20])
         mock.verify
@@ -112,7 +112,7 @@ describe LookerSDK::Client::Dynamic do
     end
 
     it "put with empty body" do
-      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', {}, {:headers=>{:content_type=>"application/vnd.looker.v3+json"}}])
+      mock = MiniTest::Mock.new.expect(:call, response, [:put, '/api/3.0/users/25/roles', {}, {:headers=>{:content_type=>"application/json"}}])
       with_stub(Sawyer::Agent, :new, mock) do
         sdk.set_user_roles(25, {})
         mock.verify

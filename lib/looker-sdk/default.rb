@@ -13,7 +13,7 @@ module LookerSDK
     USER_AGENT   = "Looker Ruby Gem #{LookerSDK::VERSION}".freeze
 
     # Default media type
-    MEDIA_TYPE   = "application/vnd.looker.v3+json"
+    MEDIA_TYPE   = "application/json"
 
     # Default WEB endpoint
     WEB_ENDPOINT = "https://localhost:9999".freeze # look TODO update this
