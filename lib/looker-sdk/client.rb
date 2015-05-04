@@ -1,4 +1,5 @@
 require 'sawyer'
+require 'looker-sdk/sawyer_patch'
 require 'looker-sdk/configurable'
 require 'looker-sdk/authentication'
 require 'looker-sdk/rate_limit'
@@ -226,7 +227,7 @@ module LookerSDK
     def request(method, path, data, options)
       ensure_logged_in
       @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
-      response.data
+      @raw_responses ? response : response.data
     end
 
     def delete_succeeded?
