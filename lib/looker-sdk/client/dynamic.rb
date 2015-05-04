@@ -6,8 +6,8 @@ module LookerSDK
       attr_accessor :dynamic
 
       def try_load_swagger
-        body = get('swagger.json').to_attrs rescue nil
-        last_response && last_response.status == 200 && body
+        resp = get('swagger.json') rescue nil
+        resp && last_response && last_response.status == 200 && last_response.data && last_response.data.to_attrs
       end
 
       # If a given client is created with ':shared_swagger => true' then it will try to
@@ -97,7 +97,7 @@ module LookerSDK
         when :post    then post(route, a, merge_content_type_if_body(a, b))
         when :put     then put(route, a, merge_content_type_if_body(a, b))
         when :patch   then patch(route, a, merge_content_type_if_body(a, b))
-        when :delete  then delete(route, a) ; delete_succeeded?
+        when :delete  then delete(route, a) ; @raw_responses ? last_response : delete_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
       end

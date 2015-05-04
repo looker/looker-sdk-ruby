@@ -101,6 +101,10 @@ module LookerSDK
         false
       end
 
+      def raw_responses
+        false
+      end
+
       # Default pagination page size from ENV
       # @return [Fixnum] Page size
       def per_page
