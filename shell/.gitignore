@@ -1,0 +1,41 @@
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+*.sass-cache
+*.iml
+
+# OS or Editor folders
+.DS_Store
+.cache
+.project
+.settings
+.tmproj
+nbproject
+Thumbs.db
+
+# Folders to ignore
+intermediate
+publish
+target
+.idea
+out
+
+# markdown previews
+*.md.html
+
+# bundler suggested ignores
+*.gem
+*.rbc
+.bundle
+.config
+.yardoc
+Gemfile.lock
+Gemfile.optional.lock
+tmp
