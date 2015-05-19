@@ -1,5 +1,4 @@
-# [Looker](http://looker.com/) SDK for Ruby
-
+# [Looker](http://looker.com/) SDK for Ruby [![Build Status](https://magnum.travis-ci.com/looker/looker-sdk-ruby.svg?token=PG3HoGUhzT2ndPqtp8rn&branch=master)](https://magnum.travis-ci.com/looker/looker-sdk-ruby)
 ### Overview
 This SDK supports secure/authenticated access to the Looker RESTful API. The SDK binds dynamically to the Looker API and builds mappings for the sets of API methods that the Looker instance exposes. This allows for writing straightforward Ruby scripts to interact with the Looker API. And, it allows the SDK to provide access to new Looker API features in each Looker release without requiring an update to the SDK each time.
 
