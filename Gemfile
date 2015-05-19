@@ -4,7 +4,10 @@ group :development do
   gem 'awesome_print', :require => 'ap'
   gem 'yard', '~> 0.8.7'
   gem 'redcarpet', '~> 3.1.2', :platforms => :ruby
-  gem 'rake', :platforms => :jruby
+end
+
+group :development, :test do
+  gem 'rake'
 end
 
 group :test do
