@@ -34,7 +34,7 @@ require 'looker-sdk'
 # (this is discouraged because secrets in code files can easily lead to those secrets being compromised!)
 sdk = LookerSDK::Client.new(
   :client_id => "4CN7jzm7yrkcy2MC4CCG",
-  :client_secret => "Js3rZZ7vHfbc2hBynSj7zqKh"
+  :client_secret => "Js3rZZ7vHfbc2hBynSj7zqKh",
   :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0"
 )
 
