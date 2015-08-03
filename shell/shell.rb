@@ -11,7 +11,11 @@ def sdk
     :netrc_file => "./.netrc",
 
     # Hack to use local looker instance w/o cert
-    :connection_options => {:ssl => {:verify => false}},
+    # :connection_options => {:ssl => {:verify => false}},
+
+    # Use local looker with self-signed cert *and* set longer timeout to allow for long running queries.
+    :connection_options => {:ssl => {:verify => false}, :request => {:timeout => 60 * 60, :open_timeout => 30}},
+
     :api_endpoint => "https://localhost:19999/api/3.0",
 
     # Customize to use your specific looker instance
