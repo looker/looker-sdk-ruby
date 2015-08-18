@@ -49,8 +49,23 @@ sdk = LookerSDK::Client.new(
 sdk = LookerSDK::Client.new(
   :netrc      => true,
   :netrc_file => "~/.net_rc",
-  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0"
+  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0",
+
+  # Disable cert verification if the looker has a self-signed cert.
+  # Avoid this if using real certificates; verification of the server cert is a very good thing for production.
+  # :connection_options => {:ssl => {:verify => false}},
+
+  # Set longer timeout to allow for long running queries.
+  # :connection_options => {:request => {:timeout => 60 * 60, :open_timeout => 30}},
+
+  # Support self-signed cert *and* set longer timeout to allow for long running queries.
+  # :connection_options => {:ssl => {:verify => false}, :request => {:timeout => 60 * 60, :open_timeout => 30}},
 )
+
+# Check if we can even communicate with the Looker - without even trying to authenticate.
+# This will throw an exception if the sdk can't connect at all. This can help a lot with debugging your
+# first attempts at using the sdk.
+sdk.alive
 
 # Supports user creation, modification, deletion
 # Supports email_credentials creation, modification, and deletion.
