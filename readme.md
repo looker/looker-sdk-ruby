@@ -71,38 +71,38 @@ sdk.alive
 # Supports email_credentials creation, modification, and deletion.
 
 first_user = sdk.create_user({:first_name => "Jonathan", :last_name => "Swenson"})
-sdk.create_credentials_email(first_user[:id], {:email => "jonathan@looker.com"})
+sdk.create_user_credentials_email(first_user[:id], {:email => "jonathan@example.com"})
 
 second_user = sdk.create_user({:first_name => "John F", :last_name => "Kennedy"})
-sdk.create_credentials_email(first_user[:id], {:email => "john@looker.com"})
+sdk.create_user_credentials_email(second_user[:id], {:email => "john@example.com"})
 
 third_user = sdk.create_user({:first_name => "Frank", :last_name => "Sinatra"})
-sdk.create_credentials_email(first_user[:id], {:email => "frank@looker.com"})
+sdk.create_user_credentials_email(third_user[:id], {:email => "frank@example.com"})
 
 user = sdk.user(first_user[:id])
 user.first_name # Jonathan
 user.last_name  # Swenson
 
-sdk.update_user(first_user[:id], {:first_name => "Jonathan is awesome"}
+sdk.update_user(first_user[:id], {:first_name => "Jonathan is awesome"})
 user = sdk.user(first_user[:id])
 user.first_name # "Jonathan is awesome"
 
-credentials_email = sdk.get_credentials_email(user[:id])
-credentials_email[:email] # jonathan@looker.com
+credentials_email = sdk.user_credentials_email(user[:id])
+credentials_email[:email] # jonathan@example.com
 
-sdk.update_credentials_email(user[:id], {:email => "jonathan+1@looker.com"})
-credentials_email = sdk.get_credentials_email(user[:id])
-credentials_email[:email] # jonathan+1@looker.com
+sdk.update_user_credentials_email(user[:id], {:email => "jonathan+1@example.com"})
+credentials_email = sdk.user_credentials_email(user[:id])
+credentials_email[:email] # jonathan+1@example.com
 
 users = sdk.all_users()
 users.length # 3
 users[0]     # first_user
 
 
-sdk.delete_credentials_email(second_user[:id])
+sdk.delete_user_credentials_email(second_user[:id])
 sdk.delete_user(second_user[:id])
 
-users = sdk.all_user()
+users = sdk.all_users()
 users.length # 2
 users[1]     # third_user
 
