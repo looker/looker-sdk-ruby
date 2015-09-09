@@ -8,6 +8,9 @@ All calls to the Looker API must be done over a TSL/SSL connection. Requests and
 
 Looker instances expose API documentation at: https://mygreatcompany.looker.com:19999/api-docs/index.html (the exact URL can be set in the Looker admin panel). By default, the documentation page requires a client_id/client_secret pair to load the detailed API information. That page also supports "Try it out!" links so that you can experiment with the API right from the documentation. The documentation is intended to show how to call the API endpoints via either raw RESTful https requests or using the SDK.
 
+Keep in mind that all API calls are done 'as' the user whose credentials were used to login to the API. The Looker permissioning system enforces various rules about which activities users with various permissions are and are not allowed to do; and data they are or are not allowed to access. For instance, there are many configuration and looker management activities that only Admin users are allowed to perform; like creating and asigning user roles. Additionally, non-admin users have very limited access to information about other users.
+
+When trying to access a resource with the API that the current user is not allowed to access, the API will return a '404 Not Found' error - the same as if the resource did not exist at all. This is a standard practice for RESTful services. By default, the Ruby SDK will convert all non-success result codes into ruby exceptions which it then raises. So, error paths are handled by rescuing exceptions rather than checking result codes for each SDK request.
 
 ### Installation
 ```bash
