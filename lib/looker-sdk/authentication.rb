@@ -86,7 +86,7 @@ module LookerSDK
       return unless netrc?
 
       require 'netrc'
-      info = Netrc.read netrc_file
+      info = Netrc.read File.expand_path(netrc_file)
       netrc_host = URI.parse(api_endpoint).host
       creds = info[netrc_host]
       if creds.nil?
