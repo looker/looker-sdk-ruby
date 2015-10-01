@@ -44,6 +44,13 @@ module LookerSDK
       data[:documentation_url] if data.is_a? Hash
     end
 
+    # Message string returned by the API for some errors
+    #
+    # @return [String]
+    def message
+      response_message
+    end
+
     # Returns most appropriate error for 401 HTTP status code
     # @private
     def self.error_for_401(headers)
