@@ -53,14 +53,14 @@ module LookerSDK
       # Callers can explicitly 'invoke' remote methods or let 'method_missing' do the trick.
       # If nothing else, this gives clients a way to deal with potential conflicts between remote method
       # names and names of methods on client itself.
-      def invoke(method_name, *args)
+      def invoke(method_name, *args, &block)
         entry = find_entry(method_name) || raise(NameError, "undefined remote method '#{method_name}'")
-        invoke_remote(entry, method_name, *args)
+        invoke_remote(entry, method_name, *args, &block)
       end
 
       def method_missing(method_name, *args, &block)
         entry = find_entry(method_name) || (return super)
-        invoke_remote(entry, method_name, *args)
+        invoke_remote(entry, method_name, *args, &block)
       end
 
       def respond_to?(method_name, include_private=false)
@@ -73,7 +73,7 @@ module LookerSDK
         operations && operations[method_name.to_s] if dynamic
       end
 
-      def invoke_remote(entry, method_name, *args)
+      def invoke_remote(entry, method_name, *args, &block)
         args = (args || []).dup
         route = entry[:route].to_s.dup
         params = (entry[:info][:parameters] || []).select {|param| param[:in] == 'path'}
@@ -93,10 +93,10 @@ module LookerSDK
 
         method = entry[:method].to_sym
         case method
-        when :get     then paginate(route, a)
-        when :post    then post(route, a, merge_content_type_if_body(a, b))
-        when :put     then put(route, a, merge_content_type_if_body(a, b))
-        when :patch   then patch(route, a, merge_content_type_if_body(a, b))
+        when :get     then get(route, a, &block)
+        when :post    then post(route, a, merge_content_type_if_body(a, b), &block)
+        when :put     then put(route, a, merge_content_type_if_body(a, b), &block)
+        when :patch   then patch(route, a, merge_content_type_if_body(a, b), &block)
         when :delete  then delete(route, a) ; @raw_responses ? last_response : delete_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
