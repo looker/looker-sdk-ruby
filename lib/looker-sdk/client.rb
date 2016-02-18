@@ -261,6 +261,30 @@ module LookerSDK
     # all the setup is done.
 
     class StreamingClient
+      class Progress
+        attr_reader :response
+        attr_accessor :chunks, :length
+
+        def initialize(response)
+          @response = response
+          @chunks = @length = 0
+          @stopped = false
+        end
+
+        def add_chunk(chunk)
+          @chunks += 1
+          @length += chunk.length
+        end
+
+        def stop
+          @stopped = true
+        end
+
+        def stopped?
+          @stopped
+        end
+      end
+
       def initialize(client, &block)
         @client, @block = client, block
       end
@@ -289,23 +313,30 @@ module LookerSDK
             OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE,
         }
 
-        response = nil
+        # TODO: figure out how/if to support proxies
+        # TODO: figure out how to test this comprehensively
+
+        progress = nil
         Net::HTTP.start(uri.host, uri.port, connect_opts) do |http|
-          http.request(http_request) do |resp|
-            response = resp
+          http.open_timeout = connection.options.open_timeout rescue 30
+          http.read_timeout = connection.options.timeout rescue 60
+
+          http.request(http_request) do |response|
+            progress = Progress.new(response)
             if response.code == "200"
               response.read_body do |chunk|
-                unless @block.call(response, chunk)
-                  return OpenStruct.new(status:"0", headers:{}, env:nil, body:nil)
-                end
+                next unless chunk.length > 0
+                progress.add_chunk(chunk)
+                @block.call(chunk, progress)
+                return OpenStruct.new(status:"0", headers:{}, env:nil, body:nil) if progress.stopped?
               end
             end
           end
         end
 
-        return OpenStruct.new(status:"500", headers:{}, env:nil, body:nil) unless response
+        return OpenStruct.new(status:"500", headers:{}, env:nil, body:nil) unless progress
 
-        OpenStruct.new(status:response.code, headers:response, env:nil, body:nil)
+        OpenStruct.new(status:progress.response.code, headers:progress.response, env:nil, body:nil)
       end
     end
 
