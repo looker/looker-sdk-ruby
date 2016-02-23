@@ -201,6 +201,13 @@ module LookerSDK
       @last_response if defined? @last_response
     end
 
+    # Response for last HTTP request
+    #
+    # @return [StandardError]
+    def last_error
+      @last_error if defined? @last_error
+    end
+
     # Set OAuth access token for authentication
     #
     # @param value [String] Looker OAuth access token
@@ -243,9 +250,15 @@ module LookerSDK
 
     def request(method, path, data, options, &block)
       ensure_logged_in
-      return stream_request(method, path, data, options, &block) if block_given?
-      @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
-      @raw_responses ? response : response.data
+      begin
+        @last_response = @last_error = nil
+        return stream_request(method, path, data, options, &block) if block_given?
+        @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
+        @raw_responses ? response : response.data
+      rescue StandardError => e
+        @last_error = e
+        raise
+      end
     end
 
     def stream_request(method, path, data, options, &block)
