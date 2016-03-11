@@ -306,6 +306,9 @@ module LookerSDK
       def build_response(connection, request)
         full_path = connection.build_exclusive_url(request.path, request.params,
                                                    request.options.params_encoder).to_s
+        uri = URI(full_path)
+        path_with_query = uri.query ? "#{uri.path}?#{uri.query}" : uri.path
+
         http_request = (
           case request.method
           when :get     then Net::HTTP::Get
@@ -314,11 +317,9 @@ module LookerSDK
           when :patch   then Net::HTTP::Patch
           else raise "Stream to block not supported for '#{request.method}'"
           end
-        ).new(full_path, request.headers)
+        ).new(path_with_query, request.headers)
 
         http_request.body = request.body
-
-        uri = URI(full_path)
 
         connect_opts = {
           :use_ssl => !!connection.ssl,
