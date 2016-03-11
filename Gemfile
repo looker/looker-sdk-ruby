@@ -7,7 +7,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rake'
+  gem 'rake', '< 11.0'
 end
 
 group :test do
