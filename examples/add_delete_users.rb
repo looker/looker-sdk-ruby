@@ -92,17 +92,3 @@ end
 create_users(user_list)
 puts
 delete_users(user_list)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
