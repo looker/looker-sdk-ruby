@@ -3,7 +3,7 @@ require 'bundler/setup'
 
 require 'looker-sdk'
 
-# common file used by vatious examples to setup and init sdk
+# common file used by various examples to setup and init sdk
 
 def sdk
   @sdk ||= LookerSDK::Client.new(
