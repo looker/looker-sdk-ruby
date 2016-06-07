@@ -16,6 +16,7 @@ When trying to access a resource with the API that the current user is not allow
 ```bash
 $ git clone git@github.com:looker/looker-sdk-ruby.git looker-sdk
 $ cd looker-sdk
+$ gem install bundle
 $ bundle install
 $ rake install
 ```
@@ -26,6 +27,12 @@ $ rake install
 $ bundle install
 $ rake test # run the test suite
 $ rake test:all # run the test suite on all supported Rubies
+```
+
+### SDK CLI Shell Setup
+```bash
+$ cd looker-sdk/shell
+$ bundle install
 ```
 
 ### Basic Usage
