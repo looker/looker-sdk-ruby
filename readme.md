@@ -29,12 +29,6 @@ $ rake test # run the test suite
 $ rake test:all # run the test suite on all supported Rubies
 ```
 
-### SDK CLI Shell Setup
-```bash
-$ cd looker-sdk/shell
-$ bundle install
-```
-
 ### Basic Usage
 
 ```ruby
