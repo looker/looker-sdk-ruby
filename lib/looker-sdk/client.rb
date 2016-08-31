@@ -238,6 +238,32 @@ module LookerSDK
       def encode(data)
         data.kind_of?(Faraday::UploadIO) ? data : super
       end
+
+      # slight modification to the base class' decode_has_value function to
+      # less permissive when decoding time values.
+      #
+      # See https://github.com/looker/helltool/issues/22037 for more details
+      def decode_hash_value(key, value)
+        if time_field?(key, value)
+          if value.is_a?(String)
+            begin
+              Time.iso8601(value)
+            rescue ArgumentError
+              value
+            end
+          elsif value.is_a?(Integer) || value.is_a?(Float)
+            Time.at(value)
+          else
+            value
+          end
+        elsif value.is_a?(Hash)
+          decode_hash(value)
+        elsif value.is_a?(Array)
+          value.map { |o| decode_hash_value(key, o) }
+        else
+          value
+        end
+      end
     end
 
     def serializer
