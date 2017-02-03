@@ -5,12 +5,18 @@ require 'looker-sdk/version'
 Gem::Specification.new do |s|
   s.name        = 'looker-sdk'
   s.version     = LookerSDK::VERSION
-  s.authors     = ['Looker'] # look TODO is this the right author?
-  # s.email       = 'eng@looker.com' look TODO where should folks email about our open source stuff?
-  s.homepage    = 'https://github.com/looker/looker-sdk-ruby' # look TODO is this the right url?
+  s.date        = "#{Date.today}"
+  s.authors     = ['Looker']
+  s.email       = 'support@looker.com'
+  s.homepage    = 'https://github.com/looker/looker-sdk-ruby'
   s.summary     = %q{Looker Ruby SDK}
-  s.description = %q{Looker Ruby SDK}
+  s.description = 'Use this SDK in your Ruby apps to automate administrative tasks (provisioning users, ' +
+'configuring db connections, etc) on your Looker instance and leverage the Looker data analytics engine to ' +
+'fetch data or render visualizations defined in your Looker data models. ' +
+'For more information, see https://looker.com'
   s.license     = 'MIT'
+  s.required_ruby_version = '>= 1.9.3'
+  s.requirements = 'Looker version 4.0 or later'  # informational
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
