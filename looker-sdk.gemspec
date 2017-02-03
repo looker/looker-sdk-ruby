@@ -10,10 +10,11 @@ Gem::Specification.new do |s|
   s.email       = 'support@looker.com'
   s.homepage    = 'https://github.com/looker/looker-sdk-ruby'
   s.summary     = %q{Looker Ruby SDK}
-  s.description = 'Use this SDK in your Ruby apps to automate administrative tasks (provisioning users, ' +
-'configuring db connections, etc) on your Looker instance and leverage the Looker data analytics engine to ' +
-'fetch data or render visualizations defined in your Looker data models. ' +
-'For more information, see https://looker.com'
+  s.description = 'Use this SDK in your Ruby apps to access the Looker API of your Looker instance. ' +
+      'With the Looker API you can automate administrative tasks such as provisioning users, ' +
+      'configuring db connections, and so on. The Looker API also enables you to leverage the Looker ' +
+      'data analytics engine to fetch data or render visualizations defined in your Looker data models. ' +
+      'For more information, see https://looker.com'
   s.license     = 'MIT'
   s.required_ruby_version = '>= 1.9.3'
   s.requirements = 'Looker version 4.0 or later'  # informational
