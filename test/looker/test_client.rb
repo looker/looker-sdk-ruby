@@ -216,7 +216,7 @@ describe LookerSDK::Client do
         values = {
             :test_at => '30 days',
             :test_on => 'July 20, 1969',
-            :test_date => 'April 3, 1968',
+            :test_date => '1968-04-03 12:23:34',  # this is not iso8601 format!
             :date => '2 months ago',
         }
 
