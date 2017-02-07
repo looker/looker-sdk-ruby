@@ -117,7 +117,7 @@ describe LookerSDK::Client::Dynamic do
       end
     end
 
-    it "post with default body and specific content_type at in headers" do
+    it "post with default body and specific content_type in headers" do
       verify(response, :post, '/api/3.0/users', {}, {}, "application/vnd.BOGUS2+json") do |sdk|
         sdk.create_user({}, {:headers => {:content_type => "application/vnd.BOGUS2+json"}})
       end
