@@ -11,11 +11,11 @@ end
 namespace :test do
   desc "Run tests against all supported Rubies"
   task :all do
-    supported_rubies = ['ruby-1.9', 'ruby-2.0', 'ruby-2.1', 'jruby-1.7.11', 'jruby-1.7.17']
+    supported_rubies = ['ruby-1.9.3', 'ruby-2.0', 'ruby-2.1', 'ruby-2.3.1', 'jruby-1.7.19', 'jruby-9.1.5.0']
     failing_rubies = []
 
     supported_rubies.each do |ruby|
-      cmd = "rvm install #{ruby} && rvm #{ruby} exec bundle install && rvm #{ruby} exec bundle exec rake"
+      cmd = "rvm install #{ruby} && rvm #{ruby} exec gem install bundler && rvm #{ruby} exec bundle install && rvm #{ruby} exec bundle exec rake"
       system cmd
       if $? != 0
         failing_rubies << ruby
