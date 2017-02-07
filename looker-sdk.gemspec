@@ -5,12 +5,12 @@ require 'looker-sdk/version'
 Gem::Specification.new do |s|
   s.name        = 'looker-sdk'
   s.version     = LookerSDK::VERSION
-  s.date        = "#{Date.today}"
+  s.date        = "#{Time.now.strftime('%F')}"
   s.authors     = ['Looker']
   s.email       = 'support@looker.com'
   s.homepage    = 'https://github.com/looker/looker-sdk-ruby'
   s.summary     = %q{Looker Ruby SDK}
-  s.description = 'Use this SDK in your Ruby apps to access the Looker API of your Looker instance. ' +
+  s.description = 'Use this SDK to access data and configuration of your Looker instance. ' +
       'With the Looker API you can automate administrative tasks such as provisioning users, ' +
       'configuring db connections, and so on. The Looker API also enables you to leverage the Looker ' +
       'data analytics engine to fetch data or render visualizations defined in your Looker data models. ' +
