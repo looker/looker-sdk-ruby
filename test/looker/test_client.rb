@@ -210,6 +210,47 @@ describe LookerSDK::Client do
 
   end
 
+  describe 'Sawyer date/time parsing patch' do
+    describe 'key matches time_field pattern' do
+      it 'does not modify non-iso date/time string' do
+        values = {
+            :test_at => '30 days',
+            :test_on => 'July 20, 1969',
+            :test_date => '1968-04-03 12:23:34',  # this is not iso8601 format!
+            :date => '2 months ago',
+        }
+
+        serializer = LookerSDK::Client.new.send(:serializer)
+        values.each {|k,v| serializer.decode_hash_value(k,v).must_equal v, k}
+      end
+
+      it 'converts iso date/time strings to Ruby date/time' do
+        iso_values = {
+            :test_at => '2017-02-07T13:21:50-08:00',
+            :test_on => '2017-02-07T00:00:00z',
+            :test_date => '1969-07-20T00:00:00-08:00',
+            :date => '1968-04-03T12:23:34z',
+        }
+        serializer = LookerSDK::Client.new.send(:serializer)
+        iso_values.each {|k,v| serializer.decode_hash_value(k,v).must_be_kind_of Time, k}
+      end
+    end
+
+    describe 'key does NOT match time_field pattern' do
+      it 'ignores time-like values' do
+        values = {
+            :testat => '30 days',
+            :teston => '2017-02-07T13:21:50-08:00',
+            :testdate => '1968-04-03T12:23:34z',
+            :range => '2 months ago for 1 month'
+        }
+
+        serializer = LookerSDK::Client.new.send(:serializer)
+        values.each {|k,v| serializer.decode_hash_value(k,v).must_equal v, k}
+      end
+    end
+  end
+
   # TODO: Convert the old tests that were here to deal with swagger/dynamic way of doing things. Perhaps
   # with a dedicated server that serves swagger customized to the test suite. Also, bring the auth tests
   # to life here on the SDK client end.
