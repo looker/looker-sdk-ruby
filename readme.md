@@ -143,10 +143,23 @@ Wrote 16384 bytes of 56479 total
 etc...
 ```
 
+You can also abort a streaming download by calling `progress.stop` within the block, like this:
+```ruby
+    sdk.run_look(look_id, format, opts) do |data, progress|
+      if some_condition
+        progress.stop
+      else
+        process_data(data)
+      end
+    end  
+
+```
+
 ##### Streaming Caveats
 * You won't know in advance how many bytes are in the response. Blocks arrive until there aren't any more.
 * If the connection to the Looker server is broken while streaming, it will have the same appearance as normal end-of-file stream termination.
-* The HTTP status in the response arrives before the response body begins downloading. If an error occurs during the download, it cannot be communicated via HTTP status. It is quite possible to have an HTTP status 200 OK and later discover an error in the data stream.
+* The HTTP status in the response arrives before the response body begins downloading. If an error occurs during the download, it cannot be communicated via HTTP status. It is quite possible to have an HTTP status 200 OK and later discover an error in the data stream. If the connection between the Looker server and the SQL database is severed while you are streaming results, for example, Looker will append an error message to the data you receive and terminate the streaming session.
+
 
 These caveats can be mitigated by knowing the structure of the data being streamed. Row data in JSON format will be an array of objects, for example. If the data received is missing the closing `]` then you know the stream download ended prematurely.
 
