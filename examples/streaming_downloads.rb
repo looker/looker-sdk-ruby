@@ -16,5 +16,5 @@ def run_look_to_file(look_id, filename, format, opts = {})
   end
 end
 
-# Replace the look id (32) with the id of your actual look
+# Replace the look id (38) with the id of your actual look
 run_look_to_file(38, 'out.csv', 'csv', limit: 10000)
