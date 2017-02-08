@@ -2,4 +2,5 @@ source 'https://rubygems.org'
 
 gem 'pry', '~> 0.10.1'
 gem 'netrc', '~> 0.7.7'
-gem 'looker-sdk',  :git => 'git@github.com:looker/looker-sdk-ruby.git'
+# gem 'looker-sdk',  :git => 'git@github.com:looker/looker-sdk-ruby.git'
+gem 'looker-sdk',  :path => '../'

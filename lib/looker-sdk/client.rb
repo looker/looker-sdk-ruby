@@ -1,4 +1,5 @@
 require 'sawyer'
+require 'ostruct'
 require 'looker-sdk/sawyer_patch'
 require 'looker-sdk/configurable'
 require 'looker-sdk/authentication'
@@ -64,9 +65,11 @@ module LookerSDK
     #
     # @param url [String] The path, relative to {#api_endpoint}
     # @param options [Hash] Query and header params for request
+    # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
+    #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def get(url, options = {})
-      request :get, url, nil, parse_query_and_convenience_headers(options)
+    def get(url, options = {}, &block)
+      request :get, url, nil, parse_query_and_convenience_headers(options), &block
     end
 
     # Make a HTTP POST request
@@ -74,9 +77,11 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param data [String|Array|Hash] Body and optionally header params for request
     # @param options [Hash] Optional header params for request
+    # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
+    #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def post(url, data = {}, options = {})
-      request :post, url, data, parse_query_and_convenience_headers(options)
+    def post(url, data = {}, options = {}, &block)
+      request :post, url, data, parse_query_and_convenience_headers(options), &block
     end
 
     # Make a HTTP PUT request
@@ -84,9 +89,11 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param data [String|Array|Hash] Body and optionally header params for request
     # @param options [Hash] Optional header params for request
+    # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
+    #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def put(url, data = {}, options = {})
-      request :put, url, data, parse_query_and_convenience_headers(options)
+    def put(url, data = {}, options = {}, &block)
+      request :put, url, data, parse_query_and_convenience_headers(options), &block
     end
 
     # Make a HTTP PATCH request
@@ -94,9 +101,11 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param data [String|Array|Hash] Body and optionally header params for request
     # @param options [Hash] Optional header params for request
+    # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
+    #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def patch(url, data = {}, options = {})
-      request :patch, url, data, parse_query_and_convenience_headers(options)
+    def patch(url, data = {}, options = {}, &block)
+      request :patch, url, data, parse_query_and_convenience_headers(options), &block
     end
 
     # Make a HTTP DELETE request
@@ -104,7 +113,7 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
-    def delete(url, options = {})
+    def delete(url, options = {}, &block)
       request :delete, url, nil, parse_query_and_convenience_headers(options)
     end
 
@@ -113,7 +122,7 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param options [Hash] Query and header params for request
     # @return [Sawyer::Resource]
-    def head(url, options = {})
+    def head(url, options = {}, &block)
       request :head, url, nil, parse_query_and_convenience_headers(options)
     end
 
@@ -151,15 +160,23 @@ module LookerSDK
       data
     end
 
-    # Hypermedia agent for the LookerSDK API
+    # Hypermedia agent for the LookerSDK API (with specific options)
     #
     # @return [Sawyer::Agent]
-    def agent
-      @agent ||= Sawyer::Agent.new(api_endpoint, sawyer_options) do |http|
+    def make_agent(options = nil)
+      options ||= sawyer_options
+      Sawyer::Agent.new(api_endpoint, options) do |http|
         http.headers[:accept] = default_media_type
         http.headers[:user_agent] = user_agent
         http.authorization('token', @access_token) if token_authenticated?
       end
+    end
+
+    # Cached Hypermedia agent for the LookerSDK API (with default options)
+    #
+    # @return [Sawyer::Agent]
+    def agent
+      @agent ||= make_agent
     end
 
     # Fetch the root resource for the API
@@ -182,6 +199,13 @@ module LookerSDK
     # @return [Sawyer::Response]
     def last_response
       @last_response if defined? @last_response
+    end
+
+    # Response for last HTTP request
+    #
+    # @return [StandardError]
+    def last_error
+      @last_error if defined? @last_error
     end
 
     # Set OAuth access token for authentication
@@ -224,10 +248,110 @@ module LookerSDK
       @agent = nil
     end
 
-    def request(method, path, data, options)
+    def request(method, path, data, options, &block)
       ensure_logged_in
-      @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
-      @raw_responses ? response : response.data
+      begin
+        @last_response = @last_error = nil
+        return stream_request(method, path, data, options, &block) if block_given?
+        @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
+        @raw_responses ? response : response.data
+      rescue StandardError => e
+        @last_error = e
+        raise
+      end
+    end
+
+    def stream_request(method, path, data, options, &block)
+      conn_opts = faraday_options(:builder => StreamingClient.new(self, &block))
+      agent = make_agent(sawyer_options(:faraday => Faraday.new(conn_opts)))
+      @last_response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
+    end
+
+    # Since Faraday currently won't do streaming for us, we use Net::HTTP. Still, we go to the trouble
+    # to go through the Sawyer/Faraday codepath so that we can leverage all the header and param
+    # processing they do in order to be as consistent as we can with the normal non-streaming codepath.
+    # This class replaces the default Faraday 'builder' that Faraday uses to do the actual request after
+    # all the setup is done.
+
+    class StreamingClient
+      class Progress
+        attr_reader :response
+        attr_accessor :chunks, :length
+
+        def initialize(response)
+          @response = response
+          @chunks = @length = 0
+          @stopped = false
+        end
+
+        def add_chunk(chunk)
+          @chunks += 1
+          @length += chunk.length
+        end
+
+        def stop
+          @stopped = true
+        end
+
+        def stopped?
+          @stopped
+        end
+      end
+
+      def initialize(client, &block)
+        @client, @block = client, block
+      end
+
+      # This is the method that faraday calls on a builder to do the actual request and build a response.
+      def build_response(connection, request)
+        full_path = connection.build_exclusive_url(request.path, request.params,
+                                                   request.options.params_encoder).to_s
+        uri = URI(full_path)
+        path_with_query = uri.query ? "#{uri.path}?#{uri.query}" : uri.path
+
+        http_request = (
+          case request.method
+          when :get     then Net::HTTP::Get
+          when :post    then Net::HTTP::Post
+          when :put     then Net::HTTP::Put
+          when :patch   then Net::HTTP::Patch
+          else raise "Stream to block not supported for '#{request.method}'"
+          end
+        ).new(path_with_query, request.headers)
+
+        http_request.body = request.body
+
+        connect_opts = {
+          :use_ssl => !!connection.ssl,
+          :verify_mode => (connection.ssl.verify rescue true) ?
+            OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE,
+        }
+
+        # TODO: figure out how/if to support proxies
+        # TODO: figure out how to test this comprehensively
+
+        progress = nil
+        Net::HTTP.start(uri.host, uri.port, connect_opts) do |http|
+          http.open_timeout = connection.options.open_timeout rescue 30
+          http.read_timeout = connection.options.timeout rescue 60
+
+          http.request(http_request) do |response|
+            progress = Progress.new(response)
+            if response.code == "200"
+              response.read_body do |chunk|
+                next unless chunk.length > 0
+                progress.add_chunk(chunk)
+                @block.call(chunk, progress)
+                return OpenStruct.new(status:"0", headers:{}, env:nil, body:nil) if progress.stopped?
+              end
+            end
+          end
+        end
+
+        return OpenStruct.new(status:"500", headers:{}, env:nil, body:nil) unless progress
+
+        OpenStruct.new(status:progress.response.code, headers:progress.response, env:nil, body:nil)
+      end
     end
 
     def delete_succeeded?
@@ -265,17 +389,20 @@ module LookerSDK
       )
     end
 
-    def sawyer_options
-      opts = {
-        :links_parser => Sawyer::LinkParsers::Simple.new
-      }
-      conn_opts = @connection_options
-      conn_opts[:builder] = @middleware if @middleware
+    def faraday_options(options = {})
+      conn_opts = @connection_options.clone
+      builder = options[:builder] || @middleware
+      conn_opts[:builder] = builder if builder
       conn_opts[:proxy] = @proxy if @proxy
-      opts[:serializer] = serializer
-      opts[:faraday] = @faraday || Faraday.new(conn_opts)
+      conn_opts
+    end
 
-      opts
+    def sawyer_options(options = {})
+      {
+        :links_parser => Sawyer::LinkParsers::Simple.new,
+        :serializer  => serializer,
+        :faraday => options[:faraday] || @faraday || Faraday.new(faraday_options)
+      }
     end
 
     def merge_content_type_if_body(body, options = {})
