@@ -1,4 +1,7 @@
 ### Streaming Downloads
+
+#### Beta Feature - Experimental!
+
 This SDK makes it easy to fetch a response from a Looker API and hydrate it into a Ruby object.This convenience is great for working with configuration and administrative data. However, when the response is gigabytes of row data, pulling it all into memory doesn't work so well - you can't begin processing the data until after it has all downloaded, for example, and chewing up tons of memory will put a serious strain on the entire system - even crash it. 
 
 One solution to all this is to use streaming downloads to process the data in chunks as it is downloaded. Streaming requires a little more code to set up but the benefits can be significant. 
@@ -48,9 +51,9 @@ You can also abort a streaming download by calling `progress.stop` within the bl
 
 These caveats can be mitigated by knowing the structure of the data being streamed. Row data in JSON format will be an array of objects, for example. If the data received is missing the closing `]` then you know the stream download ended prematurely.
 
-#### Beta Feature
+#### A Tale of Two Stacks
 
-This implementation of streaming downloads has not been tested with proxy connections. We assume attempting to stream across an http proxy will not work.
+The Looker Ruby SDK is built on top of Sawyer, and Sawyer sits on top of Faraday. Faraday does not support HTTP Streaming, so to do our streaming stuff we have to bypass Faraday and talk directly to the Net:HTTP stack. Our streaming implementation gathers connection settings from the Faraday stack so there's no additional config required for http streaming. 
 
-This implementation of streaming downloads is fairly new and should be considered 'beta'. If you find a situation in which things get really weird using streaming downloads, but works fine without streaming, let us know!
+Streaming downloads have not been tested with proxy connections. We assume attempting to stream across an http proxy will not work.
 
