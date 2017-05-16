@@ -190,8 +190,32 @@ module LookerSDK
     #
     # @return http status code
     def alive
-      get '/alive'
+      without_authentication do
+        get '/alive'
+      end
       last_response.status
+    end
+
+    # Are we connected to the server? - Does not attempt to authenticate.
+    def alive?
+      begin
+        without_authentication do
+          get('/alive')
+        end
+        true
+      rescue
+        false
+      end
+    end
+
+    # Are we connected and authenticated to the server?
+    def authenticated?
+      begin
+        ensure_logged_in
+        true
+      rescue
+        false
+      end
     end
 
     # Response for last HTTP request
