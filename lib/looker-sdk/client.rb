@@ -365,7 +365,7 @@ module LookerSDK
 
       # slight modification to the base class' decode_hash_value function to
       # less permissive when decoding time values.
-      # also prevent conversion from integer/float timestamp to Time
+      # also prevent conversion from non-string types to Time e.g. integer/float timestamp
       #
       # See https://github.com/looker/looker-sdk-ruby/issues/53 for more details
       #

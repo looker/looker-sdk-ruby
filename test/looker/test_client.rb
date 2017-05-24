@@ -220,7 +220,10 @@ describe LookerSDK::Client do
             :date => '2 months ago',
             :test_int_at => 42,
             :test_int_on => 42,
-            :test_int_date => 42,
+            :test_int_date => 42.1,
+            :test_float_at => 42.1,
+            :test_float_on => 42.1,
+            :test_float_date => 42.1,
         }
 
         serializer = LookerSDK::Client.new.send(:serializer)
