@@ -212,12 +212,15 @@ describe LookerSDK::Client do
 
   describe 'Sawyer date/time parsing patch' do
     describe 'key matches time_field pattern' do
-      it 'does not modify non-iso date/time string' do
+      it 'does not modify non-iso date/time string or integer fields' do
         values = {
             :test_at => '30 days',
             :test_on => 'July 20, 1969',
             :test_date => '1968-04-03 12:23:34',  # this is not iso8601 format!
             :date => '2 months ago',
+            :test_int_at => 42,
+            :test_int_on => 42,
+            :test_int_date => 42,
         }
 
         serializer = LookerSDK::Client.new.send(:serializer)
