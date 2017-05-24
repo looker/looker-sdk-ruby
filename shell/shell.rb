@@ -26,7 +26,8 @@ end
 
 begin
   puts "Connecting to Looker at '#{sdk.api_endpoint}'"
-  puts (code = sdk.alive) == 200 ? "Looker is alive!" : "Sad Looker: #{code}"
+  puts sdk.alive? ? "Looker is alive!" : "Sad Looker, can't connect:\n  #{sdk.last_error}"
+  puts sdk.authenticated? ? "Authenticated!" : "Sad Looker, can't authenticate:\n  #{sdk.last_error}"
 
   binding.pry self
 rescue Exception => e
