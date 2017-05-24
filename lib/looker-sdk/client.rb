@@ -389,15 +389,20 @@ module LookerSDK
 
       # slight modification to the base class' decode_hash_value function to
       # less permissive when decoding time values.
+      # also prevent conversion from non-string types to Time e.g. integer/float timestamp
       #
       # See https://github.com/looker/looker-sdk-ruby/issues/53 for more details
       #
       # Base class function that we're overriding: https://github.com/lostisland/sawyer/blob/master/lib/sawyer/serializer.rb#L101-L121
       def decode_hash_value(key, value)
-        if time_field?(key, value) && value.is_a?(String)
-          begin
-            Time.iso8601(value)
-          rescue ArgumentError
+        if time_field?(key, value)
+          if value.is_a?(String)
+            begin
+              Time.iso8601(value)
+            rescue ArgumentError
+              value
+            end
+          else
             value
           end
         else
