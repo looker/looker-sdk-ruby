@@ -55,14 +55,14 @@ sdk = LookerSDK::Client.new(
   :netrc_file => "~/.net_rc",
   :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0",
 
-  # Disable cert verification if the looker has a self-signed cert.
+  # Set longer timeout to allow for long running queries. The default is 60 seconds and can be problematic.
+  :connection_options => {:request => {:timeout => 60 * 60, :open_timeout => 30}},
+
+  # Alternately, disable cert verification if the looker has a self-signed cert.
   # Avoid this if using real certificates; verification of the server cert is a very good thing for production.
   # :connection_options => {:ssl => {:verify => false}},
 
-  # Set longer timeout to allow for long running queries.
-  # :connection_options => {:request => {:timeout => 60 * 60, :open_timeout => 30}},
-
-  # Support self-signed cert *and* set longer timeout to allow for long running queries.
+  # Alternately, support self-signed cert *and* set longer timeout to allow for long running queries.
   # :connection_options => {:ssl => {:verify => false}, :request => {:timeout => 60 * 60, :open_timeout => 30}},
 )
 
