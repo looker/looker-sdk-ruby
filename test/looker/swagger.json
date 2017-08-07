@@ -3,13 +3,13 @@
   "info": {
     "version": "3.0.0",
     "title": "Looker API",
-    "description": "This document describes the Looker API.",
+    "description": "This document is a representative sample (subset) of the Looker API that should only be used to unit test the Looker ruby sdk. To get the current, actual Looker API metadata visit /api/3.0/swagger.json on your Looker instance.",
     "contact": {
       "name": "Looker Team <support@looker.com>"
     },
     "license": {
       "name": "EULA",
-      "url": "https://localhost:9999/eula"
+      "url": "https://learn.looker.com/eula"
     }
   },
   "basePath": "/api/3.0",
@@ -1251,6 +1251,77 @@
             }
           }
         }
+      }
+    },
+    "/users/{user_id}/attribute_values": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "operationId": "user_attribute_user_values",
+        "summary": "Get User Attribute Values",
+        "description": "### Get user attribute values for a given user.\n\nReturns the values of specified user attributes (or all user attributes) for a certain user.\n\nA value for each user attribute is searched for in the following locations, in this order:\n1. in the user's account information\n1. in groups that the user is a member of\n1. the default value of the user attribute\n\nIf more than one group has a value defined for a user attribute, the group with the lowest rank wins.\n\nThe response will only include user attributes for which values were found. Use `include_unset=true` to include\nempty records for user attributes with no value.\n\nThe value of all hidden user attributes will be blank.\n",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Requested fields.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "user_attribute_ids",
+            "in": "query",
+            "description": "Specific user attributes to request. Omit or leave blank to request all user attributes.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "collectionFormat": "csv"
+          },
+          {
+            "name": "all_values",
+            "in": "query",
+            "description": "If true, returns all values in the search path instead of just the first value found. Useful for debugging group precedence.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "include_unset",
+            "in": "query",
+            "description": "If true, returns an empty record for each requested attribute that has no user, group, or default value.",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "200": {
+            "description": "Value of user attribute.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserAttributeWithValue"
+              }
+            }
+          }
+        },
+        "x-looker-status": "beta"
       }
     },
     "/users/{user_id}/roles": {

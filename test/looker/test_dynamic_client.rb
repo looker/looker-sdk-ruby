@@ -1,6 +1,6 @@
 require_relative '../helper'
 
-describe LookerSDK::Client::Dynamic do
+class LookerDynamicClientTest < MiniTest::Spec
 
   def access_token
     '87614b09dd141c22800f96f11737ade5226d7ba8'
@@ -66,10 +66,9 @@ describe LookerSDK::Client::Dynamic do
     mock.verify
   end
 
-
   describe "swagger" do
 
-    it "get" do
+    it "get no params" do
       verify(response, :get, '/api/3.0/user') do |sdk|
         sdk.me
       end
@@ -90,6 +89,20 @@ describe LookerSDK::Client::Dynamic do
     it "get with params and query" do
       verify(response, :get, '/api/3.0/users/25', '', {bar:"foo"}) do |sdk|
         sdk.user(25, {bar:'foo'})
+      end
+    end
+
+    it "get with array query param - string input (csv)" do
+      verify(response, :get, '/api/3.0/users/1/attribute_values','',{user_attribute_ids: '2,3,4'}) do |sdk|
+        sdk.user_attribute_user_values(1, {user_attribute_ids: '2,3,4'})
+        sdk.last_response.env.url.query.must_equal 'user_attribute_ids=2%2C3%2C4'
+      end
+    end
+
+    it "get with array query param - array input (multi[])" do
+      verify(response, :get, '/api/3.0/users/1/attribute_values','',{user_attribute_ids: ['2','3','4']}) do |sdk|
+        sdk.user_attribute_user_values(1, {user_attribute_ids: [2,3,4]})
+        sdk.last_response.env.url.query.must_equal 'user_attribute_ids%5B%5D=2&user_attribute_ids%5B%5D=3&user_attribute_ids%5B%5D=4'
       end
     end
 
