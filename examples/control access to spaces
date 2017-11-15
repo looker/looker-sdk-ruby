@@ -1,0 +1,17 @@
+def update_space_access(space_id, group_id, permission_type)
+
+space = $sdk.space(space_id) 
+meta_id = space.content_metadata_id
+
+# Be sure the space isn't inheriting permissions. 
+$sdk.update_content_metadata(meta_id, {:inherits => false})
+
+all_accesss = $sdk.all_content_metadata_accesss({:content_metadata_id => meta_id}) 
+existing_access = all_accesss.find{ |x| x.group_id == group_id }
+
+return existing_access || $sdk.create_content_metadata_access({ 
+:content_metadata_id => meta_id, 
+:group_id => group_id, 
+:permission_type => permission_type 
+}) 
+end
