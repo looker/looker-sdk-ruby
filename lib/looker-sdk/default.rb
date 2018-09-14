@@ -1,3 +1,11 @@
+###################################################
+#
+# Looker API client SDK for Ruby
+#
+# Copyright (c) 2014-2018 Looker Data Sciences, Inc
+#
+###################################################
+
 require 'looker-sdk/response/raise_error'
 require 'looker-sdk/version'
 

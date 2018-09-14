@@ -1,3 +1,11 @@
+###################################################
+#
+# Looker API client SDK for Ruby
+#
+# Copyright (c) 2014-2018 Looker Data Sciences, Inc
+#
+###################################################
+
 require './sdk_setup'
 
 users = sdk.all_users(fields:'id, is_disabled, display_name, credentials_embed').map do |u|

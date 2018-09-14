@@ -1,3 +1,11 @@
+###################################################
+#
+# Looker API client SDK for Ruby
+#
+# Copyright (c) 2014-2018 Looker Data Sciences, Inc
+#
+###################################################
+
 # Make Sawyer decode the body lazily.
 # This is a temp monkey-patch until sawyer has: https://github.com/lostisland/sawyer/pull/31
 # At that point we can remove this and update our dependency to the new Sawyer release version.
