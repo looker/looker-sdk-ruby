@@ -92,6 +92,15 @@ describe LookerSDK::Client do
           client.client_secret.wont_be_nil
         end
       end
+
+      it "sets proxy with module methods" do
+        client = LookerSDK::Client.new
+        test_proxy = "http://my-test-proxy.com:232"
+        client.configure do |config|
+          config.proxy = test_proxy
+        end
+        client.instance_variable_get(:'@proxy').must_equal test_proxy
+      end
     end
 
     describe "config tests" do
