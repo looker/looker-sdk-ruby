@@ -35,7 +35,7 @@ end
 namespace :test do
   desc "Run tests against all supported Rubies"
   task :all do
-    supported_rubies = ['ruby-1.9.3', 'ruby-2.0', 'ruby-2.1', 'ruby-2.3.1', 'jruby-1.7.19', 'jruby-9.1.5.0']
+    supported_rubies = %w(ruby-2.0 ruby-2.1 ruby-2.3.1 jruby-1.7.19 jruby-9.1.5.0)
     failing_rubies = []
 
     supported_rubies.each do |ruby|
