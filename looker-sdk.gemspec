@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
       'the Looker data analytics engine to fetch data or render visualizations defined in your Looker data models. '+
       'For more information, see https://looker.com.'
   s.license     = 'MIT'
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.0'
   s.requirements = 'Looker version 4.0 or later'  # informational
 
   s.files         = `git ls-files`.split("\n")
