@@ -50,8 +50,9 @@ module LookerSDK
         # We only need the swagger if we are going to be building our own 'operations' hash
         return if shared_swagger && @@sharable_operations[api_endpoint]
         # Try to load w/o authenticating. Else, authenticate and try again.
+        check_response = @swagger.nil?
         @swagger ||= without_authentication { try_load_swagger }
-        response_wo_auth = last_response
+        response_wo_auth = last_response if check_response
         @swagger ||= try_load_swagger
 
         unless @swagger
@@ -97,7 +98,6 @@ module LookerSDK
 
       def method_missing(method_name, *args, &block)
         entry = find_entry(method_name) || (return super)
-        raise(NameError, "undefined method_name '#{method_name}'") unless entry
         invoke_remote(entry, method_name, *args, &block)
       end
 
