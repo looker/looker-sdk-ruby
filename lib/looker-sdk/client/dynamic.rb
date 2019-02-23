@@ -49,19 +49,24 @@ module LookerSDK
       def load_swagger
         # We only need the swagger if we are going to be building our own 'operations' hash
         return if shared_swagger && @@sharable_operations[api_endpoint]
-        # Try to load w/o authenticating. Else, authenticate and try again.
-        check_response = @swagger.nil?
+        # First, try to load swagger.json w/o authenticating
         @swagger ||= without_authentication { try_load_swagger }
-        response_wo_auth = last_response if check_response
-        @swagger ||= try_load_swagger
 
         unless @swagger
-          if response_wo_auth
-            looker_warn("try_load_swagger without authentication failed. HTTP response status: (#{response_wo_auth.status}) data: #{response_wo_auth.data}")
-          end
-          if last_response
-            looker_warn("try_load_swagger WITH authentication failed. HTTP response status: (#{last_response.status}) data: #{last_response.data}")
-          end
+          # capture the bits we may need later, avoiding potential buffer reuse in last_response between requests
+          response_wo_auth_status = last_response&.status
+          response_wo_auth_data = last_response&.data
+
+          # try again, this time with authentication
+          @swagger = try_load_swagger
+        end
+
+        # in unit tests, @swagger may be nil and last_response nil because no HTTP request was made
+        if @swagger.nil? && (response_wo_auth_status || last_response)
+          msg = "Load of swagger.json failed. "
+          msg << "Without authentication HTTP response status: (#{response_wo_auth_status}) data: #{response_wo_auth_data}. " if response_wo_auth_status
+          msg << "WITH authentication HTTP response status: (#{last_response.status}) data: #{last_response.data}" if last_response
+          looker_warn(msg)
         end
 
         @swagger

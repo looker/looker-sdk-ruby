@@ -92,6 +92,38 @@ class LookerDynamicClientTest < MiniTest::Spec
 
   describe "swagger" do
 
+    it "warns when swagger.json can't be loaded" do
+      sdk = sdk_client(nil, nil)
+
+      obj = OpenStruct.new({status: 200, data: {key: "my data"}})
+      sdk.stubs(:last_response).returns(obj)
+      sdk.stubs(:looker_warn).once
+
+      sdk.load_swagger
+    end
+
+    it "no warning when swagger.json can be loaded with authentication" do
+      sdk = sdk_client(nil, nil)
+
+      # first call to try_load_swagger fails, returning nil
+      # second call succeeds
+      sdk.stubs(:try_load_swagger).returns(nil, {key: "my data"})
+      sdk.stubs(:looker_warn).never
+
+      sdk.load_swagger
+    end
+
+    it "no warning when swagger.json can be loaded without authentication" do
+      sdk = sdk_client(nil, nil)
+
+      # first call to try_load_swagger fails, returning nil
+      # second call succeeds
+      sdk.stubs(:try_load_swagger).returns({key: "my data"}, nil)
+      sdk.stubs(:looker_warn).never
+
+      sdk.load_swagger
+    end
+
     it "invalid method name" do
       mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, method, path, body, query, content_type)}
       sdk = sdk_client(default_swagger, mock)
