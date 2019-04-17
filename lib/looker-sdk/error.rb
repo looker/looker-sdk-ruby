@@ -45,6 +45,7 @@ module LookerSDK
                   when 409      then LookerSDK::Conflict
                   when 415      then LookerSDK::UnsupportedMediaType
                   when 422      then LookerSDK::UnprocessableEntity
+                  when 429      then LookerSDK::RateLimitExceeded
                   when 400..499 then LookerSDK::ClientError
                   when 500      then LookerSDK::InternalServerError
                   when 501      then LookerSDK::NotImplemented
@@ -234,6 +235,9 @@ module LookerSDK
 
   # Raised when Looker returns a 422 HTTP status code
   class UnprocessableEntity < ClientError; end
+
+  # Raised when Looker returns a 429 HTTP status code
+  class RateLimitExceeded < ClientError; end
 
   # Raised on errors in the 500-599 range
   class ServerError < Error; end
