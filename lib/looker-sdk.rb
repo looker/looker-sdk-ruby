@@ -22,6 +22,33 @@
 # THE SOFTWARE.
 ############################################################################################
 
+require 'faraday'
+# The Faraday autoload scheme is supposed to work to load other dependencies on demand.
+# It does work, but there are race condition problems upon first load of a given file
+# that have caused intermittent failures in our ruby and integration tests - and could bite in production.
+# The simple/safe solution is to just pre-require these parts that are actually used
+# by the looker-sdk to prevent a race condition later.
+# See https://github.com/lostisland/faraday/issues/181
+# and https://bugs.ruby-lang.org/issues/921
+require 'faraday/autoload'
+require 'faraday/adapter'
+require 'faraday/adapter/rack'
+require 'faraday/adapter/net_http'
+require 'faraday/connection'
+require 'faraday/error'
+require 'faraday/middleware'
+require 'faraday/options'
+require 'faraday/parameters'
+require 'faraday/rack_builder'
+require 'faraday/request'
+require 'faraday/request/authorization'
+require 'faraday/response'
+require 'faraday/upload_io'
+require 'faraday/utils'
+
+require 'rack'
+require 'rack/mock_response'
+
 require 'looker-sdk/client'
 require 'looker-sdk/default'
 
