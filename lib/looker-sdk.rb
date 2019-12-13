@@ -46,8 +46,8 @@ require 'faraday/response'
 require 'faraday/upload_io'
 require 'faraday/utils'
 
-require 'rack'
-require 'rack/mock_response'
+#require 'rack'
+#require 'rack/mock_response'
 
 require 'looker-sdk/client'
 require 'looker-sdk/default'
