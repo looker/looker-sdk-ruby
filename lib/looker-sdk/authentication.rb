@@ -51,7 +51,7 @@ module LookerSDK
 
       set_access_token_from_params(nil)
       without_authentication do
-        post('/login', {}, :query => application_credentials)
+        post("#{URI.parse(api_endpoint).path}/login", {}, :query => application_credentials)
         raise "login failure #{last_response.status}" unless last_response.status == 200
         set_access_token_from_params(last_response.data)
       end
@@ -70,7 +70,7 @@ module LookerSDK
 
     def logout
       without_authentication do
-        result = !!@access_token && ((delete('/logout') ; delete_succeeded?) rescue false)
+        result = !!@access_token && ((delete("#{URI.parse(api_endpoint).path}/logout") ; delete_succeeded?) rescue false)
         set_access_token_from_params(nil)
         result
       end
