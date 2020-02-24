@@ -128,8 +128,14 @@ module LookerSDK
           raise ArgumentError.new("wrong number of arguments (#{params_passed} for #{params_required}) in call to '#{method_name}'. See '#{method_link(entry)}'")
         end
 
-        # substitute the actual params into the route template
-        params.each {|param| route.sub!("{#{param[:name]}}", args.shift.to_s) }
+        # substitute the actual params into the route template, encoding if needed
+        params.each do |param|
+          value = args.shift.to_s
+          if value == CGI.unescape(value)
+            value = CGI.escape(value)
+          end
+          route.sub!("{#{param[:name]}}", value)
+        end
 
         a = args.length > 0 ? args[0] : {}
         b = args.length > 1 ? args[1] : {}

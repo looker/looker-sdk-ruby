@@ -301,7 +301,7 @@ module LookerSDK
       begin
         @last_response = @last_error = nil
         return stream_request(method, path, data, options, &block) if block_given?
-        @last_response = response = agent.call(method, URI::Parser.new.escape(path.to_s), data, options)
+        @last_response = response = agent.call(method, path.to_s, data, options)
         @raw_responses ? response : response.data
       rescue StandardError => e
         @last_error = e
