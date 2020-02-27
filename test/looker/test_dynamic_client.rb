@@ -142,9 +142,21 @@ class LookerDynamicClientTest < MiniTest::Spec
       end
     end
 
-    it "get with parms" do
+    it "get with params" do
       verify(response, :get, '/api/3.0/users/25') do |sdk|
         sdk.user(25)
+      end
+    end
+
+    it "get with params that need encoding" do
+      verify(response, :get, '/api/3.0/users/foo%2Fbar') do |sdk|
+        sdk.user("foo/bar")
+      end
+    end
+
+    it "get with params already encoded" do
+        verify(response, :get, '/api/3.0/users/foo%2Fbar') do |sdk|
+        sdk.user("foo%2Fbar")
       end
     end
 
