@@ -2,6 +2,7 @@
 # The MIT License (MIT)
 #
 # Copyright (c) 2014 Zee Spencer
+# Copyright (c) 2020 Google LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +31,10 @@
 # Automatic variables: http://ftp.gnu.org/old-gnu/Manuals/make-3.79.1/html_chapter/make_10.html#SEC101
 
 # Rbenv-friendly version identifiers for supported Rubys
-187_version = 1.8.7-p375
-193_version = 1.9.3-p551
-20_version = 2.0.0-p598
-21_version = 2.1.5
+20_version = 2.0.0-p648
+21_version = 2.1.10
+23_version = 2.3.1
+jruby_9150_version = jruby-9.1.5.0
 
 # The ruby version for use in a given rule.
 # Requires a matched pattern rule and a supported ruby version.
@@ -52,23 +53,17 @@ given_ruby_version = $($(addsuffix _version, $*))
 # Then with_given_ruby becomes "RBENV_VERSION=1.8.7-p375"
 with_given_ruby = RBENV_VERSION=$(given_ruby_version)
 
-# Watch the fileystem and re-execute a command
-rerun = fswatch -o . | xargs -n1 -I{}
-
 # Runs tests for all supported ruby versions.
-test: test-187 test-193 test-20 test-21
+test: test-20 test-21 test-23 test-jruby_9150
 
 # Runs tests against a specific ruby version
 test-%:
-	$(with_given_ruby) bundle exec ruby test/all.rb
-
-# Watches for changes in the filesystem and re-runs tests for a given ruby.
-retest-%:
-	$(rerun) make test-$*
+	rm -f Gemfile.lock
+	$(with_given_ruby) bundle lock
+	$(with_given_ruby) bundle exec rake test
 
 # Installs all ruby versions and their gems
-install: install-187 install-193 install-20 install-21
-
+install: install-20 install-21 install-23 install-jruby_9150
 
 # Install a particular ruby version
 install-ruby-%:
@@ -76,9 +71,21 @@ install-ruby-%:
 
 # Install gems into a specific ruby version
 install-gems-%:
+	rm -f Gemfile.lock
+	$(with_given_ruby) gem update --system
 	$(with_given_ruby) gem install bundler
 	$(with_given_ruby) bundle install
 
+# special case 20 and 21 need older bundler
+install-gems-20:
+	rm -f Gemfile.lock
+	RBENV_VERSION=$(20_version) gem install bundler -v '~>1'
+	RBENV_VERSION=$(20_version) bundle install
+
+install-gems-21:
+	rm -f Gemfile.lock
+	RBENV_VERSION=$(21_version) gem install bundler -v '~>1'
+	RBENV_VERSION=$(21_version) bundle install
 
 # Installs a specific ruby version and it's gems
 # At the bottom so it doesn't match install-gems and install-ruby tasks.

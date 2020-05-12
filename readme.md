@@ -26,7 +26,7 @@ $ rake install
 ```bash
 $ bundle install
 $ rake test # run the test suite
-$ rake test:all # run the test suite on all supported Rubies
+$ make install test # run the test suite on all supported Rubies
 ```
 
 ### Basic Usage
