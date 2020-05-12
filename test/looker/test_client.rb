@@ -34,6 +34,33 @@ describe LookerSDK::Client do
    teardown_sdk
   end
 
+  describe "lazy load swagger" do
+
+    it "lazy loads swagger" do
+      LookerSDK.reset!
+      client = LookerSDK::Client.new(
+        :lazy_swagger => true,
+        :netrc => true,
+        :netrc_file => File.join(fixture_path, '.netrc'),
+        :connection_options => {:ssl => {:verify => false}},
+      )
+      assert_nil client.swagger
+      client.me()
+      assert client.swagger
+    end
+
+    it "loads swagger initially" do
+      LookerSDK.reset!
+      client = LookerSDK::Client.new(
+        :lazy_swagger => false,
+        :netrc => true,
+        :netrc_file => File.join(fixture_path, '.netrc'),
+        :connection_options => {:ssl => {:verify => false}},
+      )
+      assert client.swagger
+    end
+  end
+
   describe "module configuration" do
 
     before do
@@ -50,8 +77,9 @@ describe LookerSDK::Client do
     end
 
     it "inherits the module configuration" do
-      client = LookerSDK::Client.new
+      client = LookerSDK::Client.new(:lazy_swagger => true)
       LookerSDK::Configurable.keys.each do |key|
+        next if key == :lazy_swagger
         client.instance_variable_get(:"@#{key}").must_equal("Some #{key}")
       end
     end
@@ -63,7 +91,8 @@ describe LookerSDK::Client do
             :connection_options => {:ssl => {:verify => false}},
             :per_page => 40,
             :client_id    => "looker_client_id",
-            :client_secret => "client_secret2"
+            :client_secret => "client_secret2",
+            :lazy_swagger => true,
         }
       end
 
@@ -111,7 +140,11 @@ describe LookerSDK::Client do
       describe "with .netrc"  do
         it "can read .netrc files" do
           LookerSDK.reset!
-          client = LookerSDK::Client.new(:netrc => true, :netrc_file => File.join(fixture_path, '.netrc'))
+          client = LookerSDK::Client.new(
+            :lazy_swagger => true,
+            :netrc => true,
+            :netrc_file => File.join(fixture_path, '.netrc'),
+          )
           client.client_id.wont_be_nil
           client.client_secret.wont_be_nil
         end
@@ -122,6 +155,9 @@ describe LookerSDK::Client do
 
       before do
         LookerSDK.reset!
+        LookerSDK.configure do |c|
+          c.lazy_swagger = true
+        end
       end
 
       it "sets oauth token with .configure" do

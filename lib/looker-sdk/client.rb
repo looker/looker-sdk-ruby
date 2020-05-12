@@ -58,7 +58,9 @@ module LookerSDK
       @original_options = options.dup
 
       load_credentials_from_netrc unless application_credentials?
-      load_swagger
+      if !@lazy_swagger
+        load_swagger
+      end
       self.dynamic = true
     end
 

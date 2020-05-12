@@ -53,20 +53,17 @@ module LookerSDK
         @swagger ||= without_authentication { try_load_swagger }
 
         unless @swagger
-          # capture the bits we may need later, avoiding potential buffer reuse in last_response between requests
-          response_wo_auth_status = last_response&.status
-          response_wo_auth_data = last_response&.data
-
           # try again, this time with authentication
           @swagger = try_load_swagger
         end
 
         # in unit tests, @swagger may be nil and last_response nil because no HTTP request was made
-        if @swagger.nil? && (response_wo_auth_status || last_response)
-          msg = "Load of swagger.json failed. "
-          msg << "Without authentication HTTP response status: (#{response_wo_auth_status}) data: #{response_wo_auth_data}. " if response_wo_auth_status
-          msg << "WITH authentication HTTP response status: (#{last_response.status}) data: #{last_response.data}" if last_response
-          looker_warn(msg)
+        if @swagger.nil?
+          if @last_error
+            raise @last_error
+          else
+            raise "Load of swagger.json failed."
+          end
         end
 
         @swagger
@@ -74,6 +71,10 @@ module LookerSDK
 
       def operations
         return @@sharable_operations[api_endpoint] if shared_swagger && @@sharable_operations[api_endpoint]
+
+        if !@swagger && @lazy_swagger
+          load_swagger
+        end
 
         return nil unless @swagger
         @operations ||= Hash[
