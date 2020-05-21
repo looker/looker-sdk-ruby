@@ -103,7 +103,7 @@ class LookerDynamicClientTest < MiniTest::Spec
       resp = [200, {'Content-Type' => 'application/json'}, [default_swagger.to_json]]
       mock = MiniTest::Mock.new.expect(:call, resp, [Hash])
       sdk = sdk_client(nil, mock)
-      assert_equal sdk.swagger, default_swagger
+      assert_equal default_swagger, sdk.swagger
     end
 
     it "loads swagger with authentication" do
@@ -111,7 +111,7 @@ class LookerDynamicClientTest < MiniTest::Spec
       mock = MiniTest::Mock.new.expect(:call, nil) {raise "login first!"}
       mock.expect(:call, resp, [Hash])
       sdk = sdk_client(nil, mock)
-      assert_equal sdk.swagger, default_swagger
+      assert_equal default_swagger, sdk.swagger
     end
 
     it "invalid method name" do
