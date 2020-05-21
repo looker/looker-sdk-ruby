@@ -91,11 +91,12 @@ module LookerSDK
     #
     # @param url [String] The path, relative to {#api_endpoint}
     # @param options [Hash] Query and header params for request
+    # @param encoded [Boolean] true: url already encoded, false: url needs encoding
     # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
     #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def get(url, options = {}, &block)
-      request :get, url, nil, parse_query_and_convenience_headers(options), &block
+    def get(url, options = {}, encoded=false, &block)
+      request :get, url, nil, parse_query_and_convenience_headers(options), encoded, &block
     end
 
     # Make a HTTP POST request
@@ -103,11 +104,12 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param data [String|Array|Hash] Body and optionally header params for request
     # @param options [Hash] Optional header params for request
+    # @param encoded [Boolean] true: url already encoded, false: url needs encoding
     # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
     #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def post(url, data = {}, options = {}, &block)
-      request :post, url, data, parse_query_and_convenience_headers(options), &block
+    def post(url, data = {}, options = {}, encoded=false, &block)
+      request :post, url, data, parse_query_and_convenience_headers(options), encoded, &block
     end
 
     # Make a HTTP PUT request
@@ -115,11 +117,12 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param data [String|Array|Hash] Body and optionally header params for request
     # @param options [Hash] Optional header params for request
+    # @param encoded [Boolean] true: url already encoded, false: url needs encoding
     # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
     #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def put(url, data = {}, options = {}, &block)
-      request :put, url, data, parse_query_and_convenience_headers(options), &block
+    def put(url, data = {}, options = {}, encoded=false, &block)
+      request :put, url, data, parse_query_and_convenience_headers(options), encoded, &block
     end
 
     # Make a HTTP PATCH request
@@ -127,29 +130,32 @@ module LookerSDK
     # @param url [String] The path, relative to {#api_endpoint}
     # @param data [String|Array|Hash] Body and optionally header params for request
     # @param options [Hash] Optional header params for request
+    # @param encoded [Boolean] true: url already encoded, false: url needs encoding
     # @param &block [Block] Block to be called with |response, chunk| for each chunk of the body from
     #   the server. The block must return true to continue, or false to abort streaming.
     # @return [Sawyer::Resource]
-    def patch(url, data = {}, options = {}, &block)
-      request :patch, url, data, parse_query_and_convenience_headers(options), &block
+    def patch(url, data = {}, options = {}, encoded=false, &block)
+      request :patch, url, data, parse_query_and_convenience_headers(options), encoded, &block
     end
 
     # Make a HTTP DELETE request
     #
     # @param url [String] The path, relative to {#api_endpoint}
     # @param options [Hash] Query and header params for request
+    # @param encoded [Boolean] true: url already encoded, false: url needs encoding
     # @return [Sawyer::Resource]
-    def delete(url, options = {}, &block)
-      request :delete, url, nil, parse_query_and_convenience_headers(options)
+    def delete(url, options = {}, encoded=false, &block)
+      request :delete, url, nil, parse_query_and_convenience_headers(options), encoded, &block
     end
 
     # Make a HTTP HEAD request
     #
     # @param url [String] The path, relative to {#api_endpoint}
     # @param options [Hash] Query and header params for request
+    # @param encoded [Boolean] true: url already encoded, false: url needs encoding
     # @return [Sawyer::Resource]
-    def head(url, options = {}, &block)
-      request :head, url, nil, parse_query_and_convenience_headers(options)
+    def head(url, options = {}, encoded=false, &block)
+      request :head, url, nil, parse_query_and_convenience_headers(options), encoded
     end
 
     # Make one or more HTTP GET requests, optionally fetching
@@ -298,12 +304,16 @@ module LookerSDK
       @agent = nil
     end
 
-    def request(method, path, data, options, &block)
+    def request(method, path, data, options, encoded, &block)
       ensure_logged_in
       begin
+        path = path.to_s
+        if !encoded
+          path = URI::Parser.new.escape(path)
+        end
         @last_response = @last_error = nil
         return stream_request(method, path, data, options, &block) if block_given?
-        @last_response = response = agent.call(method, path.to_s, data, options)
+        @last_response = response = agent.call(method, path, data, options)
         @raw_responses ? response : response.data
       rescue StandardError => e
         @last_error = e

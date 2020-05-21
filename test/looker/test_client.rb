@@ -30,10 +30,6 @@ describe LookerSDK::Client do
    setup_sdk
   end
 
-  after(:each) do
-   teardown_sdk
-  end
-
   describe "lazy load swagger" do
 
     it "lazy loads swagger" do
@@ -268,6 +264,40 @@ describe LookerSDK::Client do
       end
     end
 
+    [
+        [:get, '/api/3.0/users/foo%2Fbar', false],
+        [:get, '/api/3.0/users/foo%252Fbar', true],
+        [:post, '/api/3.0/users/foo%2Fbar', false],
+        [:post, '/api/3.0/users/foo%252Fbar', true],
+        [:put, '/api/3.0/users/foo%2Fbar', false],
+        [:put, '/api/3.0/users/foo%252Fbar', true],
+        [:patch, '/api/3.0/users/foo%2Fbar', false],
+        [:patch, '/api/3.0/users/foo%252Fbar', true],
+        [:delete, '/api/3.0/users/foo%2Fbar', false],
+        [:delete, '/api/3.0/users/foo%252Fbar', true],
+        [:head, '/api/3.0/users/foo%2Fbar', false],
+        [:head, '/api/3.0/users/foo%252Fbar', true],
+    ].each do |method, path, encoded|
+      it "handles request path encoding" do
+        expected_path = '/api/3.0/users/foo%252Fbar'
+
+        resp = OpenStruct.new(:data => "hi", :status => 204)
+        mock = MiniTest::Mock.new.expect(:call, resp, [method, expected_path, nil, {}])
+        Sawyer::Agent.stubs(:new).returns(mock, mock)
+
+        sdk = LookerSDK::Client.new
+        if [:get, :delete, :head].include? method
+          args = [method, path, nil, encoded]
+        else
+          args = [method, path, nil, nil, encoded]
+        end
+        sdk.without_authentication do
+          value = sdk.public_send *args
+          assert_equal "hi", value
+        end
+        mock.verify
+      end
+    end
   end
 
   describe 'Sawyer date/time parsing patch' do

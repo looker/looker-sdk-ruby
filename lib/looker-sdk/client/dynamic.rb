@@ -143,11 +143,11 @@ module LookerSDK
 
         method = entry[:method].to_sym
         case method
-        when :get     then get(route, a, &block)
-        when :post    then post(route, a, merge_content_type_if_body(a, b), &block)
-        when :put     then put(route, a, merge_content_type_if_body(a, b), &block)
-        when :patch   then patch(route, a, merge_content_type_if_body(a, b), &block)
-        when :delete  then delete(route, a) ; @raw_responses ? last_response : delete_succeeded?
+        when :get     then get(route, a, true, &block)
+        when :post    then post(route, a, merge_content_type_if_body(a, b), true, &block)
+        when :put     then put(route, a, merge_content_type_if_body(a, b), true, &block)
+        when :patch   then patch(route, a, merge_content_type_if_body(a, b), true, &block)
+        when :delete  then delete(route, a, true) ; @raw_responses ? last_response : delete_succeeded?
         else raise "unsupported method '#{method}' in call to '#{method_name}'. See '#{method_link(entry)}'"
         end
       end
