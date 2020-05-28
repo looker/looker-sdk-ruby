@@ -60,15 +60,14 @@ test: test-20 test-21 test-23 test-jruby_9150
 test-%:
 	rm -f Gemfile.lock
 	$(with_given_ruby) bundle install --quiet
-	for t in `find test/ -name test_\*.rb` ; do \
-		$(with_given_ruby) rbenv exec bundle exec ruby -I . -I test $$t ; \
-	done
+	$(with_given_ruby) rake
 
 # Installs all ruby versions and their gems
 install: install-20 install-21 install-23 install-jruby_9150
 
 # Install a particular ruby version
 install-ruby-%:
+	rm -f Gemfile.lock
 	rbenv install -s $(given_ruby_version)
 
 # Install gems into a specific ruby version

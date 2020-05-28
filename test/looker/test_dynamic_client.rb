@@ -36,6 +36,7 @@ class LookerDynamicClientTest < MiniTest::Spec
       conn.adapter :rack, engine
     end
 
+    LookerSDK.reset!
     LookerSDK::Client.new do |config|
       config.swagger = swagger
       config.access_token = access_token
