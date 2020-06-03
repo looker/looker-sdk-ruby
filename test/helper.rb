@@ -57,6 +57,7 @@ fix_netrc_permissions(File.join(fixture_path, '.netrc'))
 def setup_sdk
   LookerSDK.reset!
   LookerSDK.configure do |c|
+    c.lazy_swagger = true
     c.connection_options = {:ssl => {:verify => false}}
     c.netrc = true
     c.netrc_file =  File.join(fixture_path, '.netrc')
@@ -64,7 +65,6 @@ def setup_sdk
 end
 
 def teardown_sdk
+  setup_sdk  # put back initial config
   LookerSDK.logout
 end
-
-

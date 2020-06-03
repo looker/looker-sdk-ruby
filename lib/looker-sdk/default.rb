@@ -125,6 +125,12 @@ module LookerSDK
         false
       end
 
+      # Default behavior for loading swagger during initialization or at first call
+      # @return [Boolean]
+      def lazy_swagger
+        false
+      end
+
       def raw_responses
         false
       end
