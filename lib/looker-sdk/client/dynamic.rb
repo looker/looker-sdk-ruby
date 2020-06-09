@@ -81,7 +81,7 @@ module LookerSDK
           @swagger[:paths].map do |path_name, path_info|
             path_info.map do |method, route_info|
               route = @swagger[:basePath].to_s + path_name.to_s
-              [route_info[:operationId], {:route => route, :method => method, :info => route_info}]
+              [route_info[:operationId].to_sym, {:route => route, :method => method, :info => route_info}]
             end
           end.reduce(:+)
         ].freeze
@@ -114,7 +114,7 @@ module LookerSDK
       private
 
       def find_entry(method_name)
-        operations && operations[method_name.to_s] if dynamic
+        operations && operations[method_name] if dynamic
       end
 
       def invoke_remote(entry, method_name, *args, &block)
