@@ -116,7 +116,7 @@ class LookerDynamicClientTest < MiniTest::Spec
     end
 
     it "invalid method name" do
-      mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, method, path, body, query, content_type)}
+      mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, :get, path, body, query, content_type)}
       sdk = sdk_client(default_swagger, mock)
       assert_raises NoMethodError do
         sdk.this_method_name_doesnt_exist()
@@ -124,6 +124,20 @@ class LookerDynamicClientTest < MiniTest::Spec
 
       assert_raises NameError do
         sdk.invoke(:this_method_name_doesnt_exist)
+      end
+    end
+
+    describe "operation maps" do
+      it "invoke by string operationId" do
+        verify(response, :get, '/api/3.0/user') do |sdk|
+          sdk.invoke('me')
+        end
+      end
+
+      it "find_entry by symbol operationId" do
+        verify(response, :get, '/api/3.0/user') do |sdk|
+          sdk.invoke(:me)
+        end
       end
     end
 

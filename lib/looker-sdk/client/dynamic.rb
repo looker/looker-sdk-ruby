@@ -114,7 +114,7 @@ module LookerSDK
       private
 
       def find_entry(method_name)
-        operations && operations[method_name] if dynamic
+        operations && operations[method_name.to_sym] if dynamic
       end
 
       def invoke_remote(entry, method_name, *args, &block)
