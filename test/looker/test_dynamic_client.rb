@@ -133,7 +133,7 @@ class LookerDynamicClientTest < MiniTest::Spec
         end
       end
 
-      it "find_entry by symbol operationId" do
+      it "invoke by symbol operationId" do
         verify(response, :get, '/api/3.0/user') do |sdk|
           sdk.invoke(:me)
         end
