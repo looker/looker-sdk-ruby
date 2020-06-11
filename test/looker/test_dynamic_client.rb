@@ -116,8 +116,7 @@ class LookerDynamicClientTest < MiniTest::Spec
     end
 
     it "invalid method name" do
-      mock = MiniTest::Mock.new.expect(:call, response){|env| confirm_env(env, :get, path, body, query, content_type)}
-      sdk = sdk_client(default_swagger, mock)
+      sdk = sdk_client(default_swagger, nil)
       assert_raises NoMethodError do
         sdk.this_method_name_doesnt_exist()
       end
