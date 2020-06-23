@@ -387,11 +387,15 @@ module LookerSDK
             OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE,
         }
 
-        # TODO: figure out how/if to support proxies
         # TODO: figure out how to test this comprehensively
 
         progress = nil
-        Net::HTTP.start(uri.host, uri.port, connect_opts) do |http|
+        http_klass = if connection.proxy.present?
+                       Net::HTTP::Proxy(connection.proxy.uri.host, connection.proxy.uri.port)
+                     else
+                       Net::HTTP
+                     end
+        http_klass.start(uri.host, uri.port, connect_opts) do |http|
           http.open_timeout = connection.options.open_timeout rescue 30
           http.read_timeout = connection.options.timeout rescue 60
 
