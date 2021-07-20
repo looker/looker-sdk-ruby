@@ -5,7 +5,7 @@
     "title": "Looker API",
     "description": "This document is a representative sample (subset) of the Looker API that should only be used to unit test the Looker ruby sdk. To get the current, actual Looker API metadata visit /api/3.0/swagger.json on your Looker instance.",
     "contact": {
-      "name": "Looker Team <help.looker.com>"
+      "name": "Looker Team <https://help.looker.com>"
     },
     "license": {
       "name": "EULA",
