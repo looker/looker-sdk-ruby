@@ -41,7 +41,7 @@ require 'looker-sdk'
 sdk = LookerSDK::Client.new(
   :client_id => "4CN7jzm7yrkcy2MC4CCG",
   :client_secret => "Js3rZZ7vHfbc2hBynSj7zqKh",
-  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0"
+  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/4.0"
 )
 
 # If you don't want to provide explicit credentials: (trust me you don't)
@@ -55,7 +55,7 @@ sdk = LookerSDK::Client.new(
 sdk = LookerSDK::Client.new(
   :netrc      => true,
   :netrc_file => "~/.net_rc",
-  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/3.0",
+  :api_endpoint => "https://mygreatcompany.looker.com:19999/api/4.0",
 
   # Set longer timeout to allow for long running queries. The default is 60 seconds and can be problematic.
   :connection_options => {:request => {:timeout => 60 * 60, :open_timeout => 30}},

@@ -22,7 +22,7 @@ Note that API 3 tokens should be created for 'regular' Looker users and *not* vi
 
 
 ### Ensure that the API is accessible
-Looker versions 3.4 (and beyond) expose the 3.0 API via a port different from the port used by the web app.
+Looker versions 3.4 (and beyond) expose the API via a port different from the port used by the web app.
 The default port is 19999. It may be necessary to have the Ops team managing the looker instance ensure that this
 port is made accessible network-wise to client software running on non-local hosts.
 
@@ -78,14 +78,14 @@ Content-Length: 99
 {"access_token":"4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4","token_type":"Bearer","expires_in":3600}
 
 # Use an access_token (the token can be used over and over for API calls until it expires)
-> curl -i -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/api/3.0/user
+> curl -i -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/api/4.0/user
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=utf-8
 Vary: Accept-Encoding
 X-Content-Type-Options: nosniff
 Content-Length: 502
 
-{"id":14,"first_name":"Plain","last_name":"User","email":"dude+1@looker.com","models_dir":null,"is_disabled":false,"look_access":[14],"avatar_url":"https://www.gravatar.com/avatar/b7f792a6180a36a4058f36875584bc45?s=156&d=mm","credentials_email":{"email":"dude+1@looker.com","url":"https://localhost:19999/api/3.0/users/14/credentials_email","user_url":"https://localhost:19999/api/3.0/users/14","password_reset_url":"https://localhost:19999/api/3.0"},"url":"https://localhost:19999/api/3.0/users/14"}
+{"id":14,"first_name":"Plain","last_name":"User","email":"dude+1@looker.com","models_dir":null,"is_disabled":false,"look_access":[14],"avatar_url":"https://www.gravatar.com/avatar/b7f792a6180a36a4058f36875584bc45?s=156&d=mm","credentials_email":{"email":"dude+1@looker.com","url":"https://localhost:19999/api/4.0/users/14/credentials_email","user_url":"https://localhost:19999/api/4.0/users/14","password_reset_url":"https://localhost:19999/api/4.0"},"url":"https://localhost:19999/api/4.0/users/14"}
 
 # Logout to revoke an access_token
 > curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/logout
