@@ -34,7 +34,7 @@
 20_version = 2.0.0-p648
 21_version = 2.1.10
 23_version = 2.3.1
-jruby_9150_version = jruby-9.1.5.0
+jruby_92160_version = jruby-9.2.16.0
 
 # The ruby version for use in a given rule.
 # Requires a matched pattern rule and a supported ruby version.
@@ -54,7 +54,7 @@ given_ruby_version = $($(addsuffix _version, $*))
 with_given_ruby = RBENV_VERSION=$(given_ruby_version)
 
 # Runs tests for all supported ruby versions.
-test: test-20 test-21 test-23 test-jruby_9150
+test: test-21 test-23 test-jruby_92160
 
 # Runs tests against a specific ruby version
 test-%:
@@ -63,7 +63,7 @@ test-%:
 	$(with_given_ruby) rake
 
 # Installs all ruby versions and their gems
-install: install-20 install-21 install-23 install-jruby_9150
+install: install-21 install-23 install-jruby_92160
 
 # Install a particular ruby version
 install-ruby-%:
