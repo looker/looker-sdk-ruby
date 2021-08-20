@@ -30,9 +30,7 @@ module LookerSDK
   module Response
 
     # HTTP status codes returned by the API
-    class RaiseError < Faraday::Response::Middleware
-
-      private
+    class RaiseError < Faraday::Middleware
 
       def on_complete(response)
         if error = LookerSDK::Error.from_response(response)
