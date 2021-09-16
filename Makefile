@@ -58,7 +58,7 @@ test: test-25 test-jruby_92160
 test-%:
 	rm -f Gemfile.lock
 	$(with_given_ruby) bundle install --quiet
-	$(with_given_ruby) rake
+	$(with_given_ruby) bundle exec rake
 
 # Installs all ruby versions and their gems
 install: install-25 install-jruby_92160
