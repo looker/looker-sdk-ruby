@@ -23,8 +23,9 @@ $ rake install
 
 ### Development
 
-Customize test/fixtures/.netrc for tests to pass
-Comment out coverage configuration in test/helper.rb for debugging
+Rename test/fixtures/.netrc.template to test/fixtures/.netrc and add API3
+credentials for tests to pass.
+Comment out coverage configuration in test/helper.rb for debugging.
 ```bash
 $ bundle install
 $ rake test # run the test suite

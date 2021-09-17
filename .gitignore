@@ -50,3 +50,6 @@ test/tmp
 test/version_tmp
 tmp
 *.netrc
+
+# credentials for testing
+.netrc

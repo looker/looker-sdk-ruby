@@ -200,7 +200,7 @@ module LookerSDK
       Sawyer::Agent.new(api_endpoint, options) do |http|
         http.headers[:accept] = default_media_type
         http.headers[:user_agent] = user_agent
-        http.authorization('token', @access_token) if token_authenticated?
+        http.headers[:authorization] = "token #{@access_token}" if token_authenticated?
       end
     end
 
