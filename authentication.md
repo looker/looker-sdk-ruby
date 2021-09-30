@@ -68,7 +68,7 @@ Content-Length: 0
 
 
 # Do the login to get an access_token
-> curl -i  -d "client_id=4j3SD8W5RchHw5gvZ5Yd&client_secret=sVySctSMpQQG3TzdNQ5d2dND"  https://localhost:19999/login
+> curl -i  -d "client_id=4j3SD8W5RchHw5gvZ5Yd&client_secret=sVySctSMpQQG3TzdNQ5d2dND"  https://localhost:19999/api/4.0/login
 HTTP/1.1 200 OK
 Content-Type: application/json;charset=utf-8
 Vary: Accept-Encoding
@@ -88,12 +88,12 @@ Content-Length: 502
 {"id":14,"first_name":"Plain","last_name":"User","email":"dude+1@looker.com","models_dir":null,"is_disabled":false,"look_access":[14],"avatar_url":"https://www.gravatar.com/avatar/b7f792a6180a36a4058f36875584bc45?s=156&d=mm","credentials_email":{"email":"dude+1@looker.com","url":"https://localhost:19999/api/4.0/users/14/credentials_email","user_url":"https://localhost:19999/api/4.0/users/14","password_reset_url":"https://localhost:19999/api/4.0"},"url":"https://localhost:19999/api/4.0/users/14"}
 
 # Logout to revoke an access_token
-> curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/logout
+> curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/api/4.0/logout
 HTTP/1.1 204 No Content
 X-Content-Type-Options: nosniff
 
 # Show that the access_token is no longer valid
-> curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/logout
+> curl -i -X DELETE -H "Authorization: token 4QDkCyCtZzYgj4C2p2cj3csJH7zqS5RzKs2kTnG4"  https://localhost:19999/api/4.0/logout
 HTTP/1.1 404 Not Found
 Content-Type: application/json;charset=utf-8
 Vary: Accept-Encoding
