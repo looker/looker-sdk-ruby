@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.version     = LookerSDK::VERSION
   s.date        = "#{Time.now.strftime('%F')}"
   s.authors     = ['Looker']
-  s.email       = 'opensource+sdkruby@looker.com'
-  s.homepage    = 'https://github.com/looker/looker-sdk-ruby'
+  s.email       = 'drstrangelove@google.com'
+  s.homepage    = 'https://github.com/looker-open-source/looker-sdk-ruby'
   s.summary     = %q{Looker Ruby SDK}
   s.description = 'Use this SDK to access the Looker API. The Looker API provides functions to perform administrative '+
       'tasks such as provisioning users, configuring database connections, and so on. It also enables you to leverage '+
