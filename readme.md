@@ -1,4 +1,4 @@
-[![Ruby-CI](https://github.com/looker-open-source/looker-sdk-ruby/actions/workflows/ruby-ci.yml/badge.svg?branch=main)](https://github.com/looker-open-source/looker-sdk-ruby/actions/workflows/ruby-ci.yml)
+[![Gem Version](https://badge.fury.io/rb/looker-sdk.svg)](https://badge.fury.io/rb/looker-sdk)[![Ruby-CI](https://github.com/looker-open-source/looker-sdk-ruby/actions/workflows/ruby-ci.yml/badge.svg?branch=main)](https://github.com/looker-open-source/looker-sdk-ruby/actions/workflows/ruby-ci.yml)
 # [Looker](http://looker.com/) SDK for Ruby
 ### Overview
 This SDK supports secure/authenticated access to the Looker RESTful API. The SDK binds dynamically to the Looker API and builds mappings for the sets of API methods that the Looker instance exposes. This allows for writing straightforward Ruby scripts to interact with the Looker API. And, it allows the SDK to provide access to new Looker API features in each Looker release without requiring an update to the SDK each time.
