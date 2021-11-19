@@ -30,16 +30,42 @@ describe LookerSDK::Client do
    setup_sdk
   end
 
-  describe "lazy load swagger" do
+  base_url = ENV['LOOKERSDK_BASE_URL'] || 'https://localhost:20000'
+  verify_ssl = case ENV['LOOKERSDK_VERIFY_SSL']
+               when /false/i
+                 false
+               when /f/i
+                 false
+               when '0'
+                 false
+               else
+                 true
+               end
+  api_version = ENV['LOOKERSDK_API_VERSION'] || '4.0'
+  client_id = ENV['LOOKERSDK_CLIENT_ID']
+  client_secret = ENV['LOOKERSDK_CLIENT_SECRET']
 
+  opts = {}
+  if (client_id && client_secret) then
+    opts.merge!({
+      :client_id => client_id,
+      :client_secret => client_secret,
+      :api_endpoint => "#{base_url}/api/#{api_version}",
+    })
+    opts[:connection_options] = {:ssl => {:verify => false}} unless verify_ssl
+  else
+    opts.merge!({
+      :netrc => true,
+      :netrc_file => File.join(fixture_path, '.netrc'),
+      :connection_options => {:ssl => {:verify => false}},
+    })
+
+  end
+
+  describe "lazy load swagger" do
     it "lazy loads swagger" do
       LookerSDK.reset!
-      client = LookerSDK::Client.new(
-        :lazy_swagger => true,
-        :netrc => true,
-        :netrc_file => File.join(fixture_path, '.netrc'),
-        :connection_options => {:ssl => {:verify => false}},
-      )
+      client = LookerSDK::Client.new(opts.merge({:lazy_swagger => true}))
       assert_nil client.swagger
       client.me()
       assert client.swagger
@@ -47,12 +73,7 @@ describe LookerSDK::Client do
 
     it "loads swagger initially" do
       LookerSDK.reset!
-      client = LookerSDK::Client.new(
-        :lazy_swagger => false,
-        :netrc => true,
-        :netrc_file => File.join(fixture_path, '.netrc'),
-        :connection_options => {:ssl => {:verify => false}},
-      )
+      client = LookerSDK::Client.new(opts.merge({:lazy_swagger => false}))
       assert client.swagger
     end
   end
@@ -135,6 +156,7 @@ describe LookerSDK::Client do
 
       describe "with .netrc"  do
         it "can read .netrc files" do
+          skip unless File.exist?(File.join(fixture_path, '.netrc'))
           LookerSDK.reset!
           client = LookerSDK::Client.new(
             :lazy_swagger => true,

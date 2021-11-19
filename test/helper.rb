@@ -52,15 +52,41 @@ def fix_netrc_permissions(path)
   File.chmod(0600, path) unless s.mode.to_s(8)[3..5] == "0600"
 end
 
-fix_netrc_permissions(File.join(fixture_path, '.netrc'))
+begin
+  fix_netrc_permissions(File.join(fixture_path, '.netrc'))
+rescue => e
+  puts e
+end
 
 def setup_sdk
   LookerSDK.reset!
+
+  base_url = ENV['LOOKERSDK_BASE_URL'] || 'https://localhost:20000'
+  verify_ssl = case ENV['LOOKERSDK_VERIFY_SSL']
+               when /false/i
+                 false
+               when /f/i
+                 false
+               when '0'
+                 false
+               else
+                 true
+               end
+  api_version = ENV['LOOKERSDK_API_VERSION'] || '4.0'
+  client_id = ENV['LOOKERSDK_CLIENT_ID']
+  client_secret = ENV['LOOKERSDK_CLIENT_SECRET']
+
   LookerSDK.configure do |c|
     c.lazy_swagger = true
-    c.connection_options = {:ssl => {:verify => false}}
-    c.netrc = true
-    c.netrc_file =  File.join(fixture_path, '.netrc')
+    c.connection_options = {:ssl => {:verify => false}} unless verify_ssl
+    if (client_id && client_secret) then
+      c.client_id = client_id
+      c.client_secret = client_secret
+      c.api_endpoint = "#{base_url}/api/#{api_version}"
+    else
+      c.netrc = true
+      c.netrc_file =  File.join(fixture_path, '.netrc')
+    end
   end
 end
 
