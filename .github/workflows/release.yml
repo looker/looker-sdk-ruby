@@ -18,7 +18,7 @@ jobs:
           package-name: looker-sdk
           bump-minor-pre-major: true
           bump-patch-for-minor-pre-major: true
-  b       version-file: "lib/looker-sdk/version.rb"
+          version-file: "lib/looker-sdk/version.rb"
           token: ${{ secrets.LOS_AUTO_BOT_RP_TOKEN }}
       # Checkout code if release was created
       - uses: actions/checkout@v2
