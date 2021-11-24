@@ -1,3 +1,50 @@
+# This Respoitory is Retired
+**The new home of this project is `git@github.com:looker-open-source/looker-sdk-ruby.git`**
+
+Please execute the following commands on your local versions:
+```
+git remote set-url origin git@github.com:looker-open-source/looker-sdk-ruby.git
+# or git remote set-url origin https://github.com/looker-open-source/looker-sdk-ruby.git
+git remote -v
+git branch -m master main
+git fetch origin
+git branch -u origin/main main
+git remote set-head origin -a
+git remote prune origin
+```
+
+If you have forked this repository in github, you will likely need to delete that
+forked version and fork the new repository.
+
+**If you have work in your github fork** you can preserve that work by pulling
+anything in your forked copy down before deleting the forked copy.
+
+Suppose your forked copy is listed in your git remotes as `my-looker-sdk-ruby`. Simply
+execute the following command...
+```
+git fetch my-looker-sdk-ruby
+```
+
+Now go to your github and delete or even just rename `my-looker-sdk-ruby`. Fork the version
+at https://github.com/looker-open-source/looker-sdk-ruby and name that with `my-looker-sdk-ruby`.
+The `master` branch has been renamed `main` to keep with modern naming standards. On your local
+version execute the following to rename your local `master` branch and push to `main` on your ...
+```
+git fetch my-looker-sdk-ruby
+git branch -m master main
+git checkout main
+git rebase my-looker-sdk-ruby/main
+git push my-looker-sdk-ruby main
+export MY_REMOTE="my-looker-sdk-ruby"
+git branch -r | cut -c 3- | \
+    grep -E "^${MY_REMOTE}/.+" | \
+    cut -d / -f 2- | \
+    xargs -L 1 -I {} git push --follow-tags ${MY_REMOTE} refs/remotes/${MY_REMOTE}/{}:refs/heads/{}
+```
+
+Now any work that was on your old fork should be on your new fork.
+
+
 # [Looker](http://looker.com/) SDK for Ruby [![Build Status](https://travis-ci.org/looker/looker-sdk-ruby.svg)](https://travis-ci.org/looker/looker-sdk-ruby)
 ### Overview
 This SDK supports secure/authenticated access to the Looker RESTful API. The SDK binds dynamically to the Looker API and builds mappings for the sets of API methods that the Looker instance exposes. This allows for writing straightforward Ruby scripts to interact with the Looker API. And, it allows the SDK to provide access to new Looker API features in each Looker release without requiring an update to the SDK each time.
