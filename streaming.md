@@ -2,23 +2,23 @@
 
 #### Beta Feature - Experimental!
 
-This SDK makes it easy to fetch a response from a Looker API and hydrate it into a Ruby object.This convenience is great for working with configuration and administrative data. However, when the response is gigabytes of row data, pulling it all into memory doesn't work so well - you can't begin processing the data until after it has all downloaded, for example, and chewing up tons of memory will put a serious strain on the entire system - even crash it. 
+This SDK makes it easy to fetch a response from a Looker API and hydrate it into a Ruby object.This convenience is great for working with configuration and administrative data. However, when the response is gigabytes of row data, pulling it all into memory doesn't work so well - you can't begin processing the data until after it has all downloaded, for example, and chewing up tons of memory will put a serious strain on the entire system - even crash it.
 
-One solution to all this is to use streaming downloads to process the data in chunks as it is downloaded. Streaming requires a little more code to set up but the benefits can be significant. 
+One solution to all this is to use streaming downloads to process the data in chunks as it is downloaded. Streaming requires a little more code to set up but the benefits can be significant.
 
 To use streaming downloads with the Looker SDK, simply add a block to an SDK call. The block will be called with chunks of data as they are downloaded instead of the method returning a complete result.
 
 For example:
 
-```ruby 
+```ruby
 def run_look_to_file(look_id, filename, format, opts = {})
   File.open(filename, 'w') do |file|
     sdk.run_look(look_id, format, opts) do |data, progress|
       file.write(data)
       puts "Wrote #{data.length} bytes of #{progress.length} total"
-    end  
-  end  
-end  
+    end
+  end
+end
 
 run_look_to_file(38, 'out.csv', 'csv', limit: 10000)
 ```
@@ -40,7 +40,7 @@ You can also abort a streaming download by calling `progress.stop` within the bl
       else
         process_data(data)
       end
-    end  
+    end
 
 ```
 
@@ -53,7 +53,15 @@ These caveats can be mitigated by knowing the structure of the data being stream
 
 #### A Tale of Two Stacks
 
-The Looker Ruby SDK is built on top of Sawyer, and Sawyer sits on top of Faraday. Faraday does not support HTTP Streaming, so to do our streaming stuff we have to bypass Faraday and talk directly to the Net:HTTP stack. Our streaming implementation gathers connection settings from the Faraday stack so there's no additional config required for http streaming. 
+The Looker Ruby SDK is built on top of Sawyer, and Sawyer sits on top of Faraday. Faraday does not support HTTP Streaming, so to do our streaming stuff we have to bypass Faraday and talk directly to the Net:HTTP stack. Our streaming implementation gathers connection settings from the Faraday stack so there's no additional config required for http streaming.
 
-Streaming downloads have not been tested with proxy connections. We assume attempting to stream across an http proxy will not work.
+#### Proxy Connections
+In order to stream with a proxy connection, you can define your proxy url in your client configs like so:
+```
+LookerSDK::Client.new(
+  client_id: ENV['CLIENT_ID'],
+  client_secret: ENV['CLIENT_SECRET'],
+  proxy: ENV['HTTP_PROXY']
+)
+```
 
